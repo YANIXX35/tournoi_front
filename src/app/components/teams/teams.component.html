@@ -1,0 +1,60 @@
+<div class="page-hero">
+  <h1>Équipes inscrites</h1>
+  <p>Découvrez toutes les équipes qui participent au tournoi</p>
+</div>
+
+<div class="teams-wrap">
+  <div *ngIf="loading" class="loading-state">Chargement des équipes...</div>
+
+  <div *ngIf="!loading">
+    <!-- Header -->
+    <div class="teams-header">
+      <div class="teams-count-badge">
+        <span>{{ teams.length }}</span> équipe(s) inscrite(s)
+      </div>
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="teams.length === 0" class="empty-register">
+      <span class="empty-icon">🏟️</span>
+      <p>Aucune équipe inscrite pour le moment.<br>Soyez les premiers à vous inscrire !</p>
+      <a routerLink="/inscription" class="btn-register">Inscrire mon équipe →</a>
+    </div>
+
+    <!-- Grid -->
+    <div class="teams-grid">
+      <div *ngFor="let team of teams"
+           class="team-card"
+           [class.expanded]="expandedTeam === team.id"
+           (click)="toggleTeam(team.id)">
+
+        <div class="card-header">
+          <!-- Logo ou initiales -->
+          <div class="team-logo">
+            <img *ngIf="team.logo_path" [src]="teamService.getLogoUrl(team.logo_path)" [alt]="team.name" />
+            <span *ngIf="!team.logo_path" class="team-initials">{{ team.name[0] }}</span>
+          </div>
+
+          <div class="team-info">
+            <h2>{{ team.name }}</h2>
+            <p class="team-captain">👤 {{ team.captain_name }}</p>
+            <span class="player-chip">⚽ {{ team.players.length }} joueur{{ team.players.length > 1 ? 's' : '' }}</span>
+          </div>
+
+          <div class="expand-btn">{{ expandedTeam === team.id ? '▲' : '▼' }}</div>
+        </div>
+
+        <!-- Players (expanded) -->
+        <div class="players-panel" *ngIf="expandedTeam === team.id">
+          <p class="players-title">Liste des joueurs</p>
+          <div class="players-grid">
+            <div *ngFor="let name of team.players; let i = index" class="player-pill">
+              <span class="player-n">{{ i + 1 }}</span>
+              <span class="player-name">{{ name }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

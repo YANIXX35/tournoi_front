@@ -1,0 +1,102 @@
+<div class="home-hero">
+  <div class="hero-content">
+    <div class="hero-badge">⚽ Tournoi Officiel · Édition 2024</div>
+
+    <h1 class="hero-title">
+      Tournoi de Football
+      <span class="highlight">Église 2024</span>
+    </h1>
+
+    <p class="hero-subtitle">Rejoignez-nous pour une compétition fraternelle et sportive</p>
+
+    <div class="hero-meta">
+      <span>📅 1er Juillet 2024</span>
+      <span>📍 Terrain de l'Église</span>
+      <span>🏆 Compétition officielle</span>
+    </div>
+
+    <div class="countdown">
+      <div class="countdown-item">
+        <span class="count">{{ countdown.days }}</span>
+        <span class="count-label">Jours</span>
+      </div>
+      <div class="countdown-item">
+        <span class="count">{{ countdown.hours }}</span>
+        <span class="count-label">Heures</span>
+      </div>
+      <div class="countdown-item">
+        <span class="count">{{ countdown.minutes }}</span>
+        <span class="count-label">Min</span>
+      </div>
+      <div class="countdown-item">
+        <span class="count">{{ countdown.seconds }}</span>
+        <span class="count-label">Sec</span>
+      </div>
+    </div>
+
+    <button class="btn-hero" (click)="goRegister()">
+      Inscrire mon équipe →
+    </button>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Découvrir</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</div>
+
+<!-- FEATURES GRID -->
+<section class="home-features">
+  <p class="features-label">Tout ce qu'il vous faut</p>
+  <h2 class="features-title">Gérez votre tournoi</h2>
+  <p class="features-sub">Suivez chaque match, chaque équipe, en temps réel</p>
+
+  <div class="features-grid">
+    <div class="feature-card" routerLink="/matchs">
+      <span class="feature-icon">📅</span>
+      <h3>Planning</h3>
+      <p>Consultez le calendrier et les horaires de tous les matchs du tournoi</p>
+      <span class="feature-arrow">Voir les matchs →</span>
+    </div>
+    <div class="feature-card" routerLink="/resultats">
+      <span class="feature-icon">🏆</span>
+      <h3>Résultats</h3>
+      <p>Suivez les scores et le classement en temps réel</p>
+      <span class="feature-arrow">Voir le classement →</span>
+    </div>
+    <div class="feature-card" routerLink="/equipes">
+      <span class="feature-icon">👥</span>
+      <h3>Équipes</h3>
+      <p>Découvrez toutes les équipes participantes et leurs joueurs</p>
+      <span class="feature-arrow">Voir les équipes →</span>
+    </div>
+    <div class="feature-card" routerLink="/inscription">
+      <span class="feature-icon">✍️</span>
+      <h3>Inscription</h3>
+      <p>Inscrivez votre équipe avant la date limite de participation</p>
+      <span class="feature-arrow">S'inscrire maintenant →</span>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<section class="home-stats">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-num">16</div>
+      <div class="stat-desc">Équipes max</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">32</div>
+      <div class="stat-desc">Matchs prévus</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">1</div>
+      <div class="stat-desc">Jour de compétition</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">🥇</div>
+      <div class="stat-desc">Un seul champion</div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,436 @@
+.page-hero {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--green) 100%);
+  padding: 3rem 1.5rem 2rem;
+  text-align: center;
+  color: white;
+
+  h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.4rem;
+  }
+  p { color: rgba(255,255,255,0.65); font-size: 0.95rem; }
+}
+
+.register-wrap {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+// ═══════════════════════════════════
+// STEP INDICATOR
+// ═══════════════════════════════════
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+  gap: 0;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+
+  .step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+    transition: var(--ease);
+    border: 2px solid transparent;
+  }
+
+  .step-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  &.active {
+    .step-circle {
+      background: var(--green);
+      color: white;
+      box-shadow: 0 0 0 4px rgba(26,71,42,0.15);
+    }
+    .step-label { color: var(--green); font-weight: 700; }
+  }
+
+  &.done {
+    .step-circle {
+      background: var(--emerald);
+      color: white;
+      border-color: var(--emerald);
+    }
+    .step-label { color: var(--green-status); }
+  }
+}
+
+.step-connector {
+  width: 60px;
+  height: 2px;
+  background: var(--border);
+  margin: 0 0.5rem;
+  margin-bottom: 1.4rem;
+  border-radius: var(--r-full);
+  transition: background 0.3s ease;
+
+  &.done { background: var(--emerald); }
+}
+
+// ═══════════════════════════════════
+// FORM CARD
+// ═══════════════════════════════════
+.form-card {
+  background: var(--card);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  padding: 2rem;
+  animation: fadeUp 0.3s ease both;
+}
+
+.form-card-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.form-card-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.75rem;
+}
+
+// ═══════════════════════════════════
+// LOGO UPLOAD
+// ═══════════════════════════════════
+.logo-upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.logo-drop-zone {
+  cursor: pointer;
+  width: 130px;
+  height: 130px;
+  border-radius: var(--r-xl);
+  border: 2px dashed var(--green-mid);
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #F0F7F2, #FAFFF9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--ease);
+
+  &:hover {
+    border-color: var(--green);
+    background: #E8F5E9;
+    transform: scale(1.02);
+  }
+}
+
+.logo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: center;
+  color: var(--text-muted);
+  padding: 1rem;
+
+  .logo-icon-big { font-size: 2.5rem; }
+  .logo-upload-text {
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--green);
+  }
+  .logo-hint {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+  }
+}
+
+.logo-preview-img {
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+  padding: 0.5rem;
+}
+
+.logo-uploading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.btn-change-logo {
+  margin-top: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-decoration: underline;
+  &:hover { color: var(--red); }
+}
+
+// ═══════════════════════════════════
+// FORM FIELDS
+// ═══════════════════════════════════
+.form-group {
+  margin-bottom: 1.25rem;
+
+  label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+    color: var(--text-2);
+    font-size: 0.85rem;
+    letter-spacing: 0.01em;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-md);
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    transition: var(--ease);
+    background: var(--card);
+    color: var(--text);
+
+    &:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(26,71,42,0.08);
+    }
+
+    &::placeholder { color: var(--text-muted); font-size: 0.9rem; }
+  }
+}
+
+.field-error {
+  color: var(--red);
+  font-size: 0.78rem;
+  margin-top: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+// ═══════════════════════════════════
+// PLAYERS LIST
+// ═══════════════════════════════════
+.players-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  animation: fadeUp 0.2s ease both;
+}
+
+.player-num-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--green-bg);
+  color: var(--green-status);
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.player-input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 0.9rem;
+  transition: var(--ease);
+
+  &:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(26,71,42,0.07);
+  }
+
+  &::placeholder { color: var(--text-muted); }
+}
+
+.btn-remove {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--red-bg);
+  color: var(--red);
+  border: none;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: var(--ease);
+
+  &:hover { background: var(--red); color: white; }
+}
+
+.btn-add-player {
+  width: 100%;
+  padding: 0.7rem;
+  border: 2px dashed var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--r-md);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ease);
+  margin-bottom: 1.25rem;
+
+  &:hover {
+    border-color: var(--green);
+    color: var(--green);
+    background: #F0F7F2;
+  }
+}
+
+// ═══════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--green), var(--green-mid));
+  color: white;
+  border: none;
+  padding: 0.85rem 2rem;
+  border-radius: var(--r-md);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--ease-spring);
+  box-shadow: 0 4px 14px rgba(26,71,42,0.3);
+  letter-spacing: -0.01em;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(26,71,42,0.4);
+  }
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+}
+
+.btn-ghost {
+  background: var(--bg);
+  color: var(--text-2);
+  border: 1.5px solid var(--border);
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--r-md);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ease);
+
+  &:hover { background: var(--border); }
+}
+
+// Error banner
+.error-banner {
+  background: var(--red-bg);
+  color: var(--red);
+  padding: 0.75rem 1rem;
+  border-radius: var(--r-md);
+  margin-bottom: 1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// ═══════════════════════════════════
+// SUCCESS STATE
+// ═══════════════════════════════════
+.success-card {
+  background: var(--card);
+  border-radius: var(--r-xl);
+  border: 2px solid var(--emerald);
+  box-shadow: var(--shadow-lg);
+  padding: 3.5rem 2rem;
+  text-align: center;
+  animation: fadeUp 0.5s var(--ease-spring) both;
+
+  .success-icon { font-size: 4rem; display: block; margin-bottom: 1.25rem; }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--green);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 380px;
+    margin: 0 auto 2rem;
+  }
+}
+
+.btn-home {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--green), var(--green-mid));
+  color: white;
+  padding: 0.85rem 2rem;
+  border-radius: var(--r-full);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: var(--ease-spring);
+  box-shadow: 0 4px 16px rgba(26,71,42,0.3);
+
+  &:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,71,42,0.4); }
+}

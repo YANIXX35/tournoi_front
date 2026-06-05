@@ -1,0 +1,127 @@
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AdminService } from '../../services/admin.service';
+import { TournamentService } from '../../services/tournament.service';
+import { AuthService } from '../../services/auth.service';
+import { Team } from '../../models/team.model';
+import { Match } from '../../models/match.model';
+
+@Component({
+  selector: 'app-admin-dashboard',
+  templateUrl: './admin-dashboard.component.html',
+  styleUrls: ['./admin-dashboard.component.scss'],
+  standalone: false,
+})
+export class AdminDashboardComponent implements OnInit {
+  teams: Team[] = [];
+  matches: Match[] = [];
+  activeSection: 'overview' | 'teams' | 'matches' = 'overview';
+  editingMatch: Match | null = null;
+  newMatch: Partial<Match> = {};
+  showNewMatchForm = false;
+  phases = ['Poule', 'Quarts de finale', 'Demi-finale', 'Finale'];
+  saveSuccess = '';
+  today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  constructor(
+    private adminService: AdminService,
+    private tournamentService: TournamentService,
+    public auth: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loadTeams();
+    this.loadMatches();
+  }
+
+  loadTeams(): void {
+    this.adminService.getTeams().subscribe({ next: d => this.teams = d });
+  }
+
+  loadMatches(): void {
+    this.tournamentService.getMatches().subscribe({ next: d => this.matches = d });
+  }
+
+  // --- Stats ---
+  get totalTeams(): number { return this.teams.length; }
+  get pendingTeams(): number { return this.teams.filter(t => !t.validated).length; }
+  get validatedTeams(): number { return this.teams.filter(t => t.validated).length; }
+  get totalMatches(): number { return this.matches.length; }
+  get finishedMatches(): number { return this.matches.filter(m => m.status === 'finished').length; }
+  get upcomingMatches(): number { return this.matches.filter(m => m.status === 'upcoming').length; }
+
+  // --- Équipes CRUD ---
+  validateTeam(team: Team, validated: boolean): void {
+    this.adminService.validateTeam(team.id, validated).subscribe(() => {
+      this.loadTeams();
+      this.flash(validated ? 'Équipe validée ✓' : 'Équipe rejetée');
+    });
+  }
+
+  deleteTeam(id: number): void {
+    if (!confirm('Supprimer cette équipe définitivement ?')) return;
+    this.adminService.deleteTeam(id).subscribe(() => {
+      this.loadTeams();
+      this.flash('Équipe supprimée');
+    });
+  }
+
+  // --- Matchs CRUD ---
+  createMatch(): void {
+    if (!this.newMatch.team1_name || !this.newMatch.team2_name) return;
+    this.adminService.createMatch(this.newMatch).subscribe(() => {
+      this.loadMatches();
+      this.newMatch = {};
+      this.showNewMatchForm = false;
+      this.flash('Match créé ✓');
+    });
+  }
+
+  startEdit(match: Match): void {
+    this.editingMatch = { ...match };
+  }
+
+  cancelEdit(): void {
+    this.editingMatch = null;
+  }
+
+  saveMatch(): void {
+    if (!this.editingMatch) return;
+    this.adminService.updateMatch(this.editingMatch.id, this.editingMatch).subscribe(() => {
+      this.loadMatches();
+      this.editingMatch = null;
+      this.flash('Match mis à jour ✓');
+    });
+  }
+
+  deleteMatch(id: number): void {
+    if (!confirm('Supprimer ce match ?')) return;
+    this.adminService.deleteMatch(id).subscribe(() => {
+      this.loadMatches();
+      this.flash('Match supprimé');
+    });
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/admin/login']);
+  }
+
+  private flash(msg: string): void {
+    this.saveSuccess = msg;
+    setTimeout(() => this.saveSuccess = '', 3000);
+  }
+
+  getStatusLabel(s: string): string {
+    return s === 'upcoming' ? 'À venir' : s === 'ongoing' ? 'En cours' : 'Terminé';
+  }
+
+  getPhaseColor(phase: string): string {
+    const map: Record<string, string> = {
+      'Poule': '#2196f3', 'Quarts de finale': '#ff9800',
+      'Demi-finale': '#9c27b0', 'Finale': '#f44336',
+    };
+    return map[phase] || '#888';
+  }
+}

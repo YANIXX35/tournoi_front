@@ -1,0 +1,344 @@
+<div class="dashboard-layout">
+
+  <!-- ═══════════ SIDEBAR ═══════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">⚽</span>
+      <div class="logo-text">
+        <span class="logo-title">Tournoi</span>
+        <span class="logo-sub">Église 2024</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <p class="nav-section-label">Menu</p>
+      <a class="nav-item" [class.active]="activeSection === 'overview'" (click)="activeSection = 'overview'">
+        <span class="nav-icon">📊</span> Vue d'ensemble
+      </a>
+      <a class="nav-item" [class.active]="activeSection === 'teams'" (click)="activeSection = 'teams'">
+        <span class="nav-icon">👥</span> Équipes
+        <span class="nav-badge" *ngIf="pendingTeams > 0">{{ pendingTeams }}</span>
+      </a>
+      <a class="nav-item" [class.active]="activeSection === 'matches'" (click)="activeSection = 'matches'">
+        <span class="nav-icon">⚽</span> Matchs
+      </a>
+
+      <p class="nav-section-label" style="margin-top: 2rem">Général</p>
+      <a class="nav-item" routerLink="/" target="_blank">
+        <span class="nav-icon">🌐</span> Voir le site
+      </a>
+      <a class="nav-item nav-logout" (click)="logout()">
+        <span class="nav-icon">🚪</span> Déconnexion
+      </a>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">{{ auth.getUsername()[0]?.toUpperCase() }}</div>
+      <div class="user-info">
+        <span class="user-name">{{ auth.getUsername() }}</span>
+        <span class="user-role">Administrateur</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════ CONTENU PRINCIPAL ═══════════ -->
+  <main class="main-content">
+
+    <!-- Toast notification -->
+    <div class="toast" *ngIf="saveSuccess">{{ saveSuccess }}</div>
+
+    <!-- Header -->
+    <div class="main-header">
+      <div>
+        <h1 class="main-title">
+          {{ activeSection === 'overview' ? 'Vue d\'ensemble' : activeSection === 'teams' ? 'Gestion des équipes' : 'Gestion des matchs' }}
+        </h1>
+        <p class="main-subtitle">Tournoi de Football — Église 2024</p>
+      </div>
+      <div class="header-date">📅 {{ today }}</div>
+    </div>
+
+    <!-- ── CARTES STATISTIQUES ── -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Équipes inscrites</span>
+          <span class="stat-icon">👥</span>
+        </div>
+        <div class="stat-value">{{ totalTeams }}</div>
+        <div class="stat-sub">
+          <span class="badge-green">{{ validatedTeams }} validées</span>
+          <span *ngIf="pendingTeams > 0" class="badge-orange">{{ pendingTeams }} en attente</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Matchs programmés</span>
+          <span class="stat-icon">📅</span>
+        </div>
+        <div class="stat-value">{{ totalMatches }}</div>
+        <div class="stat-sub">
+          <span class="badge-blue">{{ upcomingMatches }} à venir</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Matchs terminés</span>
+          <span class="stat-icon">🏁</span>
+        </div>
+        <div class="stat-value">{{ finishedMatches }}</div>
+        <div class="stat-sub">
+          <span class="badge-green">résultats disponibles</span>
+        </div>
+      </div>
+
+      <div class="stat-card accent">
+        <div class="stat-top">
+          <span class="stat-label">En attente validation</span>
+          <span class="stat-icon">⏳</span>
+        </div>
+        <div class="stat-value">{{ pendingTeams }}</div>
+        <div class="stat-sub">
+          <span class="badge-white" (click)="activeSection = 'teams'" style="cursor:pointer">
+            Voir les équipes →
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ SECTION : VUE D'ENSEMBLE ══════════ -->
+    <div *ngIf="activeSection === 'overview'" class="section-content">
+
+      <div class="overview-grid">
+        <!-- Dernières inscriptions -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Dernières inscriptions</h2>
+            <button class="btn-link" (click)="activeSection = 'teams'">Voir tout →</button>
+          </div>
+          <div class="empty-state" *ngIf="teams.length === 0">Aucune équipe inscrite.</div>
+          <table class="data-table" *ngIf="teams.length > 0">
+            <thead>
+              <tr>
+                <th>Équipe</th>
+                <th>Capitaine</th>
+                <th>Joueurs</th>
+                <th>Statut</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let team of teams.slice(0, 5)">
+                <td class="td-name">{{ team.name }}</td>
+                <td>{{ team.captain_name }}</td>
+                <td>{{ team.players ? team.players.length : 0 }}</td>
+                <td>
+                  <span class="status-pill" [class.pill-green]="team.validated" [class.pill-orange]="!team.validated">
+                    {{ team.validated ? 'Validée' : 'En attente' }}
+                  </span>
+                </td>
+                <td>
+                  <button *ngIf="!team.validated" class="btn-sm btn-green" (click)="validateTeam(team, true)">Valider</button>
+                  <button *ngIf="team.validated" class="btn-sm btn-orange" (click)="validateTeam(team, false)">Rejeter</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Prochains matchs -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Prochains matchs</h2>
+            <button class="btn-link" (click)="activeSection = 'matches'">Voir tout →</button>
+          </div>
+          <div class="empty-state" *ngIf="matches.length === 0">Aucun match programmé.</div>
+          <div class="match-mini" *ngFor="let m of matches.slice(0, 5)">
+            <div class="match-mini-teams">
+              <strong>{{ m.team1_name }}</strong>
+              <span class="match-mini-score" *ngIf="m.status === 'finished'">{{ m.score1 }} — {{ m.score2 }}</span>
+              <span class="match-mini-vs" *ngIf="m.status !== 'finished'">VS</span>
+              <strong>{{ m.team2_name }}</strong>
+            </div>
+            <div class="match-mini-meta">
+              <span>{{ m.match_date | date:'dd/MM' }}</span>
+              <span>{{ m.match_time }}</span>
+              <span class="status-pill" [class.pill-blue]="m.status==='upcoming'" [class.pill-orange]="m.status==='ongoing'" [class.pill-green]="m.status==='finished'">
+                {{ getStatusLabel(m.status) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ SECTION : ÉQUIPES ══════════ -->
+    <div *ngIf="activeSection === 'teams'" class="section-content">
+      <div class="card">
+        <div class="card-header">
+          <h2>Toutes les équipes ({{ teams.length }})</h2>
+        </div>
+        <div class="empty-state" *ngIf="teams.length === 0">Aucune inscription reçue.</div>
+        <table class="data-table" *ngIf="teams.length > 0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Équipe</th>
+              <th>Capitaine</th>
+              <th>Téléphone</th>
+              <th>Joueurs</th>
+              <th>Inscription</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let team of teams; let i = index">
+              <td class="td-num">{{ i + 1 }}</td>
+              <td class="td-name">{{ team.name }}</td>
+              <td>{{ team.captain_name }}</td>
+              <td>{{ team.phone }}</td>
+              <td>{{ team.players ? team.players.length : 0 }}</td>
+              <td>{{ team.created_at | date:'dd/MM/yyyy' }}</td>
+              <td>
+                <span class="status-pill" [class.pill-green]="team.validated" [class.pill-orange]="!team.validated">
+                  {{ team.validated ? 'Validée' : 'En attente' }}
+                </span>
+              </td>
+              <td class="td-actions">
+                <button *ngIf="!team.validated" class="btn-sm btn-green" (click)="validateTeam(team, true)">✓ Valider</button>
+                <button *ngIf="team.validated" class="btn-sm btn-orange" (click)="validateTeam(team, false)">Rejeter</button>
+                <button class="btn-sm btn-red" (click)="deleteTeam(team.id)">🗑</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════ SECTION : MATCHS ══════════ -->
+    <div *ngIf="activeSection === 'matches'" class="section-content">
+
+      <!-- Bouton + formulaire nouveau match -->
+      <div class="card" style="margin-bottom: 1.25rem">
+        <div class="card-header">
+          <h2>Matchs ({{ matches.length }})</h2>
+          <button class="btn-primary" (click)="showNewMatchForm = !showNewMatchForm">
+            {{ showNewMatchForm ? '✕ Annuler' : '+ Nouveau match' }}
+          </button>
+        </div>
+
+        <div *ngIf="showNewMatchForm" class="new-match-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Équipe 1 *</label>
+              <input type="text" [(ngModel)]="newMatch.team1_name" placeholder="Nom équipe 1" />
+            </div>
+            <div class="form-group">
+              <label>Équipe 2 *</label>
+              <input type="text" [(ngModel)]="newMatch.team2_name" placeholder="Nom équipe 2" />
+            </div>
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" [(ngModel)]="newMatch.match_date" />
+            </div>
+            <div class="form-group">
+              <label>Heure</label>
+              <input type="time" [(ngModel)]="newMatch.match_time" />
+            </div>
+            <div class="form-group">
+              <label>Phase</label>
+              <select [(ngModel)]="newMatch.phase">
+                <option *ngFor="let p of phases" [value]="p">{{ p }}</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-primary" (click)="createMatch()">Créer le match</button>
+        </div>
+      </div>
+
+      <!-- Tableau des matchs -->
+      <div class="card">
+        <div class="empty-state" *ngIf="matches.length === 0">Aucun match créé.</div>
+        <table class="data-table" *ngIf="matches.length > 0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Équipe 1</th>
+              <th>Score</th>
+              <th>Équipe 2</th>
+              <th>Date</th>
+              <th>Heure</th>
+              <th>Phase</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let match of matches; let i = index">
+              <!-- Ligne affichage normal -->
+              <tr *ngIf="editingMatch?.id !== match.id">
+                <td class="td-num">{{ i + 1 }}</td>
+                <td class="td-name">{{ match.team1_name }}</td>
+                <td class="td-score">
+                  <span *ngIf="match.status === 'finished'">{{ match.score1 }} — {{ match.score2 }}</span>
+                  <span *ngIf="match.status !== 'finished'" class="text-muted">—</span>
+                </td>
+                <td class="td-name">{{ match.team2_name }}</td>
+                <td>{{ match.match_date | date:'dd/MM/yy' }}</td>
+                <td>{{ match.match_time }}</td>
+                <td>
+                  <span class="phase-tag" [style.background]="getPhaseColor(match.phase) + '22'" [style.color]="getPhaseColor(match.phase)">
+                    {{ match.phase }}
+                  </span>
+                </td>
+                <td>
+                  <span class="status-pill" [class.pill-blue]="match.status==='upcoming'" [class.pill-orange]="match.status==='ongoing'" [class.pill-green]="match.status==='finished'">
+                    {{ getStatusLabel(match.status) }}
+                  </span>
+                </td>
+                <td class="td-actions">
+                  <button class="btn-sm btn-blue" (click)="startEdit(match)">✏ Modifier</button>
+                  <button class="btn-sm btn-red" (click)="deleteMatch(match.id)">🗑</button>
+                </td>
+              </tr>
+
+              <!-- Ligne édition inline -->
+              <tr *ngIf="editingMatch?.id === match.id" class="editing-row">
+                <td>{{ i + 1 }}</td>
+                <td><input class="inline-input" [(ngModel)]="editingMatch!.team1_name" /></td>
+                <td class="td-score-edit">
+                  <input class="score-input" type="number" [(ngModel)]="editingMatch!.score1" min="0" placeholder="0" />
+                  <span>—</span>
+                  <input class="score-input" type="number" [(ngModel)]="editingMatch!.score2" min="0" placeholder="0" />
+                </td>
+                <td><input class="inline-input" [(ngModel)]="editingMatch!.team2_name" /></td>
+                <td><input class="inline-input" type="date" [(ngModel)]="editingMatch!.match_date" /></td>
+                <td><input class="inline-input" type="time" [(ngModel)]="editingMatch!.match_time" /></td>
+                <td>
+                  <select class="inline-input" [(ngModel)]="editingMatch!.phase">
+                    <option *ngFor="let p of phases" [value]="p">{{ p }}</option>
+                  </select>
+                </td>
+                <td>
+                  <select class="inline-input" [(ngModel)]="editingMatch!.status">
+                    <option value="upcoming">À venir</option>
+                    <option value="ongoing">En cours</option>
+                    <option value="finished">Terminé</option>
+                  </select>
+                </td>
+                <td class="td-actions">
+                  <button class="btn-sm btn-green" (click)="saveMatch()">✓ Sauver</button>
+                  <button class="btn-sm btn-gray" (click)="cancelEdit()">Annuler</button>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>

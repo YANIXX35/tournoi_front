@@ -1,0 +1,25 @@
+<nav class="navbar">
+  <a class="navbar-brand" routerLink="/">
+    <div class="brand-icon">⚽</div>
+    <div class="brand-text">
+      <span class="brand-title">Tournoi Église</span>
+      <span class="brand-sub">Football 2024</span>
+    </div>
+  </a>
+
+  <div class="navbar-links">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Accueil</a>
+    <a routerLink="/matchs" routerLinkActive="active">Matchs</a>
+    <a routerLink="/resultats" routerLinkActive="active">Résultats</a>
+    <a routerLink="/equipes" routerLinkActive="active">Équipes</a>
+    <a routerLink="/inscription" routerLinkActive="active" class="nav-cta">✦ S'inscrire</a>
+  </div>
+</nav>
+
+<main>
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="site-footer">
+  ⚽ Tournoi de Football — Église 2024 · Tous droits réservés
+</footer>

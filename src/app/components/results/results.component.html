@@ -1,0 +1,123 @@
+<div class="page-hero">
+  <h1>Résultats & Classement</h1>
+  <p>Scores, statistiques et classement général du tournoi</p>
+</div>
+
+<div class="results-wrap">
+  <div *ngIf="loading" class="loading-state">Chargement des résultats...</div>
+
+  <div *ngIf="!loading">
+
+    <!-- ═══ PODIUM ═══ -->
+    <section class="podium-section" *ngIf="standings.length >= 3">
+      <span class="section-label">🏆 Classement</span>
+      <h2 class="section-title">Podium du tournoi</h2>
+
+      <div class="podium">
+        <!-- 2e -->
+        <div class="podium-item pos-2">
+          <span class="podium-rank">🥈</span>
+          <span class="podium-name">{{ standings[1].name }}</span>
+          <span class="podium-pts">{{ standings[1].points }} pts</span>
+          <div class="podium-block"><span class="podium-num">2</span></div>
+        </div>
+        <!-- 1er -->
+        <div class="podium-item pos-1">
+          <span class="podium-rank">🥇</span>
+          <span class="podium-name">{{ standings[0].name }}</span>
+          <span class="podium-pts">{{ standings[0].points }} pts</span>
+          <div class="podium-block"><span class="podium-num">1</span></div>
+        </div>
+        <!-- 3e -->
+        <div class="podium-item pos-3">
+          <span class="podium-rank">🥉</span>
+          <span class="podium-name">{{ standings[2].name }}</span>
+          <span class="podium-pts">{{ standings[2].points }} pts</span>
+          <div class="podium-block"><span class="podium-num">3</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ CLASSEMENT TABLE ═══ -->
+    <section class="standings-section">
+      <span class="section-label">📊 Tableau</span>
+      <h2 class="section-title">Classement complet</h2>
+
+      <div *ngIf="standings.length === 0" class="empty-state">
+        Le classement sera disponible après les premiers matchs.
+      </div>
+
+      <div class="table-card" *ngIf="standings.length > 0">
+        <table class="standings-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Équipe</th>
+              <th title="Matchs joués">J</th>
+              <th title="Victoires">G</th>
+              <th title="Nuls">N</th>
+              <th title="Défaites">P</th>
+              <th title="Buts pour">BP</th>
+              <th title="Buts contre">BC</th>
+              <th title="Différence de buts">+/-</th>
+              <th title="Points">Pts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of standings; let i = index"
+                [class.top-3]="i < 3"
+                [class.top-1]="i === 0">
+              <td class="rank-cell">
+                <span *ngIf="i === 0">🥇</span>
+                <span *ngIf="i === 1">🥈</span>
+                <span *ngIf="i === 2">🥉</span>
+                <span *ngIf="i >= 3">{{ i + 1 }}</span>
+              </td>
+              <td class="name-cell">{{ s.name }}</td>
+              <td>{{ s.played }}</td>
+              <td>{{ s.won }}</td>
+              <td>{{ s.drawn }}</td>
+              <td>{{ s.lost }}</td>
+              <td>{{ s.goals_for }}</td>
+              <td>{{ s.goals_against }}</td>
+              <td [class.diff-pos]="s.goals_for > s.goals_against"
+                  [class.diff-neg]="s.goals_for < s.goals_against">
+                {{ getGoalDiff(s) }}
+              </td>
+              <td class="pts-cell">{{ s.points }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ RÉSULTATS DES MATCHS ═══ -->
+    <section class="results-section">
+      <span class="section-label">⚽ Matchs terminés</span>
+      <h2 class="section-title">Résultats</h2>
+
+      <div *ngIf="finishedMatches.length === 0" class="empty-state">
+        Aucun match terminé pour le moment.
+      </div>
+
+      <div class="results-list">
+        <div *ngFor="let m of finishedMatches" class="result-card">
+          <div class="result-header">
+            <span class="result-phase">{{ m.phase }}</span>
+            <span class="result-date">{{ m.match_date | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-body">
+            <span class="result-team left" [class.winner]="(m.score1 ?? 0) > (m.score2 ?? 0)">
+              {{ m.team1_name }}
+            </span>
+            <span class="result-score">{{ m.score1 }} — {{ m.score2 }}</span>
+            <span class="result-team right" [class.winner]="(m.score2 ?? 0) > (m.score1 ?? 0)">
+              {{ m.team2_name }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

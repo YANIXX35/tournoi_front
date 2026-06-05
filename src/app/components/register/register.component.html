@@ -1,0 +1,116 @@
+<div class="page-hero">
+  <h1>Inscription de votre équipe</h1>
+  <p>Rejoignez le tournoi en quelques étapes</p>
+</div>
+
+<div class="register-wrap">
+
+  <!-- SUCCESS -->
+  <div *ngIf="success" class="success-card">
+    <span class="success-icon">🎉</span>
+    <h2>Inscription envoyée !</h2>
+    <p>Votre équipe a bien été enregistrée. Un responsable validera votre inscription prochainement. Restez disponible !</p>
+    <a routerLink="/" class="btn-home">← Retour à l'accueil</a>
+  </div>
+
+  <form *ngIf="!success" [formGroup]="teamForm">
+
+    <!-- STEP INDICATOR -->
+    <div class="steps">
+      <div class="step" [class.active]="step >= 1" [class.done]="step > 1">
+        <div class="step-circle">{{ step > 1 ? '✓' : '1' }}</div>
+        <span class="step-label">Équipe</span>
+      </div>
+      <div class="step-connector" [class.done]="step > 1"></div>
+      <div class="step" [class.active]="step >= 2">
+        <div class="step-circle">2</div>
+        <span class="step-label">Joueurs</span>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 1 : Équipe + Logo -->
+    <div *ngIf="step === 1" class="form-card">
+      <h2 class="form-card-title">Informations de l'équipe</h2>
+      <p class="form-card-sub">Renseignez le nom, le capitaine et, si vous le souhaitez, le logo de votre équipe.</p>
+
+      <!-- Logo Upload -->
+      <div class="logo-upload-area">
+        <label class="logo-drop-zone">
+          <div *ngIf="!logoPreview" class="logo-placeholder">
+            <span class="logo-icon-big">🛡️</span>
+            <span class="logo-upload-text">Ajouter le logo<br>de l'équipe</span>
+            <span class="logo-hint">JPG, PNG, WEBP · Optionnel</span>
+          </div>
+          <img *ngIf="logoPreview" [src]="logoPreview" class="logo-preview-img" alt="Logo équipe" />
+          <div *ngIf="uploadingLogo" class="logo-uploading-overlay">Envoi...</div>
+          <input type="file" accept="image/*" (change)="onLogoSelected($event)" hidden />
+        </label>
+        <button *ngIf="logoPreview" type="button" class="btn-change-logo" (click)="logoPreview = null; logoPath = null">
+          Changer le logo
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label>Nom de l'équipe *</label>
+        <input type="text" formControlName="name" placeholder="Ex : Les Lions de Sion" />
+        <span class="field-error" *ngIf="teamForm.get('name')?.touched && teamForm.get('name')?.invalid">
+          ⚠ Nom requis (2 caractères minimum)
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label>Nom du capitaine *</label>
+        <input type="text" formControlName="captain_name" placeholder="Prénom et nom" />
+        <span class="field-error" *ngIf="teamForm.get('captain_name')?.touched && teamForm.get('captain_name')?.invalid">
+          ⚠ Champ requis
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label>Téléphone du capitaine *</label>
+        <input type="tel" formControlName="phone" placeholder="06 00 00 00 00" />
+        <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.invalid">
+          ⚠ Champ requis
+        </span>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-primary" (click)="nextStep()">
+          Suivant → Ajouter les joueurs
+        </button>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 2 : Joueurs -->
+    <div *ngIf="step === 2" class="form-card">
+      <h2 class="form-card-title">Liste des joueurs</h2>
+      <p class="form-card-sub">Entrez le nom de chaque joueur participant (maximum 20 joueurs).</p>
+
+      <div formArrayName="players" class="players-section">
+        <div *ngFor="let ctrl of players.controls; let i = index" class="player-row">
+          <div class="player-num-badge">{{ i + 1 }}</div>
+          <input
+            type="text"
+            [formControlName]="i"
+            placeholder="Nom du joueur"
+            class="player-input" />
+          <button type="button" class="btn-remove" (click)="removePlayer(i)" *ngIf="players.length > 1">✕</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-add-player" (click)="addPlayer()" *ngIf="players.length < 20">
+        + Ajouter un joueur ({{ players.length }}/20)
+      </button>
+
+      <div class="error-banner" *ngIf="errorMsg">⚠ {{ errorMsg }}</div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-ghost" (click)="prevStep()">← Retour</button>
+        <button type="submit" class="btn-primary" (click)="submit()" [disabled]="loading">
+          {{ loading ? 'Envoi en cours...' : "✓ Envoyer l'inscription" }}
+        </button>
+      </div>
+    </div>
+
+  </form>
+</div>

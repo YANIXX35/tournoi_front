@@ -1,0 +1,74 @@
+<div class="page-hero">
+  <h1>Planning des matchs</h1>
+  <p>Retrouvez tous les matchs du tournoi, phase par phase</p>
+</div>
+
+<div class="filters-wrap">
+  <button
+    *ngFor="let phase of phases"
+    [class.active]="selectedPhase === phase"
+    (click)="filterByPhase(phase)"
+    class="filter-pill">
+    {{ phase }}
+  </button>
+</div>
+
+<div class="matches-wrap">
+  <div *ngIf="loading" class="loading-state">Chargement des matchs...</div>
+
+  <div *ngIf="!loading">
+    <p class="matches-count" *ngIf="filteredMatches.length > 0">
+      {{ filteredMatches.length }} match{{ filteredMatches.length > 1 ? 's' : '' }}
+    </p>
+
+    <div *ngIf="filteredMatches.length === 0" class="empty-state">
+      Aucun match programmé pour le moment.
+    </div>
+
+    <div class="matches-list">
+      <div
+        *ngFor="let match of filteredMatches"
+        class="match-card"
+        [class]="'status-' + match.status">
+
+        <div class="status-bar"></div>
+
+        <div class="card-inner">
+          <div class="card-top">
+            <span class="phase-badge">{{ match.phase }}</span>
+
+            <span class="status-chip" [class]="'chip-' + match.status">
+              <span *ngIf="match.status === 'ongoing'" class="live-dot"></span>
+              {{ getStatusLabel(match.status) }}
+            </span>
+          </div>
+
+          <div class="card-main">
+            <!-- Équipe 1 -->
+            <div class="team-side left">
+              <span class="team-name">{{ match.team1_name || 'À définir' }}</span>
+            </div>
+
+            <!-- Score / VS -->
+            <div class="score-block" *ngIf="match.status === 'finished'">
+              <span class="score">{{ match.score1 }}</span>
+              <span class="score-sep">—</span>
+              <span class="score">{{ match.score2 }}</span>
+            </div>
+            <div class="vs-badge" *ngIf="match.status !== 'finished'">VS</div>
+
+            <!-- Équipe 2 -->
+            <div class="team-side right">
+              <span class="team-name">{{ match.team2_name || 'À définir' }}</span>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span>📅 {{ match.match_date | date:'EEEE d MMMM yyyy':'':'fr' }}</span>
+            <span *ngIf="match.match_time">🕐 {{ match.match_time }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
