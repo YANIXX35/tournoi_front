@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
   countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
-  private tournamentDate = new Date('2024-07-01T09:00:00');
+  private tournamentDate = new Date('2026-06-13T09:00:00');
   private timer: any;
 
   constructor(private router: Router) {}
