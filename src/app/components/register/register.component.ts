@@ -119,30 +119,43 @@ export class RegisterComponent implements OnDestroy {
     const file = input.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
+    this.playerPhotoUploading[index] = true;
+    this.cdr.detectChanges();
+
+    this._resizeToBase64(file, 400, 400).then(dataUrl => {
       this.ngZone.run(() => {
-        this.playerPhotoPreviews[index] = e.target?.result as string;
+        this.playerPhotoPreviews[index] = dataUrl;
+        this.playerPhotoPaths[index] = dataUrl;
+        this.playerPhotoUploading[index] = false;
         this.cdr.detectChanges();
       });
-    };
-    reader.readAsDataURL(file);
-
-    this.playerPhotoUploading[index] = true;
-
-    this.teamService.uploadLogo(file).pipe(
-      timeout(30000),
-      catchError(() => of(null))
-    ).subscribe(res => {
+    }).catch(() => {
       this.ngZone.run(() => {
         this.playerPhotoUploading[index] = false;
-        if (res && res.logo_path) {
-          this.playerPhotoPaths[index] = res.logo_path;
-        } else {
-          this.playerPhotoPaths[index] = null;
-        }
+        this.playerPhotoPaths[index] = null;
         this.cdr.detectChanges();
       });
+    });
+  }
+
+  private _resizeToBase64(file: File, maxW: number, maxH: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = ev => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          const ratio = Math.min(maxW / img.width, maxH / img.height, 1);
+          const canvas = document.createElement('canvas');
+          canvas.width  = Math.round(img.width  * ratio);
+          canvas.height = Math.round(img.height * ratio);
+          canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.src = ev.target?.result as string;
+      };
+      reader.readAsDataURL(file);
     });
   }
 
