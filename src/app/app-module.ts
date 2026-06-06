@@ -6,6 +6,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
+import { RevealDirective } from './directives/reveal.directive';
 
 import { HomeComponent } from './components/home/home.component';
 import { MatchesComponent } from './components/matches/matches.component';
@@ -25,6 +26,7 @@ import { AdminDashboardComponent } from './components/admin/admin-dashboard.comp
     RegisterComponent,
     AdminLoginComponent,
     AdminDashboardComponent,
+    RevealDirective,
   ],
   imports: [
     BrowserModule,

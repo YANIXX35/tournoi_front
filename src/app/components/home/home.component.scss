@@ -335,9 +335,28 @@
 // STATS STRIP
 // ═══════════════════════════════════
 .home-stats {
-  background: linear-gradient(135deg, var(--navy), var(--green));
+  background: linear-gradient(135deg, var(--navy) 0%, var(--green) 60%, #163d26 100%);
   padding: 3rem 1.5rem;
   color: white;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255,255,255,0.04) 50%,
+      transparent 100%);
+    background-size: 200% 100%;
+    animation: statsSheen 4s ease-in-out infinite;
+  }
+}
+
+@keyframes statsSheen {
+  0%, 100% { background-position: -100% 0; }
+  50%       { background-position:  200% 0; }
 }
 
 .stats-inner {
@@ -351,6 +370,11 @@
 
 .stat-item {
   padding: 1rem;
+  transition: transform 0.25s ease;
+  position: relative;
+  z-index: 1;
+
+  &:hover { transform: translateY(-4px); }
 }
 
 .stat-num {

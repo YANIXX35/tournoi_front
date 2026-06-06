@@ -36,7 +36,6 @@
 // ═══════════════════════════════════
 .podium-section {
   margin-bottom: 3rem;
-  animation: fadeUp 0.5s ease both;
 }
 
 .section-label {
@@ -73,9 +72,23 @@
   align-items: center;
   text-align: center;
 
-  &.pos-1 .podium-block { height: 120px; background: linear-gradient(135deg, #FFD700, #F59E0B); }
-  &.pos-2 .podium-block { height: 90px;  background: linear-gradient(135deg, #C0C0C0, #9CA3AF); }
-  &.pos-3 .podium-block { height: 70px;  background: linear-gradient(135deg, #CD7F32, #B45309); }
+  &.pos-1 {
+    .podium-block { height: 120px; background: linear-gradient(135deg, #FFD700, #F59E0B); }
+    .podium-rank  { animation: popIn 0.5s 0.35s cubic-bezier(0.34,1.56,0.64,1) both; }
+  }
+  &.pos-2 {
+    .podium-block { height: 90px;  background: linear-gradient(135deg, #C0C0C0, #9CA3AF); }
+    .podium-rank  { animation: popIn 0.5s 0.15s cubic-bezier(0.34,1.56,0.64,1) both; }
+  }
+  &.pos-3 {
+    .podium-block { height: 70px;  background: linear-gradient(135deg, #CD7F32, #B45309); }
+    .podium-rank  { animation: popIn 0.5s 0.25s cubic-bezier(0.34,1.56,0.64,1) both; }
+  }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.4) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .podium-rank { font-size: 1.8rem; margin-bottom: 0.3rem; }

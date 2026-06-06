@@ -47,30 +47,30 @@
 
 <!-- FEATURES GRID -->
 <section class="home-features">
-  <p class="features-label">Tout ce qu'il vous faut</p>
-  <h2 class="features-title">Gérez votre tournoi</h2>
-  <p class="features-sub">Suivez chaque match, chaque équipe, en temps réel</p>
+  <p class="features-label" appReveal>Tout ce qu'il vous faut</p>
+  <h2 class="features-title" appReveal [revealDelay]="60">Gérez votre tournoi</h2>
+  <p class="features-sub" appReveal [revealDelay]="120">Suivez chaque match, chaque équipe, en temps réel</p>
 
   <div class="features-grid">
-    <div class="feature-card" routerLink="/matchs">
+    <div class="feature-card" routerLink="/matchs" appReveal [revealDelay]="80">
       <span class="feature-icon">📅</span>
       <h3>Planning</h3>
       <p>Consultez le calendrier et les horaires de tous les matchs du tournoi</p>
       <span class="feature-arrow">Voir les matchs →</span>
     </div>
-    <div class="feature-card" routerLink="/resultats">
+    <div class="feature-card" routerLink="/resultats" appReveal [revealDelay]="160">
       <span class="feature-icon">🏆</span>
       <h3>Résultats</h3>
       <p>Suivez les scores et le classement en temps réel</p>
       <span class="feature-arrow">Voir le classement →</span>
     </div>
-    <div class="feature-card" routerLink="/equipes">
+    <div class="feature-card" routerLink="/equipes" appReveal [revealDelay]="240">
       <span class="feature-icon">👥</span>
       <h3>Équipes</h3>
       <p>Découvrez toutes les équipes participantes et leurs joueurs</p>
       <span class="feature-arrow">Voir les équipes →</span>
     </div>
-    <div class="feature-card" routerLink="/inscription">
+    <div class="feature-card" routerLink="/inscription" appReveal [revealDelay]="320">
       <span class="feature-icon">✍️</span>
       <h3>Inscription</h3>
       <p>Inscrivez votre équipe avant la date limite de participation</p>
@@ -82,19 +82,19 @@
 <!-- STATS STRIP -->
 <section class="home-stats">
   <div class="stats-inner">
-    <div class="stat-item">
+    <div class="stat-item" appReveal [revealDelay]="0">
       <div class="stat-num">16</div>
       <div class="stat-desc">Équipes max</div>
     </div>
-    <div class="stat-item">
+    <div class="stat-item" appReveal [revealDelay]="80">
       <div class="stat-num">32</div>
       <div class="stat-desc">Matchs prévus</div>
     </div>
-    <div class="stat-item">
+    <div class="stat-item" appReveal [revealDelay]="160">
       <div class="stat-num">1</div>
       <div class="stat-desc">Jour de compétition</div>
     </div>
-    <div class="stat-item">
+    <div class="stat-item" appReveal [revealDelay]="240">
       <div class="stat-num">🥇</div>
       <div class="stat-desc">Un seul champion</div>
     </div>

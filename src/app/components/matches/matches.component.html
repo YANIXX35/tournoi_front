@@ -14,7 +14,25 @@
 </div>
 
 <div class="matches-wrap">
-  <div *ngIf="loading" class="loading-state">Chargement des matchs...</div>
+
+  <!-- SKELETON LOADING -->
+  <div *ngIf="loading" class="skeleton-wrap" style="padding-top:1.5rem">
+    <div *ngFor="let i of [1,2,3]" class="skeleton-card">
+      <div class="skeleton-row" style="justify-content:space-between;margin-bottom:1rem">
+        <div class="skel h-10 w-1-4"></div>
+        <div class="skel h-10 w-1-4"></div>
+      </div>
+      <div class="skeleton-row" style="justify-content:space-between;align-items:center">
+        <div class="skel h-16 w-1-3"></div>
+        <div class="skel h-44 circle"></div>
+        <div class="skel h-16 w-1-3"></div>
+      </div>
+      <div class="skeleton-row" style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border-light)">
+        <div class="skel h-10 w-1-3"></div>
+        <div class="skel h-10 w-1-4"></div>
+      </div>
+    </div>
+  </div>
 
   <div *ngIf="hasError" class="error-state">
     <span class="error-icon">⚡</span>
@@ -33,9 +51,10 @@
 
     <div class="matches-list">
       <div
-        *ngFor="let match of filteredMatches"
+        *ngFor="let match of filteredMatches; let i = index"
         class="match-card"
-        [class]="'status-' + match.status">
+        [class]="'status-' + match.status"
+        appReveal [revealDelay]="i * 50">
 
         <div class="status-bar"></div>
 

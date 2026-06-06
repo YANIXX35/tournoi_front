@@ -9,10 +9,14 @@ import { Component, signal, HostListener } from '@angular/core';
 export class App {
   protected readonly title = signal('frontend');
   menuOpen = false;
+  scrolled = false;
 
   toggleMenu(): void { this.menuOpen = !this.menuOpen; }
   closeMenu(): void  { this.menuOpen = false; }
 
   @HostListener('document:keydown.escape')
   onEscape(): void { this.menuOpen = false; }
+
+  @HostListener('window:scroll')
+  onScroll(): void { this.scrolled = window.scrollY > 48; }
 }

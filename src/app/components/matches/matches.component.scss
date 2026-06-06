@@ -84,7 +84,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
-  animation: fadeUp 0.4s ease both;
 }
 
 // ═══════════════════════════════════
@@ -106,11 +105,18 @@
 
   &.status-ongoing {
     border-color: var(--orange);
+    box-shadow: 0 0 0 1px var(--orange), 0 8px 28px rgba(249,115,22,0.15);
+    animation: ongoingPulse 2.5s ease-in-out infinite;
     .status-bar { background: var(--orange); }
   }
 
   &.status-finished .status-bar { background: var(--emerald); }
   &.status-upcoming .status-bar { background: var(--blue); }
+}
+
+@keyframes ongoingPulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--orange), 0 8px 28px rgba(249,115,22,0.15); }
+  50%       { box-shadow: 0 0 0 2px var(--orange), 0 8px 32px rgba(249,115,22,0.28); }
 }
 
 .status-bar {
