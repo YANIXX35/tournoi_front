@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { TeamService } from '../../services/team.service';
 import { Team } from '../../models/team.model';
 import { timeout, catchError } from 'rxjs/operators';
@@ -16,7 +16,11 @@ export class TeamsComponent implements OnInit {
   hasError = false;
   expandedTeam: number | null = null;
 
-  constructor(public teamService: TeamService) {}
+  constructor(
+    public teamService: TeamService,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
+  ) {}
 
   ngOnInit(): void { this.load(); }
 
@@ -27,9 +31,12 @@ export class TeamsComponent implements OnInit {
       timeout(15000),
       catchError(() => of(null))
     ).subscribe(data => {
-      this.loading = false;
-      if (!data) { this.hasError = true; return; }
-      this.teams = data;
+      this.ngZone.run(() => {
+        this.loading = false;
+        if (!data) { this.hasError = true; this.cdr.detectChanges(); return; }
+        this.teams = data;
+        this.cdr.detectChanges();
+      });
     });
   }
 

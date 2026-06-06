@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { TournamentService } from '../../services/tournament.service';
 import { Match } from '../../models/match.model';
 import { timeout, catchError } from 'rxjs/operators';
@@ -18,7 +18,11 @@ export class MatchesComponent implements OnInit {
   loading = true;
   hasError = false;
 
-  constructor(private tournamentService: TournamentService) {}
+  constructor(
+    private tournamentService: TournamentService,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
+  ) {}
 
   ngOnInit(): void { this.load(); }
 
@@ -29,11 +33,14 @@ export class MatchesComponent implements OnInit {
       timeout(15000),
       catchError(() => of(null))
     ).subscribe(data => {
-      this.loading = false;
-      if (!data) { this.hasError = true; return; }
-      this.matches = data;
-      this.phases = ['Tous', ...new Set(data.map((m: Match) => m.phase))];
-      this.filteredMatches = data;
+      this.ngZone.run(() => {
+        this.loading = false;
+        if (!data) { this.hasError = true; this.cdr.detectChanges(); return; }
+        this.matches = data;
+        this.phases = ['Tous', ...new Set(data.map((m: Match) => m.phase))];
+        this.filteredMatches = data;
+        this.cdr.detectChanges();
+      });
     });
   }
 
