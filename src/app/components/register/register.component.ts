@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { TeamService } from '../../services/team.service';
 import { timeout, finalize, catchError } from 'rxjs/operators';
@@ -25,7 +25,12 @@ export class RegisterComponent implements OnDestroy {
 
   private slowTimer: ReturnType<typeof setTimeout> | null = null;
 
-  constructor(private fb: FormBuilder, private teamService: TeamService) {
+  constructor(
+    private fb: FormBuilder,
+    private teamService: TeamService,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
+  ) {
     this.teamForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       captain_name: ['', Validators.required],
@@ -114,27 +119,35 @@ export class RegisterComponent implements OnDestroy {
       .register({ name, captain_name, phone, logo_path: this.logoPath, players })
       .pipe(
         timeout(65000),
-        // finalize : s'exécute TOUJOURS — succès, erreur ou timeout
         finalize(() => {
-          this.loading = false;
-          this.slowWarning = false;
-          if (this.slowTimer) {
-            clearTimeout(this.slowTimer);
-            this.slowTimer = null;
-          }
+          this.ngZone.run(() => {
+            this.loading = false;
+            this.slowWarning = false;
+            if (this.slowTimer) {
+              clearTimeout(this.slowTimer);
+              this.slowTimer = null;
+            }
+            this.cdr.detectChanges();
+          });
         })
       )
       .subscribe({
         next: (_res) => {
-          this.success = true;
+          this.ngZone.run(() => {
+            this.success = true;
+            this.cdr.detectChanges();
+          });
         },
         error: (err) => {
-          if (err?.name === 'TimeoutError') {
-            this.errorMsg = 'Temps de connexion dépassé. Le serveur démarre peut-être. Réessayez.';
-          } else {
-            const serverMsg = err?.error?.error || err?.error?.message || '';
-            this.errorMsg = serverMsg || 'Erreur lors de l\'inscription. Réessayez.';
-          }
+          this.ngZone.run(() => {
+            if (err?.name === 'TimeoutError') {
+              this.errorMsg = 'Temps de connexion dépassé. Le serveur démarre peut-être. Réessayez.';
+            } else {
+              const serverMsg = err?.error?.error || err?.error?.message || '';
+              this.errorMsg = serverMsg || 'Erreur lors de l\'inscription. Réessayez.';
+            }
+            this.cdr.detectChanges();
+          });
         }
       });
   }
