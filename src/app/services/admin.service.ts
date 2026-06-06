@@ -42,4 +42,27 @@ export class AdminService {
   deleteMatch(id: number): Observable<any> {
     return this.http.delete(`${API}/matches/${id}`, { headers: this.headers() });
   }
+
+  // --- Joueurs ---
+  addPlayer(teamId: number, playerName: string, photoPath: string | null): Observable<any> {
+    return this.http.post(`${API}/teams/${teamId}/players`,
+      { player_name: playerName, photo_path: photoPath },
+      { headers: this.headers() });
+  }
+
+  updatePlayer(playerId: number, playerName: string, photoPath?: string | null): Observable<any> {
+    const body: any = { player_name: playerName };
+    if (photoPath !== undefined) body.photo_path = photoPath;
+    return this.http.put(`${API}/players/${playerId}`, body, { headers: this.headers() });
+  }
+
+  deletePlayer(playerId: number): Observable<any> {
+    return this.http.delete(`${API}/players/${playerId}`, { headers: this.headers() });
+  }
+
+  uploadPlayerPhoto(file: File): Observable<{ photo_path: string }> {
+    const form = new FormData();
+    form.append('photo', file);
+    return this.http.post<{ photo_path: string }>(`${API}/uploads/photo`, form, { headers: this.headers() });
+  }
 }

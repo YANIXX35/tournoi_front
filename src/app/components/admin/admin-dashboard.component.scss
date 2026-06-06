@@ -1229,6 +1229,179 @@ $sidebar-w: 240px;
   .licence-grid { grid-template-columns: 1fr; }
 }
 
+// ═══════════════════════════════
+// LICENCE CRUD — BOUTONS ACTION
+// ═══════════════════════════════
+.lc-actions {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
+}
+
+.lc-btn {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+  white-space: nowrap;
+
+  &:hover { opacity: 0.82; transform: translateY(-1px); }
+  &:active { transform: translateY(0); }
+}
+
+.lc-btn-edit { background: #e3f2fd; color: #1565c0; }
+.lc-btn-del  { background: #ffebee; color: #c62828; }
+
+// ═══════════════════════════════
+// LICENCE CRUD — FORMULAIRE ÉDITION
+// ═══════════════════════════════
+.licence-card--editing,
+.licence-card--adding {
+  border-color: $green;
+  box-shadow: 0 0 0 2px rgba(26,71,42,0.15), 0 4px 18px rgba(0,0,0,0.10);
+}
+
+.lc-edit-body {
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.85rem;
+  flex: 1;
+}
+
+.lc-edit-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.lc-photo-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 28px;
+  background: #f0f7f2;
+  border: 1.5px dashed $green;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: #d9eed7; }
+
+  &.lc-photo-btn--uploading {
+    opacity: 0.5;
+    cursor: wait;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+  }
+}
+
+.lc-edit-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.lc-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #aaa;
+  font-weight: 600;
+}
+
+.lc-input {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border: 1.5px solid #ddd;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  background: white;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+
+  &:focus {
+    outline: none;
+    border-color: $green;
+    box-shadow: 0 0 0 2px rgba(26,71,42,0.08);
+  }
+}
+
+.lc-edit-actions {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.55rem 0.85rem;
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
+}
+
+// ═══════════════════════════════
+// LICENCE CRUD — CARTE AJOUTER
+// ═══════════════════════════════
+.licence-add-card {
+  border-radius: 14px;
+  border: 2px dashed #c8e6c9;
+  background: #f8fdf9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  min-height: 160px;
+
+  &:hover {
+    border-color: $green;
+    background: #edf7ef;
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $green;
+    outline-offset: 2px;
+  }
+}
+
+.lac-plus {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: $green;
+  color: white;
+  font-size: 1.6rem;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(26,71,42,0.25);
+  transition: transform 0.15s;
+
+  .licence-add-card:hover & { transform: rotate(90deg) scale(1.08); }
+}
+
+.lac-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: $green;
+  text-align: center;
+}
+
 // ═══════════════════════════════════════════════
 // MODAL APERÇU LICENCES
 // ═══════════════════════════════════════════════

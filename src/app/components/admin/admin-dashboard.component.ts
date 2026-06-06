@@ -33,6 +33,16 @@ export class AdminDashboardComponent implements OnInit {
   licenceTeamFilter = 'all';
   showLicencePreview = false;
 
+  // Licences — CRUD joueurs
+  editingPlayer: { id: number; name: string; photo_path: string | null; teamId: number } | null = null;
+  editPlayerPhotoPreview: string | null = null;
+  editPlayerNewPhotoPath: string | undefined = undefined;
+  addingPlayerTeamId: number | null = null;
+  newPlayerName = '';
+  newPlayerPhotoPath: string | null = null;
+  newPlayerPhotoPreview: string | null = null;
+  uploadingPhoto = false;
+
   phases = ['Poule', 'Quarts de finale', 'Demi-finale', 'Finale'];
   saveSuccess = '';
   today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -73,6 +83,13 @@ export class AdminDashboardComponent implements OnInit {
       this.sidebarOpen = false;
       this.scoringMatch = null;
       this.editingMatch = null;
+      this.editingPlayer = null;
+      this.addingPlayerTeamId = null;
+      this.newPlayerName = '';
+      this.newPlayerPhotoPath = null;
+      this.newPlayerPhotoPreview = null;
+      this.editPlayerPhotoPreview = null;
+      this.editPlayerNewPhotoPath = undefined;
       this.cdr.detectChanges();
     });
   }
@@ -193,6 +210,150 @@ export class AdminDashboardComponent implements OnInit {
         this.cdr.detectChanges();
       }),
       error: () => this.ngZone.run(() => { this.flash('Erreur sauvegarde'); this.cdr.detectChanges(); }),
+    });
+  }
+
+  // ── Joueurs CRUD ───────────────────────────────────────
+  startEditPlayer(player: AdminPlayer, teamId: number): void {
+    this.ngZone.run(() => {
+      this.editingPlayer = { id: player.id, name: player.player_name, photo_path: player.photo_path, teamId };
+      this.editPlayerPhotoPreview = null;
+      this.editPlayerNewPhotoPath = undefined;
+      this.addingPlayerTeamId = null;
+      this.newPlayerName = '';
+      this.newPlayerPhotoPath = null;
+      this.newPlayerPhotoPreview = null;
+      this.cdr.detectChanges();
+    });
+  }
+
+  cancelEditPlayer(): void {
+    this.ngZone.run(() => {
+      this.editingPlayer = null;
+      this.editPlayerPhotoPreview = null;
+      this.editPlayerNewPhotoPath = undefined;
+      this.cdr.detectChanges();
+    });
+  }
+
+  saveEditPlayer(): void {
+    if (!this.editingPlayer) return;
+    const name = this.editingPlayer.name.trim();
+    if (!name) { this.flash('Nom requis'); return; }
+    const photoPath = this.editPlayerNewPhotoPath !== undefined
+      ? this.editPlayerNewPhotoPath
+      : this.editingPlayer.photo_path ?? undefined;
+    this.adminService.updatePlayer(this.editingPlayer.id, name, photoPath).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.loadTeams();
+        this.editingPlayer = null;
+        this.editPlayerPhotoPreview = null;
+        this.editPlayerNewPhotoPath = undefined;
+        this.flash('Joueur mis à jour ✓');
+        this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur lors de la mise à jour'); this.cdr.detectChanges(); }),
+    });
+  }
+
+  confirmDeletePlayer(playerId: number): void {
+    if (!confirm('Supprimer ce joueur définitivement ?')) return;
+    this.adminService.deletePlayer(playerId).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.loadTeams();
+        this.flash('Joueur supprimé ✓');
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur lors de la suppression'); }),
+    });
+  }
+
+  startAddPlayer(teamId: number): void {
+    this.ngZone.run(() => {
+      this.addingPlayerTeamId = teamId;
+      this.newPlayerName = '';
+      this.newPlayerPhotoPath = null;
+      this.newPlayerPhotoPreview = null;
+      this.editingPlayer = null;
+      this.editPlayerPhotoPreview = null;
+      this.editPlayerNewPhotoPath = undefined;
+      this.cdr.detectChanges();
+    });
+  }
+
+  cancelAddPlayer(): void {
+    this.ngZone.run(() => {
+      this.addingPlayerTeamId = null;
+      this.newPlayerName = '';
+      this.newPlayerPhotoPath = null;
+      this.newPlayerPhotoPreview = null;
+      this.cdr.detectChanges();
+    });
+  }
+
+  saveAddPlayer(teamId: number): void {
+    const name = this.newPlayerName.trim();
+    if (!name) { this.flash('Nom requis'); return; }
+    this.adminService.addPlayer(teamId, name, this.newPlayerPhotoPath).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.loadTeams();
+        this.addingPlayerTeamId = null;
+        this.newPlayerName = '';
+        this.newPlayerPhotoPath = null;
+        this.newPlayerPhotoPreview = null;
+        this.flash('Joueur ajouté ✓');
+        this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur lors de l\'ajout'); this.cdr.detectChanges(); }),
+    });
+  }
+
+  onEditPlayerPhotoSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => this.ngZone.run(() => {
+      this.editPlayerPhotoPreview = e.target?.result as string;
+      this.cdr.detectChanges();
+    });
+    reader.readAsDataURL(file);
+    this.uploadingPhoto = true;
+    this.cdr.detectChanges();
+    this.adminService.uploadPlayerPhoto(file).subscribe({
+      next: res => this.ngZone.run(() => {
+        this.editPlayerNewPhotoPath = res.photo_path;
+        this.uploadingPhoto = false;
+        this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => {
+        this.flash('Erreur upload photo');
+        this.uploadingPhoto = false;
+        this.cdr.detectChanges();
+      }),
+    });
+  }
+
+  onNewPlayerPhotoSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => this.ngZone.run(() => {
+      this.newPlayerPhotoPreview = e.target?.result as string;
+      this.cdr.detectChanges();
+    });
+    reader.readAsDataURL(file);
+    this.uploadingPhoto = true;
+    this.cdr.detectChanges();
+    this.adminService.uploadPlayerPhoto(file).subscribe({
+      next: res => this.ngZone.run(() => {
+        this.newPlayerPhotoPath = res.photo_path;
+        this.uploadingPhoto = false;
+        this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => {
+        this.flash('Erreur upload photo');
+        this.uploadingPhoto = false;
+        this.cdr.detectChanges();
+      }),
     });
   }
 

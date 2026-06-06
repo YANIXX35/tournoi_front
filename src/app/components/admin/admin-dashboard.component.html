@@ -501,49 +501,124 @@
         </div>
 
         <!-- Cartes licences -->
-        <div class="licence-grid" *ngIf="team.players && team.players.length > 0">
-          <div class="licence-card" *ngFor="let player of team.players">
+        <div class="licence-grid">
 
-            <!-- En-tête de la carte -->
+          <!-- ── Cartes joueurs existants ── -->
+          <ng-container *ngFor="let player of team.players">
+
+            <!-- Carte normale (non en édition) -->
+            <div class="licence-card" *ngIf="editingPlayer?.id !== player.id">
+              <div class="licence-card-header">
+                <img src="fju.jpg" alt="FJU" class="licence-card-logo" />
+                <div class="licence-card-title">
+                  <span class="licence-org">Comité d'organisation</span>
+                  <span class="licence-year">LICENCE 2026</span>
+                </div>
+              </div>
+              <div class="licence-card-body">
+                <div class="licence-photo-wrap">
+                  <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)" class="licence-photo" alt="photo" loading="lazy" />
+                  <div class="licence-photo-placeholder" *ngIf="!getPhotoUrl(player.photo_path)">👤</div>
+                </div>
+                <div class="licence-info">
+                  <div class="licence-field">
+                    <span class="licence-field-label">Nom et prénom</span>
+                    <span class="licence-field-value">{{ player.player_name }}</span>
+                  </div>
+                  <div class="licence-field">
+                    <span class="licence-field-label">Équipe</span>
+                    <span class="licence-field-value">{{ team.name }}</span>
+                  </div>
+                  <div class="licence-capitaine-badge" *ngIf="isCapitaine(team, player.player_name)">
+                    ⭐ Capitaine
+                  </div>
+                </div>
+              </div>
+              <div class="licence-card-footer">
+                UNION &nbsp;·&nbsp; DISCIPLINE &nbsp;·&nbsp; TRAVAIL
+              </div>
+              <!-- Boutons CRUD -->
+              <div class="lc-actions">
+                <button class="lc-btn lc-btn-edit" (click)="startEditPlayer(player, team.id)">✏ Modifier</button>
+                <button class="lc-btn lc-btn-del" (click)="confirmDeletePlayer(player.id)">🗑 Supprimer</button>
+              </div>
+            </div>
+
+            <!-- Carte en mode édition -->
+            <div class="licence-card licence-card--editing" *ngIf="editingPlayer?.id === player.id">
+              <div class="licence-card-header">
+                <img src="fju.jpg" alt="FJU" class="licence-card-logo" />
+                <div class="licence-card-title">
+                  <span class="licence-org">Modifier</span>
+                  <span class="licence-year">JOUEUR</span>
+                </div>
+              </div>
+              <div class="lc-edit-body">
+                <div class="lc-edit-photo">
+                  <div class="licence-photo-wrap">
+                    <img *ngIf="editPlayerPhotoPreview || getPhotoUrl(editingPlayer!.photo_path)"
+                         [src]="editPlayerPhotoPreview ? editPlayerPhotoPreview : getPhotoUrl(editingPlayer!.photo_path)!"
+                         class="licence-photo" alt="photo" />
+                    <div class="licence-photo-placeholder" *ngIf="!editPlayerPhotoPreview && !getPhotoUrl(editingPlayer!.photo_path)">👤</div>
+                  </div>
+                  <label class="lc-photo-btn" [class.lc-photo-btn--uploading]="uploadingPhoto" title="Changer la photo">
+                    <span>{{ uploadingPhoto ? '…' : '📷' }}</span>
+                    <input type="file" accept="image/*" (change)="onEditPlayerPhotoSelected($event)" hidden [disabled]="uploadingPhoto" />
+                  </label>
+                </div>
+                <div class="lc-edit-fields">
+                  <label class="lc-label">Nom du joueur</label>
+                  <input class="lc-input" type="text" [(ngModel)]="editingPlayer!.name"
+                         placeholder="Nom complet" (keyup.enter)="saveEditPlayer()" />
+                </div>
+              </div>
+              <div class="lc-edit-actions">
+                <button class="btn-sm btn-green" (click)="saveEditPlayer()" [disabled]="uploadingPhoto">✓ Sauver</button>
+                <button class="btn-sm btn-gray" (click)="cancelEditPlayer()">Annuler</button>
+              </div>
+            </div>
+
+          </ng-container>
+
+          <!-- ── Carte "Ajouter un joueur" ── -->
+          <div class="licence-add-card" *ngIf="addingPlayerTeamId !== team.id" (click)="startAddPlayer(team.id)" role="button" tabindex="0">
+            <div class="lac-plus">+</div>
+            <span class="lac-label">Ajouter un joueur</span>
+          </div>
+
+          <!-- ── Formulaire nouveau joueur ── -->
+          <div class="licence-card licence-card--adding" *ngIf="addingPlayerTeamId === team.id">
             <div class="licence-card-header">
               <img src="fju.jpg" alt="FJU" class="licence-card-logo" />
               <div class="licence-card-title">
-                <span class="licence-org">Comité d'organisation</span>
-                <span class="licence-year">LICENCE 2026</span>
+                <span class="licence-org">Nouveau</span>
+                <span class="licence-year">JOUEUR</span>
               </div>
             </div>
-
-            <!-- Corps : photo + infos -->
-            <div class="licence-card-body">
-              <div class="licence-photo-wrap">
-                <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)" class="licence-photo" alt="photo" loading="lazy" />
-                <div class="licence-photo-placeholder" *ngIf="!getPhotoUrl(player.photo_path)">👤</div>
+            <div class="lc-edit-body">
+              <div class="lc-edit-photo">
+                <div class="licence-photo-wrap">
+                  <img *ngIf="newPlayerPhotoPreview" [src]="newPlayerPhotoPreview" class="licence-photo" alt="photo" />
+                  <div class="licence-photo-placeholder" *ngIf="!newPlayerPhotoPreview">👤</div>
+                </div>
+                <label class="lc-photo-btn" [class.lc-photo-btn--uploading]="uploadingPhoto" title="Ajouter une photo">
+                  <span>{{ uploadingPhoto ? '…' : '📷' }}</span>
+                  <input type="file" accept="image/*" (change)="onNewPlayerPhotoSelected($event)" hidden [disabled]="uploadingPhoto" />
+                </label>
               </div>
-              <div class="licence-info">
-                <div class="licence-field">
-                  <span class="licence-field-label">Nom et prénom</span>
-                  <span class="licence-field-value">{{ player.player_name }}</span>
-                </div>
-                <div class="licence-field">
-                  <span class="licence-field-label">Équipe</span>
-                  <span class="licence-field-value">{{ team.name }}</span>
-                </div>
-                <div class="licence-capitaine-badge" *ngIf="isCapitaine(team, player.player_name)">
-                  ⭐ Capitaine
-                </div>
+              <div class="lc-edit-fields">
+                <label class="lc-label">Nom du joueur</label>
+                <input class="lc-input" type="text" [(ngModel)]="newPlayerName"
+                       placeholder="Nom complet" (keyup.enter)="saveAddPlayer(team.id)" />
               </div>
             </div>
-
-            <!-- Pied de carte -->
-            <div class="licence-card-footer">
-              UNION &nbsp;·&nbsp; DISCIPLINE &nbsp;·&nbsp; TRAVAIL
+            <div class="lc-edit-actions">
+              <button class="btn-sm btn-green" (click)="saveAddPlayer(team.id)" [disabled]="uploadingPhoto || !newPlayerName.trim()">✓ Ajouter</button>
+              <button class="btn-sm btn-gray" (click)="cancelAddPlayer()">Annuler</button>
             </div>
           </div>
-        </div>
 
-        <div class="empty-state" *ngIf="!team.players || team.players.length === 0" style="padding: 1.5rem">
-          Aucun joueur enregistré pour cette équipe.
-        </div>
+        </div><!-- /licence-grid -->
 
       </ng-container>
 
