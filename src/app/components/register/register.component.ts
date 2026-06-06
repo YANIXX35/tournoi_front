@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { TeamService } from '../../services/team.service';
-import { timeout, catchError } from 'rxjs/operators';
+import { timeout, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 @Component({
@@ -95,34 +95,46 @@ export class RegisterComponent implements OnDestroy {
 
   submit(): void {
     if (this.loading) return;
-    const players = (this.players.value as string[]).filter(n => n.trim());
+
+    const players = (this.players.value as string[]).filter((n: string) => n.trim());
     if (players.length === 0) { this.errorMsg = 'Ajoutez au moins un joueur.'; return; }
 
     this.loading = true;
     this.errorMsg = '';
     this.slowWarning = false;
 
-    // Afficher un avertissement si ça prend plus de 8 secondes (cold start Render)
+    // Message "serveur démarre" après 8s
     this.slowTimer = setTimeout(() => {
       if (this.loading) this.slowWarning = true;
     }, 8000);
 
     const { name, captain_name, phone } = this.teamForm.value;
 
-    this.teamService.register({ name, captain_name, phone, logo_path: this.logoPath, players })
+    this.teamService
+      .register({ name, captain_name, phone, logo_path: this.logoPath, players })
       .pipe(
         timeout(65000),
-        catchError(err => of({ _error: err }))
+        // finalize : s'exécute TOUJOURS — succès, erreur ou timeout
+        finalize(() => {
+          this.loading = false;
+          this.slowWarning = false;
+          if (this.slowTimer) {
+            clearTimeout(this.slowTimer);
+            this.slowTimer = null;
+          }
+        })
       )
-      .subscribe((res: any) => {
-        this.loading = false;
-        this.slowWarning = false;
-        if (this.slowTimer) { clearTimeout(this.slowTimer); this.slowTimer = null; }
-
-        if (res?._error) {
-          this.errorMsg = res._error?.error?.error || 'Erreur lors de l\'inscription. Réessayez dans quelques secondes.';
-        } else {
+      .subscribe({
+        next: (_res) => {
           this.success = true;
+        },
+        error: (err) => {
+          if (err?.name === 'TimeoutError') {
+            this.errorMsg = 'Temps de connexion dépassé. Le serveur démarre peut-être. Réessayez.';
+          } else {
+            const serverMsg = err?.error?.error || err?.error?.message || '';
+            this.errorMsg = serverMsg || 'Erreur lors de l\'inscription. Réessayez.';
+          }
         }
       });
   }
