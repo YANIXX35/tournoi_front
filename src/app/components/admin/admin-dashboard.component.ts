@@ -168,11 +168,11 @@ export class AdminDashboardComponent implements OnInit {
 
   saveScore(): void {
     if (!this.scoringMatch) return;
-    const payload = {
+    const payload: Partial<Match> = {
       ...this.scoringMatch,
       score1: Number(this.scoreInput.score1),
       score2: Number(this.scoreInput.score2),
-      status: 'finished',
+      status: 'finished' as const,
     };
     this.adminService.updateMatch(this.scoringMatch.id, payload).subscribe({
       next: () => this.ngZone.run(() => {
