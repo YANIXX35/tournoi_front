@@ -6,9 +6,9 @@
   <!-- ═══════════ SIDEBAR ═══════════ -->
   <aside class="sidebar" [class.open]="sidebarOpen">
     <div class="sidebar-logo">
-      <span class="logo-icon">⚽</span>
+      <img src="fju.jpg" alt="FJU" class="sidebar-logo-img" />
       <div class="logo-text">
-        <span class="logo-title">Tournoi</span>
+        <span class="logo-title">Tournoi FJU</span>
         <span class="logo-sub">Église 2026</span>
       </div>
     </div>
@@ -127,33 +127,22 @@
             <button class="btn-link" (click)="activeSection = 'teams'">Voir tout →</button>
           </div>
           <div class="empty-state" *ngIf="teams.length === 0">Aucune équipe inscrite.</div>
-          <table class="data-table" *ngIf="teams.length > 0">
-            <thead>
-              <tr>
-                <th>Équipe</th>
-                <th>Capitaine</th>
-                <th>Joueurs</th>
-                <th>Statut</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let team of teams.slice(0, 5)">
-                <td class="td-name">{{ team.name }}</td>
-                <td>{{ team.captain_name }}</td>
-                <td>{{ team.players ? team.players.length : 0 }}</td>
-                <td>
-                  <span class="status-pill" [class.pill-green]="team.validated" [class.pill-orange]="!team.validated">
-                    {{ team.validated ? 'Validée' : 'En attente' }}
-                  </span>
-                </td>
-                <td>
-                  <button *ngIf="!team.validated" class="btn-sm btn-green" (click)="validateTeam(team, true)">Valider</button>
-                  <button *ngIf="team.validated" class="btn-sm btn-orange" (click)="validateTeam(team, false)">Rejeter</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <!-- Mobile cards -->
+          <div class="team-cards-mobile" *ngIf="teams.length > 0">
+            <div class="team-card-row" *ngFor="let team of teams.slice(0, 5)">
+              <div class="team-card-info">
+                <span class="team-card-name">{{ team.name }}</span>
+                <span class="team-card-meta">{{ team.captain_name }} · {{ team.players ? team.players.length : 0 }} joueurs</span>
+              </div>
+              <div class="team-card-actions">
+                <span class="status-pill" [class.pill-green]="team.validated" [class.pill-orange]="!team.validated">
+                  {{ team.validated ? 'Validée' : 'En attente' }}
+                </span>
+                <button *ngIf="!team.validated" class="btn-sm btn-green" (click)="validateTeam(team, true)">✓</button>
+                <button *ngIf="team.validated" class="btn-sm btn-orange" (click)="validateTeam(team, false)">✕</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Prochains matchs -->
@@ -189,40 +178,23 @@
           <h2>Toutes les équipes ({{ teams.length }})</h2>
         </div>
         <div class="empty-state" *ngIf="teams.length === 0">Aucune inscription reçue.</div>
-        <table class="data-table" *ngIf="teams.length > 0">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Équipe</th>
-              <th>Capitaine</th>
-              <th>Téléphone</th>
-              <th>Joueurs</th>
-              <th>Inscription</th>
-              <th>Statut</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let team of teams; let i = index">
-              <td class="td-num">{{ i + 1 }}</td>
-              <td class="td-name">{{ team.name }}</td>
-              <td>{{ team.captain_name }}</td>
-              <td>{{ team.phone }}</td>
-              <td>{{ team.players ? team.players.length : 0 }}</td>
-              <td>{{ team.created_at | date:'dd/MM/yyyy' }}</td>
-              <td>
-                <span class="status-pill" [class.pill-green]="team.validated" [class.pill-orange]="!team.validated">
-                  {{ team.validated ? 'Validée' : 'En attente' }}
-                </span>
-              </td>
-              <td class="td-actions">
-                <button *ngIf="!team.validated" class="btn-sm btn-green" (click)="validateTeam(team, true)">✓ Valider</button>
-                <button *ngIf="team.validated" class="btn-sm btn-orange" (click)="validateTeam(team, false)">Rejeter</button>
-                <button class="btn-sm btn-red" (click)="deleteTeam(team.id)">🗑</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="team-cards-mobile" *ngIf="teams.length > 0">
+          <div class="team-card-row" *ngFor="let team of teams; let i = index">
+            <div class="team-card-info">
+              <span class="team-card-name">{{ i + 1 }}. {{ team.name }}</span>
+              <span class="team-card-meta">{{ team.captain_name }} · {{ team.phone }}</span>
+              <span class="team-card-meta">{{ team.players ? team.players.length : 0 }} joueurs · {{ team.created_at | date:'dd/MM/yy' }}</span>
+            </div>
+            <div class="team-card-actions">
+              <span class="status-pill" [class.pill-green]="team.validated" [class.pill-orange]="!team.validated">
+                {{ team.validated ? 'Validée' : 'En attente' }}
+              </span>
+              <button *ngIf="!team.validated" class="btn-sm btn-green" (click)="validateTeam(team, true)">✓ Valider</button>
+              <button *ngIf="team.validated" class="btn-sm btn-orange" (click)="validateTeam(team, false)">Rejeter</button>
+              <button class="btn-sm btn-red" (click)="deleteTeam(team.id)">🗑</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -270,6 +242,7 @@
       <!-- Tableau des matchs -->
       <div class="card">
         <div class="empty-state" *ngIf="matches.length === 0">Aucun match créé.</div>
+        <div class="table-wrap">
         <table class="data-table" *ngIf="matches.length > 0">
           <thead>
             <tr>
@@ -345,6 +318,7 @@
             </ng-container>
           </tbody>
         </table>
+        </div><!-- /table-wrap -->
       </div>
     </div>
 
