@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
@@ -14,7 +14,12 @@ export class AdminLoginComponent {
   loading = false;
   error = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
+  ) {}
 
   login(): void {
     if (!this.username || !this.password) return;
@@ -22,10 +27,17 @@ export class AdminLoginComponent {
     this.error = '';
 
     this.auth.login(this.username, this.password).subscribe({
-      next: () => this.router.navigate(['/admin/dashboard']),
+      next: () => {
+        this.ngZone.run(() => {
+          this.router.navigate(['/admin/dashboard']);
+        });
+      },
       error: (err) => {
-        this.error = err.error?.error || 'Identifiants incorrects';
-        this.loading = false;
+        this.ngZone.run(() => {
+          this.error = err.error?.error || 'Identifiants incorrects';
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
       }
     });
   }
