@@ -15,11 +15,18 @@ import { Match } from '../../models/match.model';
 export class AdminDashboardComponent implements OnInit {
   teams: Team[] = [];
   matches: Match[] = [];
-  activeSection: 'overview' | 'teams' | 'matches' = 'overview';
+  activeSection: 'overview' | 'teams' | 'matches' | 'results' = 'overview';
   sidebarOpen = false;
+
+  // Matchs — création / édition complète
   editingMatch: Match | null = null;
   newMatch: Partial<Match> = {};
   showNewMatchForm = false;
+
+  // Résultats — saisie rapide du score
+  scoringMatch: Match | null = null;
+  scoreInput: { score1: number; score2: number } = { score1: 0, score2: 0 };
+
   phases = ['Poule', 'Quarts de finale', 'Demi-finale', 'Finale'];
   saveSuccess = '';
   today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -52,15 +59,17 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  setSection(section: 'overview' | 'teams' | 'matches'): void {
+  setSection(section: 'overview' | 'teams' | 'matches' | 'results'): void {
     this.ngZone.run(() => {
       this.activeSection = section;
       this.sidebarOpen = false;
+      this.scoringMatch = null;
+      this.editingMatch = null;
       this.cdr.detectChanges();
     });
   }
 
-  // --- Stats ---
+  // ── Stats ──────────────────────────────────────────────
   get totalTeams(): number { return this.teams.length; }
   get pendingTeams(): number { return this.teams.filter(t => !t.validated).length; }
   get validatedTeams(): number { return this.teams.filter(t => t.validated).length; }
@@ -68,7 +77,7 @@ export class AdminDashboardComponent implements OnInit {
   get finishedMatches(): number { return this.matches.filter(m => m.status === 'finished').length; }
   get upcomingMatches(): number { return this.matches.filter(m => m.status === 'upcoming').length; }
 
-  // --- Équipes CRUD ---
+  // ── Équipes CRUD ───────────────────────────────────────
   validateTeam(team: Team, validated: boolean): void {
     this.adminService.validateTeam(team.id, validated).subscribe({
       next: () => this.ngZone.run(() => {
@@ -88,7 +97,7 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  // --- Matchs CRUD ---
+  // ── Matchs CRUD ────────────────────────────────────────
   createMatch(): void {
     if (!this.newMatch.team1_name || !this.newMatch.team2_name) return;
     this.adminService.createMatch(this.newMatch).subscribe({
@@ -138,6 +147,48 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
+  // ── Saisie rapide du score (section Résultats) ──────────
+  openScore(match: Match): void {
+    this.ngZone.run(() => {
+      this.scoringMatch = match;
+      this.scoreInput = {
+        score1: match.score1 ?? 0,
+        score2: match.score2 ?? 0,
+      };
+      this.cdr.detectChanges();
+    });
+  }
+
+  cancelScore(): void {
+    this.ngZone.run(() => {
+      this.scoringMatch = null;
+      this.cdr.detectChanges();
+    });
+  }
+
+  saveScore(): void {
+    if (!this.scoringMatch) return;
+    const payload = {
+      ...this.scoringMatch,
+      score1: Number(this.scoreInput.score1),
+      score2: Number(this.scoreInput.score2),
+      status: 'finished',
+    };
+    this.adminService.updateMatch(this.scoringMatch.id, payload).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.scoringMatch = null;
+        this.loadMatches();
+        this.flash('Score enregistré ✓');
+        this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => {
+        this.flash('Erreur lors de la sauvegarde');
+        this.cdr.detectChanges();
+      }),
+    });
+  }
+
+  // ── Utilitaires ────────────────────────────────────────
   logout(): void {
     this.auth.logout();
     this.router.navigate(['/admin/login']);
@@ -164,5 +215,15 @@ export class AdminDashboardComponent implements OnInit {
       'Demi-finale': '#9c27b0', 'Finale': '#f44336',
     };
     return map[phase] || '#888';
+  }
+
+  getSectionTitle(): string {
+    const map: Record<string, string> = {
+      overview: "Vue d'ensemble",
+      teams: 'Gestion des équipes',
+      matches: 'Gestion des matchs',
+      results: 'Saisie des résultats',
+    };
+    return map[this.activeSection] || '';
   }
 }

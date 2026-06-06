@@ -25,6 +25,10 @@
       <a class="nav-item" [class.active]="activeSection === 'matches'" (click)="setSection('matches')">
         <span class="nav-icon">⚽</span> Matchs
       </a>
+      <a class="nav-item" [class.active]="activeSection === 'results'" (click)="setSection('results')">
+        <span class="nav-icon">🏆</span> Résultats
+        <span class="nav-badge nav-badge-green" *ngIf="upcomingMatches > 0">{{ upcomingMatches }}</span>
+      </a>
 
       <p class="nav-section-label" style="margin-top: 2rem">Général</p>
       <a class="nav-item" routerLink="/" target="_blank">
@@ -58,9 +62,7 @@
     <!-- Header -->
     <div class="main-header">
       <div>
-        <h1 class="main-title">
-          {{ activeSection === 'overview' ? 'Vue d\'ensemble' : activeSection === 'teams' ? 'Gestion des équipes' : 'Gestion des matchs' }}
-        </h1>
+        <h1 class="main-title">{{ getSectionTitle() }}</h1>
         <p class="main-subtitle">Tournoi FJU — Côte d'Ivoire 2026</p>
       </div>
       <div class="header-date">📅 {{ today }}</div>
@@ -320,6 +322,119 @@
         </table>
         </div><!-- /table-wrap -->
       </div>
+    </div>
+
+    <!-- ══════════ SECTION : RÉSULTATS ══════════ -->
+    <div *ngIf="activeSection === 'results'" class="section-content">
+
+      <div class="results-intro" *ngIf="matches.length === 0">
+        <div class="empty-state">Aucun match enregistré. Créez d'abord des matchs dans la section "Matchs".</div>
+      </div>
+
+      <!-- Matchs sans score — à renseigner -->
+      <div class="card" *ngIf="matches.length > 0" style="margin-bottom: 1.25rem">
+        <div class="card-header">
+          <h2>Matchs à renseigner <span class="count-badge">{{ upcomingMatches }}</span></h2>
+        </div>
+
+        <div class="empty-state" *ngIf="upcomingMatches === 0">
+          Tous les matchs ont un score enregistré ✓
+        </div>
+
+        <div class="score-cards" *ngIf="upcomingMatches > 0">
+          <ng-container *ngFor="let m of matches">
+            <div class="score-card" *ngIf="m.status !== 'finished'" [class.scoring]="scoringMatch?.id === m.id">
+
+              <!-- Infos du match -->
+              <div class="score-card-meta">
+                <span class="phase-tag" [style.background]="getPhaseColor(m.phase) + '22'" [style.color]="getPhaseColor(m.phase)">{{ m.phase }}</span>
+                <span class="score-card-date">{{ m.match_date | date:'dd/MM/yyyy' }} à {{ m.match_time }}</span>
+              </div>
+
+              <!-- Teams -->
+              <div class="score-card-teams">
+                <span class="score-card-team">{{ m.team1_name }}</span>
+                <span class="score-card-vs">VS</span>
+                <span class="score-card-team">{{ m.team2_name }}</span>
+              </div>
+
+              <!-- Formulaire score (quand on clique) -->
+              <div class="score-entry" *ngIf="scoringMatch?.id === m.id">
+                <div class="score-inputs">
+                  <div class="score-input-group">
+                    <label>{{ m.team1_name }}</label>
+                    <input type="number" min="0" max="99" [(ngModel)]="scoreInput.score1" class="big-score-input" />
+                  </div>
+                  <span class="score-sep">—</span>
+                  <div class="score-input-group">
+                    <label>{{ m.team2_name }}</label>
+                    <input type="number" min="0" max="99" [(ngModel)]="scoreInput.score2" class="big-score-input" />
+                  </div>
+                </div>
+                <div class="score-entry-actions">
+                  <button class="btn-primary" (click)="saveScore()">✓ Valider le score</button>
+                  <button class="btn-sm btn-gray" (click)="cancelScore()">Annuler</button>
+                </div>
+              </div>
+
+              <!-- Bouton Entrer le score -->
+              <button class="btn-enter-score" *ngIf="scoringMatch?.id !== m.id" (click)="openScore(m)">
+                ⚽ Entrer le score
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Matchs déjà scorés — résultats enregistrés -->
+      <div class="card" *ngIf="finishedMatches > 0">
+        <div class="card-header">
+          <h2>Résultats enregistrés <span class="count-badge count-badge-green">{{ finishedMatches }}</span></h2>
+        </div>
+
+        <div class="score-cards">
+          <ng-container *ngFor="let m of matches">
+            <div class="score-card score-card-done" *ngIf="m.status === 'finished'">
+
+              <div class="score-card-meta">
+                <span class="phase-tag" [style.background]="getPhaseColor(m.phase) + '22'" [style.color]="getPhaseColor(m.phase)">{{ m.phase }}</span>
+                <span class="score-card-date">{{ m.match_date | date:'dd/MM/yyyy' }}</span>
+                <span class="status-pill pill-green">Terminé</span>
+              </div>
+
+              <div class="score-card-result">
+                <span class="result-team" [class.winner]="(m.score1 ?? 0) > (m.score2 ?? 0)">{{ m.team1_name }}</span>
+                <span class="result-score">{{ m.score1 }} — {{ m.score2 }}</span>
+                <span class="result-team" [class.winner]="(m.score2 ?? 0) > (m.score1 ?? 0)">{{ m.team2_name }}</span>
+              </div>
+
+              <!-- Modifier le score si besoin -->
+              <div class="score-entry" *ngIf="scoringMatch?.id === m.id">
+                <div class="score-inputs">
+                  <div class="score-input-group">
+                    <label>{{ m.team1_name }}</label>
+                    <input type="number" min="0" max="99" [(ngModel)]="scoreInput.score1" class="big-score-input" />
+                  </div>
+                  <span class="score-sep">—</span>
+                  <div class="score-input-group">
+                    <label>{{ m.team2_name }}</label>
+                    <input type="number" min="0" max="99" [(ngModel)]="scoreInput.score2" class="big-score-input" />
+                  </div>
+                </div>
+                <div class="score-entry-actions">
+                  <button class="btn-primary" (click)="saveScore()">✓ Modifier le score</button>
+                  <button class="btn-sm btn-gray" (click)="cancelScore()">Annuler</button>
+                </div>
+              </div>
+
+              <button class="btn-sm btn-gray" *ngIf="scoringMatch?.id !== m.id" (click)="openScore(m)" style="margin-top:0.75rem">
+                ✏ Modifier
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
     </div>
 
   </main>
