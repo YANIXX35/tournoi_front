@@ -260,3 +260,45 @@
 }
 
 .loading-state, .empty-state { text-align: center; padding: 3rem 2rem; color: var(--text-muted); }
+
+// ═══════════════════════════════════
+// MOBILE
+// ═══════════════════════════════════
+@media (max-width: 768px) {
+  .results-wrap { padding: 1.5rem 1rem 3rem; }
+
+  .podium { height: 140px; gap: 0.4rem; }
+
+  .podium-item {
+    &.pos-1 .podium-block { height: 90px; }
+    &.pos-2 .podium-block { height: 68px; }
+    &.pos-3 .podium-block { height: 52px; }
+  }
+
+  .podium-rank { font-size: 1.4rem; }
+  .podium-name { font-size: 0.72rem; max-width: 80px; }
+  .podium-num  { font-size: 1.2rem; }
+
+  // Standings table — horizontal scroll
+  .table-card { overflow-x: auto; }
+  .standings-table {
+    min-width: 420px;
+    font-size: 0.8rem;
+
+    thead tr th, td { padding: 0.65rem 0.6rem; }
+  }
+
+  // Results
+  .result-body {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    padding: 0.75rem 1rem;
+
+    .result-team {
+      &.left  { text-align: center; }
+      &.right { text-align: center; }
+    }
+
+    .result-score { font-size: 1.2rem; padding: 0.2rem 0.75rem; }
+  }
+}

@@ -16,6 +16,7 @@ export class AdminDashboardComponent implements OnInit {
   teams: Team[] = [];
   matches: Match[] = [];
   activeSection: 'overview' | 'teams' | 'matches' = 'overview';
+  sidebarOpen = false;
   editingMatch: Match | null = null;
   newMatch: Partial<Match> = {};
   showNewMatchForm = false;

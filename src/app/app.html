@@ -1,5 +1,5 @@
 <nav class="navbar">
-  <a class="navbar-brand" routerLink="/">
+  <a class="navbar-brand" routerLink="/" (click)="closeMenu()">
     <div class="brand-icon">⚽</div>
     <div class="brand-text">
       <span class="brand-title">Église Universel</span>
@@ -7,14 +7,36 @@
     </div>
   </a>
 
-  <div class="navbar-links">
+  <!-- Desktop links -->
+  <div class="navbar-links desktop-links">
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Accueil</a>
     <a routerLink="/matchs" routerLinkActive="active">Matchs</a>
     <a routerLink="/resultats" routerLinkActive="active">Résultats</a>
     <a routerLink="/equipes" routerLinkActive="active">Équipes</a>
     <a routerLink="/inscription" routerLinkActive="active" class="nav-cta">✦ S'inscrire</a>
   </div>
+
+  <!-- Hamburger button (mobile only) -->
+  <button class="hamburger" (click)="toggleMenu()" [class.open]="menuOpen" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- Mobile menu overlay -->
+<div class="mobile-overlay" [class.visible]="menuOpen" (click)="closeMenu()"></div>
+
+<!-- Mobile drawer -->
+<div class="mobile-menu" [class.open]="menuOpen">
+  <div class="mobile-menu-header">
+    <span>⚽ Menu</span>
+    <button class="close-menu" (click)="closeMenu()">✕</button>
+  </div>
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="closeMenu()">🏠 Accueil</a>
+  <a routerLink="/matchs" routerLinkActive="active" (click)="closeMenu()">📅 Matchs</a>
+  <a routerLink="/resultats" routerLinkActive="active" (click)="closeMenu()">🏆 Résultats</a>
+  <a routerLink="/equipes" routerLinkActive="active" (click)="closeMenu()">👥 Équipes</a>
+  <a routerLink="/inscription" routerLinkActive="active" (click)="closeMenu()" class="mobile-cta">✦ S'inscrire — Gratuit</a>
+</div>
 
 <main>
   <router-outlet></router-outlet>

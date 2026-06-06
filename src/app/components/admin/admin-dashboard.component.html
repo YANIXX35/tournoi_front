@@ -1,25 +1,28 @@
 <div class="dashboard-layout">
 
+  <!-- Mobile sidebar overlay -->
+  <div class="sidebar-overlay" [class.visible]="sidebarOpen" (click)="sidebarOpen = false"></div>
+
   <!-- ═══════════ SIDEBAR ═══════════ -->
-  <aside class="sidebar">
+  <aside class="sidebar" [class.open]="sidebarOpen">
     <div class="sidebar-logo">
       <span class="logo-icon">⚽</span>
       <div class="logo-text">
         <span class="logo-title">Tournoi</span>
-        <span class="logo-sub">Église 2024</span>
+        <span class="logo-sub">Église 2026</span>
       </div>
     </div>
 
     <nav class="sidebar-nav">
       <p class="nav-section-label">Menu</p>
-      <a class="nav-item" [class.active]="activeSection === 'overview'" (click)="activeSection = 'overview'">
+      <a class="nav-item" [class.active]="activeSection === 'overview'" (click)="activeSection = 'overview'; sidebarOpen = false">
         <span class="nav-icon">📊</span> Vue d'ensemble
       </a>
-      <a class="nav-item" [class.active]="activeSection === 'teams'" (click)="activeSection = 'teams'">
+      <a class="nav-item" [class.active]="activeSection === 'teams'" (click)="activeSection = 'teams'; sidebarOpen = false">
         <span class="nav-icon">👥</span> Équipes
         <span class="nav-badge" *ngIf="pendingTeams > 0">{{ pendingTeams }}</span>
       </a>
-      <a class="nav-item" [class.active]="activeSection === 'matches'" (click)="activeSection = 'matches'">
+      <a class="nav-item" [class.active]="activeSection === 'matches'" (click)="activeSection = 'matches'; sidebarOpen = false">
         <span class="nav-icon">⚽</span> Matchs
       </a>
 
@@ -46,6 +49,11 @@
 
     <!-- Toast notification -->
     <div class="toast" *ngIf="saveSuccess">{{ saveSuccess }}</div>
+
+    <!-- Mobile menu toggle -->
+    <button class="mobile-sidebar-toggle" (click)="sidebarOpen = true">
+      ☰ Menu
+    </button>
 
     <!-- Header -->
     <div class="main-header">

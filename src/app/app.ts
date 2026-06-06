@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +8,11 @@ import { Component, signal } from '@angular/core';
 })
 export class App {
   protected readonly title = signal('frontend');
+  menuOpen = false;
+
+  toggleMenu(): void { this.menuOpen = !this.menuOpen; }
+  closeMenu(): void  { this.menuOpen = false; }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void { this.menuOpen = false; }
 }
