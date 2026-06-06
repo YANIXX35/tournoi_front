@@ -31,6 +31,7 @@ export class TeamService {
 
   getLogoUrl(path: string | null): string {
     if (!path) return '';
+    if (path.startsWith('data:')) return path;
     return `${environment.apiUrl}/uploads/${path}`;
   }
 }

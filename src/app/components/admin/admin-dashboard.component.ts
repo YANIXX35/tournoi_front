@@ -33,6 +33,9 @@ export class AdminDashboardComponent implements OnInit {
   licenceTeamFilter = 'all';
   showLicencePreview = false;
 
+  // Photos — suivi des URLs cassées pour afficher le placeholder à la place
+  private brokenPhotos = new Set<string>();
+
   // Licences — CRUD joueurs
   editingPlayer: { id: number; name: string; photo_path: string | null; teamId: number } | null = null;
   editPlayerPhotoPreview: string | null = null;
@@ -113,7 +116,18 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   getPhotoUrl(path: string | null | undefined): string | null {
-    return path ? `${this.UPLOADS}/${path}` : null;
+    if (!path) return null;
+    if (this.brokenPhotos.has(path)) return null;
+    if (path.startsWith('data:')) return path;
+    return `${this.UPLOADS}/${path}`;
+  }
+
+  onPhotoError(path: string | null | undefined): void {
+    if (!path) return;
+    this.ngZone.run(() => {
+      this.brokenPhotos.add(path);
+      this.cdr.detectChanges();
+    });
   }
 
   isCapitaine(team: Team, playerName: string): boolean {

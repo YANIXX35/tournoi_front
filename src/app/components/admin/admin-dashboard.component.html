@@ -489,7 +489,7 @@
 
         <!-- En-tête équipe -->
         <div class="team-licence-header">
-          <img *ngIf="getPhotoUrl(team.logo_path)" [src]="getPhotoUrl(team.logo_path)" class="team-licence-logo" alt="logo" loading="lazy" />
+          <img *ngIf="getPhotoUrl(team.logo_path)" [src]="getPhotoUrl(team.logo_path)!" class="team-licence-logo" alt="logo" loading="lazy" (error)="onPhotoError(team.logo_path)" />
           <div class="team-licence-logo-placeholder" *ngIf="!getPhotoUrl(team.logo_path)">⚽</div>
           <div>
             <h3 class="team-licence-name">{{ team.name }}</h3>
@@ -517,7 +517,7 @@
               </div>
               <div class="licence-card-body">
                 <div class="licence-photo-wrap">
-                  <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)" class="licence-photo" alt="photo" loading="lazy" />
+                  <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)!" class="licence-photo" alt="photo" loading="lazy" (error)="onPhotoError(player.photo_path)" />
                   <div class="licence-photo-placeholder" *ngIf="!getPhotoUrl(player.photo_path)">👤</div>
                 </div>
                 <div class="licence-info">
@@ -558,7 +558,8 @@
                   <div class="licence-photo-wrap">
                     <img *ngIf="editPlayerPhotoPreview || getPhotoUrl(editingPlayer!.photo_path)"
                          [src]="editPlayerPhotoPreview ? editPlayerPhotoPreview : getPhotoUrl(editingPlayer!.photo_path)!"
-                         class="licence-photo" alt="photo" />
+                         class="licence-photo" alt="photo"
+                         (error)="onPhotoError(editingPlayer!.photo_path)" />
                     <div class="licence-photo-placeholder" *ngIf="!editPlayerPhotoPreview && !getPhotoUrl(editingPlayer!.photo_path)">👤</div>
                   </div>
                   <label class="lc-photo-btn" [class.lc-photo-btn--uploading]="uploadingPhoto" title="Changer la photo">
@@ -668,7 +669,7 @@
 
           <!-- En-tête équipe -->
           <div class="lp-team-header">
-            <img *ngIf="getPhotoUrl(team.logo_path)" [src]="getPhotoUrl(team.logo_path)" class="lp-team-logo" alt="logo" />
+            <img *ngIf="getPhotoUrl(team.logo_path)" [src]="getPhotoUrl(team.logo_path)!" class="lp-team-logo" alt="logo" (error)="onPhotoError(team.logo_path)" />
             <span *ngIf="!getPhotoUrl(team.logo_path)" class="lp-team-logo-ph">⚽</span>
             <div class="lp-team-info">
               <strong>{{ team.name }}</strong>
@@ -698,9 +699,10 @@
                 <div class="lp-photo-wrap">
                   <img
                     *ngIf="getPhotoUrl(player.photo_path)"
-                    [src]="getPhotoUrl(player.photo_path)"
+                    [src]="getPhotoUrl(player.photo_path)!"
                     class="lp-player-photo"
-                    alt="photo" />
+                    alt="photo"
+                    (error)="onPhotoError(player.photo_path)" />
                   <div *ngIf="!getPhotoUrl(player.photo_path)" class="lp-photo-ph">👤</div>
                 </div>
 
