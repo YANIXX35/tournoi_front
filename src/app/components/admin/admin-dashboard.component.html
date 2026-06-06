@@ -196,9 +196,9 @@
         </div>
         <div class="empty-state" *ngIf="teams.length === 0">Aucune inscription reçue.</div>
         <div class="team-cards-mobile" *ngIf="teams.length > 0">
-          <div class="team-card-row" *ngFor="let team of teams; let i = index">
+          <div class="team-card-row" *ngFor="let team of pagedTeams; let i = index">
             <div class="team-card-info">
-              <span class="team-card-name">{{ i + 1 }}. {{ team.name }}</span>
+              <span class="team-card-name">{{ (teamsPage - 1) * teamsPageSize + i + 1 }}. {{ team.name }}</span>
               <span class="team-card-meta">{{ team.captain_name }} · {{ team.phone }}</span>
               <span class="team-card-meta">{{ team.players ? team.players.length : 0 }} joueurs · {{ team.created_at | date:'dd/MM/yy' }}</span>
             </div>
@@ -210,6 +210,12 @@
               <button *ngIf="team.validated" class="btn-sm btn-orange" (click)="validateTeam(team, false)">Rejeter</button>
               <button class="btn-sm btn-red" (click)="deleteTeam(team.id)">🗑</button>
             </div>
+          </div>
+          <!-- Pagination -->
+          <div class="pagination-bar" *ngIf="teamsTotalPages > 1">
+            <button class="pg-btn" (click)="prevTeamsPage()" [disabled]="teamsPage === 1">‹</button>
+            <span class="pg-info">{{ teamsPage }} / {{ teamsTotalPages }}</span>
+            <button class="pg-btn" (click)="nextTeamsPage()" [disabled]="teamsPage === teamsTotalPages">›</button>
           </div>
         </div>
       </div>
@@ -256,11 +262,26 @@
         </div>
       </div>
 
+      <!-- Recherche matchs -->
+      <div class="match-search-bar">
+        <input
+          type="text"
+          [(ngModel)]="matchSearchQuery"
+          placeholder="Rechercher une équipe..."
+          class="match-search-input"
+        />
+        <span class="match-search-count" *ngIf="matchSearchQuery">
+          {{ filteredMatches.length }} résultat(s)
+        </span>
+      </div>
+
       <!-- Tableau des matchs -->
       <div class="card">
-        <div class="empty-state" *ngIf="matches.length === 0">Aucun match créé.</div>
+        <div class="empty-state" *ngIf="filteredMatches.length === 0">
+          {{ matches.length === 0 ? 'Aucun match créé.' : 'Aucun match trouvé pour "' + matchSearchQuery + '".' }}
+        </div>
         <div class="table-wrap">
-        <table class="data-table" *ngIf="matches.length > 0">
+        <table class="data-table" *ngIf="filteredMatches.length > 0">
           <thead>
             <tr>
               <th>#</th>
@@ -275,7 +296,7 @@
             </tr>
           </thead>
           <tbody>
-            <ng-container *ngFor="let match of matches; let i = index">
+            <ng-container *ngFor="let match of filteredMatches; let i = index">
               <!-- Ligne affichage normal -->
               <tr *ngIf="editingMatch?.id !== match.id">
                 <td class="td-num">{{ i + 1 }}</td>

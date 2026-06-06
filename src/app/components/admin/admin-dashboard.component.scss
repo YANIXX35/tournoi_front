@@ -1818,3 +1818,59 @@ $sidebar-w: 240px;
 @media (max-width: 400px) {
   .lp-cards-grid { grid-template-columns: 1fr; }
 }
+
+// ── Pagination équipes ─────────────────────────────────────────────────────
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.85rem 0 0.25rem;
+
+  .pg-btn {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.15);
+    color: #fff;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background .2s;
+    &:hover:not(:disabled) { background: rgba(34,197,94,.15); border-color: var(--emerald); }
+    &:disabled { opacity: .35; cursor: default; }
+  }
+
+  .pg-info {
+    font-size: .85rem;
+    color: rgba(255,255,255,.6);
+    min-width: 60px;
+    text-align: center;
+  }
+}
+
+// ── Recherche matchs ────────────────────────────────────────────────────────
+.match-search-bar {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 1rem;
+
+  .match-search-input {
+    flex: 1;
+    max-width: 340px;
+    padding: .5rem .85rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.06);
+    color: #fff;
+    font-size: .9rem;
+    &::placeholder { color: rgba(255,255,255,.4); }
+    &:focus { outline: none; border-color: var(--emerald); }
+  }
+
+  .match-search-count {
+    font-size: .82rem;
+    color: rgba(255,255,255,.5);
+  }
+}

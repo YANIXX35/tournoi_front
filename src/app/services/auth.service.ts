@@ -19,6 +19,12 @@ export class AuthService {
     );
   }
 
+  refresh(): Observable<{ token: string }> {
+    return this.http.post<{ token: string }>(`${API}/admin/refresh`, {}, { headers: this.getAuthHeaders() }).pipe(
+      tap(res => localStorage.setItem('admin_token', res.token))
+    );
+  }
+
   logout(): void {
     localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_username');
@@ -38,5 +44,18 @@ export class AuthService {
 
   getAuthHeaders(): { Authorization: string } {
     return { Authorization: `Bearer ${this.getToken()}` };
+  }
+
+  /** Retourne les minutes restantes avant expiration (0 si invalide/expiré). */
+  getTokenRemainingMinutes(): number {
+    const token = this.getToken();
+    if (!token) return 0;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp: number = payload.exp ?? 0;
+      return Math.max(0, Math.floor((exp * 1000 - Date.now()) / 60000));
+    } catch {
+      return 0;
+    }
   }
 }

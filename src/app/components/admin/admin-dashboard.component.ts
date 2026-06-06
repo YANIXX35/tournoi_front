@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { TournamentService } from '../../services/tournament.service';
@@ -14,7 +14,7 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./admin-dashboard.component.scss'],
   standalone: false,
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit, OnDestroy {
   teams: Team[] = [];
   matches: Match[] = [];
   activeSection: 'overview' | 'teams' | 'matches' | 'results' | 'licences' = 'overview';
@@ -46,6 +46,15 @@ export class AdminDashboardComponent implements OnInit {
   newPlayerPhotoPreview: string | null = null;
   uploadingPhoto = false;
 
+  // Recherche matchs
+  matchSearchQuery = '';
+
+  // Pagination équipes
+  teamsPage = 1;
+  readonly teamsPageSize = 10;
+
+  private refreshInterval: ReturnType<typeof setInterval> | null = null;
+
   phases = ['Poule', 'Quarts de finale', 'Demi-finale', 'Finale'];
   saveSuccess = '';
   today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -64,11 +73,21 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.loadTeams();
     this.loadMatches();
+    // Rafraîchit le token toutes les 2h si la session est encore valide
+    this.refreshInterval = setInterval(() => {
+      if (this.auth.isLoggedIn()) {
+        this.auth.refresh().subscribe({ error: () => {} });
+      }
+    }, 2 * 60 * 60 * 1000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshInterval) clearInterval(this.refreshInterval);
   }
 
   loadTeams(): void {
     this.adminService.getTeams().subscribe({
-      next: d => this.ngZone.run(() => { this.teams = d; this.cdr.detectChanges(); }),
+      next: d => this.ngZone.run(() => { this.teams = d; this.teamsPage = 1; this.cdr.detectChanges(); }),
       error: () => this.ngZone.run(() => { this.flash('Erreur chargement équipes'); this.cdr.detectChanges(); }),
     });
   }
@@ -96,6 +115,29 @@ export class AdminDashboardComponent implements OnInit {
       this.cdr.detectChanges();
     });
   }
+
+  // ── Recherche matchs ───────────────────────────────────
+  get filteredMatches(): Match[] {
+    const q = this.matchSearchQuery.trim().toLowerCase();
+    if (!q) return this.matches;
+    return this.matches.filter(m =>
+      m.team1_name?.toLowerCase().includes(q) ||
+      m.team2_name?.toLowerCase().includes(q)
+    );
+  }
+
+  // ── Pagination équipes ─────────────────────────────────
+  get teamsTotalPages(): number {
+    return Math.max(1, Math.ceil(this.teams.length / this.teamsPageSize));
+  }
+
+  get pagedTeams(): Team[] {
+    const start = (this.teamsPage - 1) * this.teamsPageSize;
+    return this.teams.slice(start, start + this.teamsPageSize);
+  }
+
+  prevTeamsPage(): void { if (this.teamsPage > 1) this.teamsPage--; }
+  nextTeamsPage(): void { if (this.teamsPage < this.teamsTotalPages) this.teamsPage++; }
 
   // ── Stats ──────────────────────────────────────────────
   get totalTeams(): number { return this.teams.length; }
@@ -164,7 +206,12 @@ export class AdminDashboardComponent implements OnInit {
         this.showNewMatchForm = false;
         this.flash('Match créé ✓');
         this.cdr.detectChanges();
-      })
+      }),
+      error: (err) => this.ngZone.run(() => {
+        const msg = err?.error?.error || 'Erreur lors de la création';
+        this.flash(msg);
+        this.cdr.detectChanges();
+      }),
     });
   }
 
