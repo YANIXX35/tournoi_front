@@ -441,3 +441,40 @@
   .stat-num { font-size: 1.8rem; }
   .stat-desc { font-size: 0.75rem; }
 }
+
+@media (max-width: 480px) {
+  .home-hero {
+    padding: 1.25rem 0.85rem 4.5rem;
+  }
+
+  .hero-badge { font-size: 0.68rem; margin-bottom: 1rem; }
+
+  .hero-title { font-size: clamp(1.7rem, 8vw, 2.2rem); }
+
+  .hero-subtitle { font-size: 0.9rem; }
+
+  .hero-meta {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    span { font-size: 0.72rem; padding: 0.25rem 0.55rem; }
+  }
+
+  .countdown {
+    gap: 0.35rem;
+  }
+
+  .countdown-item {
+    min-width: 60px;
+    padding: 0.7rem 0.5rem;
+  }
+
+  .count { font-size: 1.7rem; }
+
+  .features-grid { gap: 0.75rem; }
+
+  .feature-card { padding: 1.25rem 1rem; }
+
+  .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+
+  .stat-num { font-size: 1.6rem; }
+}

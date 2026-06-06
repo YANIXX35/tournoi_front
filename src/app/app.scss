@@ -317,3 +317,12 @@ main {
     margin-top: 2rem;
   }
 }
+
+@media (max-width: 400px) {
+  .navbar { padding: 0 0.75rem; }
+
+  .brand-logo { width: 34px !important; height: 34px !important; }
+
+  .brand-text .brand-title { font-size: 0.82rem; }
+  .brand-text .brand-sub   { display: none; }
+}

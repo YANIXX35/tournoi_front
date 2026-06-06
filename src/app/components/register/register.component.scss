@@ -617,6 +617,9 @@
 
   .player-row { gap: 0.4rem; }
 
+  .phone-input-group { gap: 0.4rem; }
+  .dial-select { min-width: 90px; font-size: 0.85rem; padding: 0.75rem 0.5rem; }
+
   .form-actions {
     flex-direction: column-reverse;
     gap: 0.5rem;
@@ -630,5 +633,28 @@
   .success-card {
     padding: 2.5rem 1.25rem;
     .btn-home { display: block; }
+  }
+}
+
+@media (max-width: 480px) {
+  .register-wrap { padding: 1rem 0.75rem 2.5rem; }
+
+  .form-card { padding: 1rem 0.85rem; }
+
+  .form-card-title { font-size: 1.05rem; }
+
+  .phone-input-group { flex-direction: column; gap: 0.5rem; }
+  .dial-select { width: 100%; }
+  .phone-local-input { width: 100%; }
+
+  .logo-drop-zone { width: 110px; height: 110px; }
+
+  .player-row { gap: 0.3rem; }
+  .player-num-badge { width: 24px; height: 24px; font-size: 0.68rem; }
+  .player-photo-btn { width: 36px; height: 36px; }
+
+  .btn-primary, .btn-ghost {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
   }
 }

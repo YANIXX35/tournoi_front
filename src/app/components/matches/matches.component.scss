@@ -280,3 +280,32 @@
 
   .card-footer { flex-direction: column; gap: 0.35rem; }
 }
+
+@media (max-width: 480px) {
+  .filters-wrap {
+    padding: 1rem 0.75rem 0;
+    gap: 0.3rem;
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.5rem;
+  }
+
+  .filter-pill {
+    flex-shrink: 0;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .matches-wrap { padding: 1rem 0.75rem 2rem; }
+
+  .card-inner { padding: 0.85rem 0.85rem; }
+
+  .team-name { font-size: 0.82rem; }
+
+  .score { font-size: 1.4rem; min-width: 1.4rem; }
+
+  .score-sep { font-size: 1.2rem; }
+
+  .vs-badge { width: 32px; height: 32px; font-size: 0.6rem; }
+}
