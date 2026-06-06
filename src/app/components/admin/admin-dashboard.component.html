@@ -455,15 +455,26 @@
     <!-- ══════════ SECTION : LICENCES ══════════ -->
     <div *ngIf="activeSection === 'licences'" class="section-content">
 
-      <!-- Filtre par équipe -->
+      <!-- Filtre par équipe + exports -->
       <div class="card" style="margin-bottom: 1.25rem">
         <div class="card-header">
           <h2>Licences joueurs — {{ totalPlayers }} joueur{{ totalPlayers > 1 ? 's' : '' }}</h2>
-          <div class="licence-filter">
+          <div class="licence-header-actions">
             <select [(ngModel)]="licenceTeamFilter" class="filter-select">
               <option value="all">Toutes les équipes</option>
               <option *ngFor="let t of teams" [value]="t.id">{{ t.name }}</option>
             </select>
+            <div class="export-btns">
+              <button class="btn-export btn-export-excel" (click)="exportLicencesExcel()" title="Télécharger la liste des licences en Excel">
+                📊 Excel
+              </button>
+              <button class="btn-export btn-export-word" (click)="exportLicencesCsv()" title="Télécharger la liste des licences en CSV">
+                📋 CSV
+              </button>
+              <button class="btn-export btn-export-pdf" (click)="exportLicencesPdf()" title="Télécharger la liste des licences en PDF">
+                📄 PDF
+              </button>
+            </div>
           </div>
         </div>
       </div>

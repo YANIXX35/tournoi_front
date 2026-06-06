@@ -1004,6 +1004,13 @@ $sidebar-w: 240px;
 // ═══════════════════════════════
 // SECTION LICENCES
 // ═══════════════════════════════
+.licence-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .licence-filter { display: flex; align-items: center; }
 
 .filter-select {
