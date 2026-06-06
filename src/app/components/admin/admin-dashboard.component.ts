@@ -29,8 +29,9 @@ export class AdminDashboardComponent implements OnInit {
   scoringMatch: Match | null = null;
   scoreInput: { score1: number; score2: number } = { score1: 0, score2: 0 };
 
-  // Licences — filtre par équipe
+  // Licences — filtre par équipe + aperçu modal
   licenceTeamFilter = 'all';
+  showLicencePreview = false;
 
   phases = ['Poule', 'Quarts de finale', 'Demi-finale', 'Finale'];
   saveSuccess = '';
@@ -244,69 +245,22 @@ export class AdminDashboardComponent implements OnInit {
     this.flash('CSV licences téléchargé ✓');
   }
 
-  async exportLicencesPdf(): Promise<void> {
-    this.flash('Génération PDF licences...');
-    const { jsPDF } = await import('jspdf');
-    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
-    const W = 210;
-    const M = 14;
-    let y = 18;
-
-    doc.setFontSize(16);
-    doc.setTextColor(26, 71, 42);
-    doc.text('Tournoi FJU — Licences joueurs 2026', M, y);
-    y += 7;
-    doc.setFontSize(9);
-    doc.setTextColor(140, 140, 140);
-    const label = this.licenceTeamFilter === 'all'
-      ? `Toutes les équipes · ${this.totalPlayers} joueur(s)`
-      : `${this.filteredTeamsForLicences[0]?.name ?? ''} · ${this.filteredTeamsForLicences[0]?.players.length ?? 0} joueur(s)`;
-    doc.text(`${label} · Exporté le ${new Date().toLocaleDateString('fr-FR')}`, M, y);
-    y += 8;
-
-    this.filteredTeamsForLicences.forEach((team, tIdx) => {
-      if (y > 260) { doc.addPage(); y = 18; }
-
-      doc.setFillColor(26, 71, 42);
-      doc.rect(M, y, W - 2 * M, 7.5, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(10);
-      doc.text(`${team.name}`, M + 2.5, y + 5);
-      doc.setFontSize(8);
-      const st = team.validated ? 'Validée ✓' : 'En attente';
-      doc.text(st, W - M - 2.5 - doc.getTextWidth(st), y + 5);
-      y += 8;
-
-      doc.setFillColor(245, 245, 245);
-      doc.rect(M, y, W - 2 * M, 5.5, 'F');
-      doc.setTextColor(80, 80, 80);
-      doc.setFontSize(8);
-      doc.text(`Capitaine : ${team.captain_name}   ·   ${team.players.length} joueur(s)`, M + 2.5, y + 3.8);
-      y += 6;
-
-      team.players.forEach((player, pi) => {
-        if (y > 275) { doc.addPage(); y = 18; }
-        const isCap = this.isCapitaine(team, player.player_name);
-        doc.setFillColor(pi % 2 === 0 ? 255 : 249, pi % 2 === 0 ? 255 : 252, pi % 2 === 0 ? 255 : 249);
-        doc.setDrawColor(220, 220, 220);
-        doc.rect(M, y, W - 2 * M, 5.5, 'FD');
-        doc.setTextColor(120, 120, 120);
-        doc.setFontSize(8);
-        doc.text(String(pi + 1), M + 3, y + 3.8);
-        doc.setTextColor(isCap ? 26 : 40, isCap ? 71 : 40, isCap ? 42 : 40);
-        doc.setFont(undefined as any, isCap ? 'bold' : 'normal');
-        doc.text(player.player_name + (isCap ? ' ★' : ''), M + 11, y + 3.8);
-        doc.setFont(undefined as any, 'normal');
-        y += 5.5;
-      });
-      y += 5;
+  exportLicencesPdf(): void {
+    this.ngZone.run(() => {
+      this.showLicencePreview = true;
+      this.cdr.detectChanges();
     });
+  }
 
-    const filename = this.licenceTeamFilter === 'all'
-      ? 'licences-tournoi-fju-2026.pdf'
-      : `licences-${this.filteredTeamsForLicences[0]?.name.replace(/\s+/g, '-') ?? 'equipe'}.pdf`;
-    doc.save(filename);
-    this.flash('PDF licences téléchargé ✓');
+  closeLicencePreview(): void {
+    this.ngZone.run(() => {
+      this.showLicencePreview = false;
+      this.cdr.detectChanges();
+    });
+  }
+
+  printLicences(): void {
+    setTimeout(() => window.print(), 200);
   }
 
   // ── Exports Équipes ────────────────────────────────────

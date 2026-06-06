@@ -550,4 +550,115 @@
     </div>
 
   </main>
+
+  <!-- ══════════ MODAL APERÇU LICENCES ══════════ -->
+  <div class="lp-overlay" *ngIf="showLicencePreview" (click)="closeLicencePreview()">
+    <div class="lp-modal" (click)="$event.stopPropagation()">
+
+      <!-- En-tête modal -->
+      <div class="lp-modal-header">
+        <div class="lp-modal-title">
+          <span class="lp-modal-icon">🪪</span>
+          <div>
+            <h2>Aperçu des licences</h2>
+            <p>
+              {{ licenceTeamFilter === 'all' ? 'Toutes les équipes' : filteredTeamsForLicences[0]?.name }}
+              &nbsp;·&nbsp;
+              {{ filteredTeamsForLicences.length }} équipe(s)
+            </p>
+          </div>
+        </div>
+        <div class="lp-modal-actions">
+          <button class="lp-btn-print" (click)="printLicences()">
+            🖨&nbsp; Télécharger / Imprimer
+          </button>
+          <button class="lp-btn-close" (click)="closeLicencePreview()">✕</button>
+        </div>
+      </div>
+
+      <!-- Zone imprimable -->
+      <div id="licence-print-area" class="lp-body">
+
+        <!-- Titre du document -->
+        <div class="lp-doc-title">
+          <img src="fju.jpg" class="lp-doc-logo" alt="FJU" />
+          <div>
+            <strong>Tournoi FJU — Côte d'Ivoire 2026</strong>
+            <span>Licences joueurs · Édition 2026 · {{ today }}</span>
+          </div>
+        </div>
+
+        <!-- Licences par équipe -->
+        <ng-container *ngFor="let team of filteredTeamsForLicences">
+
+          <!-- En-tête équipe -->
+          <div class="lp-team-header">
+            <img *ngIf="getPhotoUrl(team.logo_path)" [src]="getPhotoUrl(team.logo_path)" class="lp-team-logo" alt="logo" />
+            <span *ngIf="!getPhotoUrl(team.logo_path)" class="lp-team-logo-ph">⚽</span>
+            <div class="lp-team-info">
+              <strong>{{ team.name }}</strong>
+              <span>Cap. {{ team.captain_name }} &nbsp;·&nbsp; {{ team.players.length }} joueur(s)</span>
+            </div>
+            <span class="lp-team-badge" [class.lp-badge-ok]="team.validated">
+              {{ team.validated ? '✓ Validée' : 'En attente' }}
+            </span>
+          </div>
+
+          <!-- Grille de cartes licence -->
+          <div class="lp-cards-grid" *ngIf="team.players && team.players.length > 0">
+            <div class="lp-card" *ngFor="let player of team.players">
+
+              <!-- En-tête carte : dégradé vert + logo FJU -->
+              <div class="lp-card-hd">
+                <img src="fju.jpg" class="lp-card-logo" alt="FJU" />
+                <div class="lp-card-hd-text">
+                  <span class="lp-card-org">Comité d'organisation</span>
+                  <span class="lp-card-yr">LICENCE 2026</span>
+                </div>
+              </div>
+
+              <!-- Corps carte : photo + infos -->
+              <div class="lp-card-bd">
+                <!-- Photo joueur -->
+                <div class="lp-photo-wrap">
+                  <img
+                    *ngIf="getPhotoUrl(player.photo_path)"
+                    [src]="getPhotoUrl(player.photo_path)"
+                    class="lp-player-photo"
+                    alt="photo" />
+                  <div *ngIf="!getPhotoUrl(player.photo_path)" class="lp-photo-ph">👤</div>
+                </div>
+
+                <!-- Infos joueur -->
+                <div class="lp-card-info">
+                  <div class="lp-field">
+                    <span class="lp-flabel">Nom et prénom</span>
+                    <span class="lp-fvalue">{{ player.player_name }}</span>
+                  </div>
+                  <div class="lp-field">
+                    <span class="lp-flabel">Équipe</span>
+                    <span class="lp-fvalue lp-fteam">{{ team.name }}</span>
+                  </div>
+                  <div class="lp-cap-badge" *ngIf="isCapitaine(team, player.player_name)">
+                    ⭐ Capitaine
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pied de carte : bleu -->
+              <div class="lp-card-ft">UNION &nbsp;·&nbsp; DISCIPLINE &nbsp;·&nbsp; TRAVAIL</div>
+
+            </div>
+          </div>
+
+          <div class="lp-empty-team" *ngIf="!team.players || team.players.length === 0">
+            Aucun joueur enregistré pour cette équipe.
+          </div>
+
+        </ng-container>
+
+      </div><!-- /lp-body -->
+    </div><!-- /lp-modal -->
+  </div><!-- /lp-overlay -->
+
 </div>

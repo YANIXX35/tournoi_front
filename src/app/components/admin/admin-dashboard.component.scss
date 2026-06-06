@@ -1228,3 +1228,420 @@ $sidebar-w: 240px;
 @media (max-width: 480px) {
   .licence-grid { grid-template-columns: 1fr; }
 }
+
+// ═══════════════════════════════════════════════
+// MODAL APERÇU LICENCES
+// ═══════════════════════════════════════════════
+.lp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 35, 0.72);
+  backdrop-filter: blur(6px);
+  z-index: 500;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.lp-modal {
+  background: white;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 960px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+  overflow: hidden;
+  animation: slideUp 0.28s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(28px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+// En-tête modal
+.lp-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.5rem;
+  background: linear-gradient(135deg, $green 0%, #2d6a4f 100%);
+  color: white;
+  gap: 1rem;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.lp-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  .lp-modal-icon { font-size: 1.5rem; }
+
+  h2 {
+    font-size: 1rem;
+    font-weight: 800;
+    margin: 0;
+    color: white;
+  }
+
+  p {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+  }
+}
+
+.lp-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.lp-btn-print {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: white;
+  color: $green;
+  border: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+
+  &:hover {
+    background: #f0fff4;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    transform: translateY(-1px);
+  }
+}
+
+.lp-btn-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.12);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  &:hover { background: rgba(255,255,255,0.25); }
+}
+
+// Corps modal (scrollable)
+.lp-body {
+  padding: 1.5rem 1.5rem 2rem;
+  overflow-y: auto;
+  max-height: calc(90vh - 72px);
+}
+
+// Titre document
+.lp-doc-title {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+
+  .lp-doc-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e5e5e5;
+    flex-shrink: 0;
+  }
+
+  strong {
+    display: block;
+    font-size: 1rem;
+    font-weight: 800;
+    color: $green;
+  }
+
+  span {
+    font-size: 0.78rem;
+    color: #999;
+  }
+}
+
+// En-tête équipe dans modal
+.lp-team-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f7fbf8;
+  border-left: 4px solid $green;
+  border-radius: 0 10px 10px 0;
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+}
+
+.lp-team-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+  flex-shrink: 0;
+}
+
+.lp-team-logo-ph {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e8f5e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.lp-team-info {
+  flex: 1;
+  min-width: 0;
+
+  strong {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #1a1a2e;
+  }
+
+  span {
+    font-size: 0.75rem;
+    color: #888;
+  }
+}
+
+.lp-team-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.22rem 0.65rem;
+  border-radius: 50px;
+  background: #fff3e0;
+  color: #e65100;
+  white-space: nowrap;
+
+  &.lp-badge-ok {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+}
+
+// Grille de cartes dans modal
+.lp-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+// Carte licence individuelle dans modal
+.lp-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.09);
+  background: white;
+  border: 1px solid #e8e8e8;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.13);
+  }
+}
+
+// En-tête de la carte (vert)
+.lp-card-hd {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.8rem;
+  background: linear-gradient(135deg, $green 0%, #2d6a4f 100%);
+}
+
+.lp-card-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.45);
+  flex-shrink: 0;
+}
+
+.lp-card-hd-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.lp-card-org {
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255,255,255,0.7);
+}
+
+.lp-card-yr {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 0.3px;
+}
+
+// Corps de la carte
+.lp-card-bd {
+  display: flex;
+  gap: 0.7rem;
+  padding: 0.8rem;
+  flex: 1;
+}
+
+.lp-photo-wrap {
+  width: 68px;
+  height: 84px;
+  border-radius: 7px;
+  overflow: hidden;
+  border: 1.5px solid #e5e5e5;
+  flex-shrink: 0;
+  background: #f5f5f5;
+}
+
+.lp-player-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lp-photo-ph {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #ccc;
+  background: #f0f0f0;
+}
+
+.lp-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.lp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.03rem;
+}
+
+.lp-flabel {
+  font-size: 0.57rem;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #bbb;
+  font-weight: 600;
+}
+
+.lp-fvalue {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  word-break: break-word;
+  line-height: 1.2;
+}
+
+.lp-fteam {
+  color: $green;
+  font-size: 0.78rem;
+}
+
+.lp-cap-badge {
+  display: inline-block;
+  background: #fff8e1;
+  color: #f57f17;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.12rem 0.45rem;
+  border-radius: 50px;
+  border: 1px solid #ffcc02;
+  width: fit-content;
+  margin-top: 0.15rem;
+}
+
+// Pied de carte (bleu)
+.lp-card-ft {
+  background: #1565c0;
+  color: white;
+  text-align: center;
+  padding: 0.38rem 0.5rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.lp-empty-team {
+  color: #bbb;
+  font-size: 0.82rem;
+  padding: 0.75rem 0 1.25rem;
+  font-style: italic;
+}
+
+// Mobile modal
+@media (max-width: 640px) {
+  .lp-overlay { padding: 0; align-items: flex-end; }
+
+  .lp-modal {
+    border-radius: 18px 18px 0 0;
+    max-width: 100%;
+    animation: slideUpMobile 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  @keyframes slideUpMobile {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .lp-body { max-height: 80vh; padding: 1rem 1rem 2rem; }
+
+  .lp-cards-grid { grid-template-columns: repeat(2, 1fr); gap: 0.65rem; }
+
+  .lp-modal-header { padding: 0.9rem 1rem; }
+
+  .lp-btn-print { font-size: 0.78rem; padding: 0.45rem 0.85rem; }
+
+  .lp-modal-title h2 { font-size: 0.88rem; }
+}
+
+@media (max-width: 400px) {
+  .lp-cards-grid { grid-template-columns: 1fr; }
+}

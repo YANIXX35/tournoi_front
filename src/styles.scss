@@ -345,3 +345,43 @@ img { max-width: 100%; display: block; }
     background: var(--border-light);
   }
 }
+
+/* ═══════════════════════════════════════════
+   IMPRESSION LICENCES
+   ═══════════════════════════════════════════ */
+@media print {
+  /* Masquer tout sauf la zone imprimable */
+  body { visibility: hidden; }
+
+  #licence-print-area,
+  #licence-print-area * {
+    visibility: visible;
+  }
+
+  #licence-print-area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 10mm 12mm;
+    background: white;
+    overflow: visible;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Eviter les coupures de carte en milieu d'impression */
+  .lp-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .lp-team-header {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Cacher le bouton Fermer et l'en-tête modal à l'impression */
+  .lp-modal-header { display: none !important; }
+}
