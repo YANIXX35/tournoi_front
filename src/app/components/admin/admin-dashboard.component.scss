@@ -1874,3 +1874,217 @@ $sidebar-w: 240px;
     color: rgba(255,255,255,.5);
   }
 }
+
+// ── Modal prévisualisation export ──────────────────────────────────────────
+.ep-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(4px);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.ep-modal {
+  background: #0f2236;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 760px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,.6);
+}
+
+.ep-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  gap: 1rem;
+  flex-shrink: 0;
+
+  .ep-title {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+
+    .ep-icon { font-size: 1.7rem; }
+
+    h2 { margin: 0; font-size: 1rem; color: #fff; }
+    p  { margin: 0; font-size: .78rem; color: rgba(255,255,255,.5); }
+  }
+
+  .ep-close {
+    background: rgba(255,255,255,.07);
+    border: none;
+    color: rgba(255,255,255,.6);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: .95rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    &:hover { background: rgba(239,68,68,.2); color: #ef4444; }
+  }
+}
+
+.ep-body {
+  overflow-y: auto;
+  flex: 1;
+  padding: 1rem 1.4rem;
+}
+
+.ep-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .85rem;
+
+  thead tr {
+    background: rgba(255,255,255,.05);
+    border-bottom: 1px solid rgba(255,255,255,.1);
+  }
+
+  th {
+    padding: .6rem .75rem;
+    text-align: left;
+    font-size: .75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: rgba(255,255,255,.45);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,.05);
+    transition: background .15s;
+    &:hover { background: rgba(255,255,255,.03); }
+  }
+
+  td { padding: .5rem .75rem; color: rgba(255,255,255,.85); vertical-align: middle; }
+
+  .ep-td-num { color: rgba(255,255,255,.3); font-size: .78rem; width: 36px; }
+
+  .ep-td-team {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    font-weight: 500;
+
+    .ep-team-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+  }
+
+  .ep-status {
+    font-size: .72rem;
+    padding: .2rem .55rem;
+    border-radius: 99px;
+    background: rgba(245,158,11,.15);
+    color: #f59e0b;
+    &.ep-ok { background: rgba(34,197,94,.15); color: #22c55e; }
+  }
+
+  .ep-td-player {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+  }
+
+  .ep-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,.15);
+    flex-shrink: 0;
+  }
+
+  .ep-avatar-ph {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    flex-shrink: 0;
+  }
+
+  .ep-cap-badge {
+    font-size: .7rem;
+    background: rgba(255,215,0,.15);
+    color: #ffd700;
+    padding: .15rem .5rem;
+    border-radius: 99px;
+  }
+
+  .ep-empty {
+    text-align: center;
+    color: rgba(255,255,255,.3);
+    padding: 2rem;
+  }
+}
+
+.ep-footer {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: 1rem 1.4rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+  background: rgba(0,0,0,.2);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+
+  .ep-footer-label {
+    font-size: .8rem;
+    color: rgba(255,255,255,.4);
+    margin-right: .25rem;
+  }
+
+  .ep-dl-btn {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .55rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.07);
+    color: #fff;
+    font-size: .82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+
+    .ep-dl-icon { font-size: 1rem; }
+
+    &:hover { transform: translateY(-1px); }
+
+    &.ep-dl-excel {
+      &:hover { background: rgba(34,197,94,.2); border-color: #22c55e; color: #22c55e; }
+    }
+    &.ep-dl-csv {
+      &:hover { background: rgba(99,102,241,.2); border-color: #6366f1; color: #a5b4fc; }
+    }
+    &.ep-dl-pdf {
+      &:hover { background: rgba(239,68,68,.2); border-color: #ef4444; color: #fca5a5; }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .ep-modal { border-radius: 12px 12px 0 0; max-height: 95vh; }
+  .ep-overlay { align-items: flex-end; padding: 0; }
+  .ep-footer { gap: .5rem; }
+  .ep-dl-btn { font-size: .78rem; padding: .5rem .75rem; }
+}

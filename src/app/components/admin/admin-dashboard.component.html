@@ -486,13 +486,13 @@
               <option *ngFor="let t of teams" [value]="t.id">{{ t.name }}</option>
             </select>
             <div class="export-btns">
-              <button class="btn-export btn-export-excel" (click)="exportLicencesExcel()" title="Télécharger la liste des licences en Excel">
+              <button class="btn-export btn-export-excel" (click)="openExportPreview()" title="Prévisualiser avant de télécharger">
                 📊 Excel
               </button>
-              <button class="btn-export btn-export-word" (click)="exportLicencesCsv()" title="Télécharger la liste des licences en CSV">
+              <button class="btn-export btn-export-word" (click)="openExportPreview()" title="Prévisualiser avant de télécharger">
                 📋 CSV
               </button>
-              <button class="btn-export btn-export-pdf" (click)="exportLicencesPdf()" title="Télécharger la liste des licences en PDF">
+              <button class="btn-export btn-export-pdf" (click)="openExportPreview()" title="Prévisualiser avant de télécharger">
                 📄 PDF
               </button>
             </div>
@@ -647,6 +647,88 @@
     </div>
 
   </main>
+
+  <!-- ══════════ MODAL PRÉVISUALISATION EXPORT ══════════ -->
+  <div class="ep-overlay" *ngIf="exportPreviewOpen" (click)="closeExportPreview()">
+    <div class="ep-modal" (click)="$event.stopPropagation()">
+
+      <!-- En-tête -->
+      <div class="ep-header">
+        <div class="ep-title">
+          <span class="ep-icon">👁</span>
+          <div>
+            <h2>Prévisualisation de l'export</h2>
+            <p>
+              {{ licenceTeamFilter === 'all' ? 'Toutes les équipes' : filteredTeamsForLicences[0]?.name }}
+              &nbsp;·&nbsp; {{ filteredTeamsForLicences.length }} équipe(s)
+              &nbsp;·&nbsp; {{ filteredPlayersCount }} joueur(s)
+            </p>
+          </div>
+        </div>
+        <button class="ep-close" (click)="closeExportPreview()">✕</button>
+      </div>
+
+      <!-- Tableau de prévisualisation -->
+      <div class="ep-body">
+        <table class="ep-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Équipe</th>
+              <th>Statut</th>
+              <th>Joueur</th>
+              <th>Capitaine</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let team of filteredTeamsForLicences">
+              <tr *ngFor="let player of team.players; let idx = index">
+                <td class="ep-td-num">{{ idx + 1 }}</td>
+                <td class="ep-td-team">
+                  <span class="ep-team-dot" [style.background]="team.validated ? '#22c55e' : '#f59e0b'"></span>
+                  {{ team.name }}
+                </td>
+                <td>
+                  <span class="ep-status" [class.ep-ok]="team.validated">
+                    {{ team.validated ? 'Validée' : 'En attente' }}
+                  </span>
+                </td>
+                <td class="ep-td-player">
+                  <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)!" class="ep-avatar" alt="" (error)="onPhotoError(player.photo_path)" />
+                  <span class="ep-avatar-ph" *ngIf="!getPhotoUrl(player.photo_path)">👤</span>
+                  {{ player.player_name }}
+                </td>
+                <td>
+                  <span class="ep-cap-badge" *ngIf="isCapitaine(team, player.player_name)">★ Cap.</span>
+                </td>
+              </tr>
+            </ng-container>
+            <tr *ngIf="filteredTeamsForLicences.length === 0">
+              <td colspan="5" class="ep-empty">Aucun joueur à afficher</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Boutons de téléchargement -->
+      <div class="ep-footer">
+        <span class="ep-footer-label">Télécharger en :</span>
+        <button class="ep-dl-btn ep-dl-excel" (click)="exportLicencesExcel(); closeExportPreview()">
+          <span class="ep-dl-icon">📊</span>
+          <span>Excel (.xlsx)</span>
+        </button>
+        <button class="ep-dl-btn ep-dl-csv" (click)="exportLicencesCsv(); closeExportPreview()">
+          <span class="ep-dl-icon">📋</span>
+          <span>CSV</span>
+        </button>
+        <button class="ep-dl-btn ep-dl-pdf" (click)="openLicencePdfPreview()">
+          <span class="ep-dl-icon">🪪</span>
+          <span>Aperçu PDF / Imprimer</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- ══════════ MODAL APERÇU LICENCES ══════════ -->
   <div class="lp-overlay" *ngIf="showLicencePreview" (click)="closeLicencePreview()">

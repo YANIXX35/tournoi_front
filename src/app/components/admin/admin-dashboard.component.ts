@@ -32,6 +32,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   // Licences — filtre par équipe + aperçu modal
   licenceTeamFilter = 'all';
   showLicencePreview = false;
+  exportPreviewOpen = false;
 
   // Photos — suivi des URLs cassées pour afficher le placeholder à la place
   private brokenPhotos = new Set<string>();
@@ -149,6 +150,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   get totalPlayers(): number {
     return this.teams.reduce((acc, t) => acc + (t.players?.length ?? 0), 0);
+  }
+
+  get filteredPlayersCount(): number {
+    return this.filteredTeamsForLicences.reduce((acc, t) => acc + (t.players?.length ?? 0), 0);
   }
 
   // ── Licences ───────────────────────────────────────────
@@ -415,6 +420,23 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         this.uploadingPhoto = false;
         this.cdr.detectChanges();
       }),
+    });
+  }
+
+  // ── Prévisualisation export ────────────────────────────
+  openExportPreview(): void {
+    this.ngZone.run(() => { this.exportPreviewOpen = true; this.cdr.detectChanges(); });
+  }
+
+  closeExportPreview(): void {
+    this.ngZone.run(() => { this.exportPreviewOpen = false; this.cdr.detectChanges(); });
+  }
+
+  openLicencePdfPreview(): void {
+    this.ngZone.run(() => {
+      this.exportPreviewOpen = false;
+      this.showLicencePreview = true;
+      this.cdr.detectChanges();
     });
   }
 
