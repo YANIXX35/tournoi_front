@@ -183,14 +183,14 @@
         <div class="card-header">
           <h2>Toutes les équipes ({{ teams.length }})</h2>
           <div class="export-btns">
-            <button class="btn-export btn-export-excel" (click)="exportExcel()" title="Télécharger Excel">
+            <button class="btn-export btn-export-excel" (click)="exportExcel()" title="Télécharger Excel (.xlsx)">
               📊 Excel
             </button>
-            <button class="btn-export btn-export-word" (click)="exportWord()" title="Télécharger Word">
-              📄 Word
+            <button class="btn-export btn-export-word" (click)="exportCsv()" title="Télécharger CSV (s'ouvre dans Excel, Google Sheets...)">
+              📋 CSV
             </button>
             <button class="btn-export btn-export-pdf" (click)="exportPdf()" title="Télécharger PDF">
-              🖨️ PDF
+              📄 PDF
             </button>
           </div>
         </div>

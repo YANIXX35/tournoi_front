@@ -219,88 +219,88 @@ export class AdminDashboardComponent implements OnInit {
     this.flash('Export Excel téléchargé ✓');
   }
 
-  exportWord(): void {
-    const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-    let body = '';
-    this.teams.forEach((team, idx) => {
-      const players = team.players.map((p, i) =>
-        `<tr><td style="padding:4px 8px;border:1px solid #ddd">${i + 1}</td><td style="padding:4px 8px;border:1px solid #ddd">${p.player_name}</td></tr>`
-      ).join('');
-      body += `
-        <div style="margin-bottom:28px;page-break-inside:avoid">
-          <h3 style="background:#1a472a;color:white;padding:6px 12px;margin:0 0 4px;font-size:13pt">
-            ${idx + 1}. ${team.name}
-          </h3>
-          <p style="margin:2px 0 6px;font-size:10pt;color:#555">
-            Capitaine : <b>${team.captain_name}</b> &nbsp;|&nbsp; Tél : ${team.phone} &nbsp;|&nbsp;
-            Statut : <b style="color:${team.validated ? '#2e7d32' : '#e65100'}">${team.validated ? 'Validée' : 'En attente'}</b>
-          </p>
-          <table style="border-collapse:collapse;width:100%;font-size:10pt">
-            <thead><tr>
-              <th style="padding:4px 8px;border:1px solid #ddd;background:#f5f5f5;width:40px">#</th>
-              <th style="padding:4px 8px;border:1px solid #ddd;background:#f5f5f5;text-align:left">Joueur</th>
-            </tr></thead>
-            <tbody>${players}</tbody>
-          </table>
-        </div>`;
-    });
-    const html = `
-      <html><head><meta charset="utf-8">
-      <style>body{font-family:Arial,sans-serif;margin:2cm;font-size:11pt}h1{color:#1a472a}h2{color:#555;font-size:11pt;font-weight:normal}</style>
-      </head><body>
-      <h1>Liste des équipes — Tournoi FJU Côte d'Ivoire 2026</h1>
-      <h2>Exporté le ${date} &nbsp;·&nbsp; ${this.teams.length} équipe(s)</h2>
-      <hr style="border-color:#1a472a;margin:12px 0 20px">
-      ${body}
-      </body></html>`;
-    const blob = new Blob([html], { type: 'application/msword' });
-    this._download(blob, 'equipes-tournoi-fju-2026.doc');
-    this.flash('Export Word téléchargé ✓');
+  exportCsv(): void {
+    const BOM = '﻿';
+    const header = ['#', 'Equipe', 'Capitaine', 'Telephone', 'Statut', 'Joueurs', 'Date inscription'];
+    const rows = this.teams.map((t, i) => [
+      String(i + 1),
+      t.name,
+      t.captain_name,
+      t.phone,
+      t.validated ? 'Validee' : 'En attente',
+      t.players.map(p => p.player_name).join(' / '),
+      t.created_at ? new Date(t.created_at).toLocaleDateString('fr-FR') : '',
+    ]);
+    const csv = [header, ...rows]
+      .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      .join('\r\n');
+    const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8' });
+    this._download(blob, 'equipes-tournoi-fju-2026.csv');
+    this.flash('CSV téléchargé ✓ (ouvre dans Excel)');
   }
 
-  exportPdf(): void {
-    const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-    let body = '';
+  async exportPdf(): Promise<void> {
+    this.flash('Génération PDF...');
+    const { jsPDF } = await import('jspdf');
+    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+    const W = 210;
+    const M = 14;
+    let y = 18;
+
+    // Titre
+    doc.setFontSize(16);
+    doc.setTextColor(26, 71, 42);
+    doc.text('Tournoi FJU — Côte d\'Ivoire 2026', M, y);
+    y += 7;
+    doc.setFontSize(9);
+    doc.setTextColor(140, 140, 140);
+    doc.text(
+      `Liste des équipes  ·  ${this.teams.length} équipe(s)  ·  Exporté le ${new Date().toLocaleDateString('fr-FR')}`,
+      M, y
+    );
+    y += 8;
+
     this.teams.forEach((team, idx) => {
-      const players = team.players.map((p, i) =>
-        `<tr><td>${i + 1}</td><td>${p.player_name}</td></tr>`
-      ).join('');
-      body += `
-        <div class="team-block">
-          <div class="team-head">${idx + 1}. ${team.name}
-            <span class="tag ${team.validated ? 'tag-ok' : 'tag-wait'}">${team.validated ? 'Validée' : 'En attente'}</span>
-          </div>
-          <div class="team-meta">Capitaine : <b>${team.captain_name}</b> &nbsp;·&nbsp; Tél : ${team.phone}</div>
-          <table><thead><tr><th>#</th><th>Joueur</th></tr></thead><tbody>${players}</tbody></table>
-        </div>`;
+      if (y > 262) { doc.addPage(); y = 18; }
+
+      // En-tête équipe (fond vert)
+      doc.setFillColor(26, 71, 42);
+      doc.rect(M, y, W - 2 * M, 7.5, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      const teamLabel = `${idx + 1}. ${team.name}`;
+      doc.text(teamLabel, M + 2.5, y + 5);
+      const statusTxt = team.validated ? 'Validée ✓' : 'En attente';
+      doc.setFontSize(8);
+      doc.text(statusTxt, W - M - 2.5 - doc.getTextWidth(statusTxt), y + 5);
+      y += 8;
+
+      // Méta (fond gris clair)
+      doc.setFillColor(245, 245, 245);
+      doc.rect(M, y, W - 2 * M, 5.5, 'F');
+      doc.setTextColor(80, 80, 80);
+      doc.setFontSize(8);
+      doc.text(`Capitaine : ${team.captain_name}   |   Tél : ${team.phone}`, M + 2.5, y + 3.8);
+      y += 6;
+
+      // Joueurs
+      team.players.forEach((player, pi) => {
+        if (y > 274) { doc.addPage(); y = 18; }
+        doc.setFillColor(pi % 2 === 0 ? 255 : 248, pi % 2 === 0 ? 255 : 248, pi % 2 === 0 ? 255 : 248);
+        doc.setDrawColor(220, 220, 220);
+        doc.rect(M, y, W - 2 * M, 5, 'FD');
+        doc.setTextColor(120, 120, 120);
+        doc.setFontSize(8);
+        doc.text(String(pi + 1), M + 3, y + 3.5);
+        doc.setTextColor(40, 40, 40);
+        doc.text(player.player_name, M + 11, y + 3.5);
+        y += 5;
+      });
+      y += 5;
     });
-    const win = window.open('', '_blank', 'width=850,height=1100');
-    if (!win) return;
-    win.document.write(`<!doctype html><html><head><meta charset="utf-8">
-      <title>Équipes — Tournoi FJU 2026</title>
-      <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:Arial,sans-serif;font-size:10pt;color:#333;padding:1.5cm}
-        h1{color:#1a472a;font-size:16pt;margin-bottom:4px}
-        .sub{color:#777;font-size:9pt;margin-bottom:16px}
-        .team-block{margin-bottom:20px;page-break-inside:avoid}
-        .team-head{background:#1a472a;color:white;padding:5px 10px;font-size:11pt;font-weight:bold;display:flex;justify-content:space-between;align-items:center}
-        .team-meta{padding:3px 10px;background:#f5f5f5;font-size:9pt;color:#555}
-        table{width:100%;border-collapse:collapse;margin-top:2px}
-        th{background:#eee;padding:3px 8px;text-align:left;font-size:9pt;border:1px solid #ddd}
-        td{padding:3px 8px;border:1px solid #ddd;font-size:9pt}
-        .tag{font-size:8pt;padding:2px 8px;border-radius:20px;font-weight:normal}
-        .tag-ok{background:#e8f5e9;color:#2e7d32}
-        .tag-wait{background:#fff3e0;color:#e65100}
-        @media print{body{padding:0.8cm}.team-block{page-break-inside:avoid}}
-      </style></head><body>
-      <h1>Tournoi FJU — Côte d'Ivoire 2026</h1>
-      <div class="sub">Liste des équipes · Exporté le ${date} · ${this.teams.length} équipe(s)</div>
-      ${body}
-      <script>window.onload=function(){window.print()}<\/script>
-      </body></html>`);
-    win.document.close();
-    this.flash('Fenêtre PDF ouverte ✓');
+
+    doc.save('equipes-tournoi-fju-2026.pdf');
+    this.flash('PDF téléchargé ✓');
   }
 
   private _download(blob: Blob, filename: string): void {
