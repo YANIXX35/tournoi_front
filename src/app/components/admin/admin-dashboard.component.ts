@@ -40,13 +40,15 @@ export class AdminDashboardComponent implements OnInit {
 
   loadTeams(): void {
     this.adminService.getTeams().subscribe({
-      next: d => this.ngZone.run(() => { this.teams = d; this.cdr.detectChanges(); })
+      next: d => this.ngZone.run(() => { this.teams = d; this.cdr.detectChanges(); }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur chargement équipes'); this.cdr.detectChanges(); }),
     });
   }
 
   loadMatches(): void {
     this.tournamentService.getMatches().subscribe({
-      next: d => this.ngZone.run(() => { this.matches = d; this.cdr.detectChanges(); })
+      next: d => this.ngZone.run(() => { this.matches = d; this.cdr.detectChanges(); }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur chargement matchs'); this.cdr.detectChanges(); }),
     });
   }
 

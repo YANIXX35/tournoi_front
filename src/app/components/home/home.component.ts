@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.scss'],
   standalone: false,
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
   private tournamentDate = new Date('2026-06-13T09:00:00');
   private timer: any;
