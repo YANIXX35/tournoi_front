@@ -1,5 +1,5 @@
 import { Component, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { TeamService } from '../../services/team.service';
 import { timeout, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -17,6 +17,14 @@ export class RegisterComponent implements OnDestroy {
   success = false;
   errorMsg = '';
   slowWarning = false;
+
+  dialCodes = [
+    { country: "Côte d'Ivoire", code: '+225', flag: '🇨🇮', maxDigits: 10 },
+    { country: 'Sénégal',       code: '+221', flag: '🇸🇳', maxDigits: 9  },
+    { country: 'Mali',          code: '+223', flag: '🇲🇱', maxDigits: 8  },
+    { country: 'Ghana',         code: '+233', flag: '🇬🇭', maxDigits: 10 },
+  ];
+  selectedDial = this.dialCodes[0];
 
   logoPreview: string | null = null;
   logoPath: string | null = null;
@@ -38,7 +46,7 @@ export class RegisterComponent implements OnDestroy {
     this.teamForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       captain_name: ['', Validators.required],
-      phone: ['', Validators.required],
+      phone: ['', [Validators.required, this.phoneDigitsValidator.bind(this)]],
       players: this.fb.array([this.createPlayer(), this.createPlayer()]),
     });
   }
@@ -157,6 +165,19 @@ export class RegisterComponent implements OnDestroy {
 
   prevStep(): void { this.step = 1; }
 
+  phoneDigitsValidator(control: AbstractControl): ValidationErrors | null {
+    const digits = (control.value || '').replace(/\D/g, '');
+    if (!digits) return { required: true };
+    if (digits.length < 6) return { tooShort: true };
+    if (digits.length > this.selectedDial.maxDigits) return { tooLong: true };
+    return null;
+  }
+
+  onDialChange(code: string): void {
+    this.selectedDial = this.dialCodes.find(d => d.code === code) ?? this.dialCodes[0];
+    this.teamForm.get('phone')?.updateValueAndValidity();
+  }
+
   submit(): void {
     if (this.loading) return;
 
@@ -177,7 +198,9 @@ export class RegisterComponent implements OnDestroy {
       if (this.loading) this.slowWarning = true;
     }, 8000);
 
-    const { name, captain_name, phone } = this.teamForm.value;
+    const { name, captain_name } = this.teamForm.value;
+    const localDigits = (this.teamForm.value.phone || '').replace(/\D/g, '');
+    const phone = this.selectedDial.code + localDigits;
 
     this.teamService
       .register({ name, captain_name, phone, logo_path: this.logoPath, players })

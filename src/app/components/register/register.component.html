@@ -69,9 +69,31 @@
 
       <div class="form-group">
         <label>Téléphone du capitaine *</label>
-        <input type="tel" formControlName="phone" placeholder="07 00 00 00 00" />
-        <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.invalid">
-          ⚠ Champ requis
+        <div class="phone-input-group">
+          <select class="dial-select" [value]="selectedDial.code" (change)="onDialChange($any($event.target).value)">
+            <option *ngFor="let d of dialCodes" [value]="d.code">
+              {{ d.flag }} {{ d.code }}
+            </option>
+          </select>
+          <input
+            type="tel"
+            formControlName="phone"
+            [placeholder]="'0'.repeat(selectedDial.maxDigits)"
+            class="phone-local-input"
+            maxlength="15"
+            inputmode="numeric"
+            (input)="$any($event.target).value = $any($event.target).value.replace(/[^0-9]/g, '')"
+          />
+        </div>
+        <span class="field-hint">{{ selectedDial.country }} · max {{ selectedDial.maxDigits }} chiffres</span>
+        <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.errors?.['tooLong']">
+          ⚠ Numéro trop long (max {{ selectedDial.maxDigits }} chiffres)
+        </span>
+        <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.errors?.['tooShort']">
+          ⚠ Numéro trop court (min 6 chiffres)
+        </span>
+        <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.errors?.['required']">
+          ⚠ Numéro requis
         </span>
       </div>
 

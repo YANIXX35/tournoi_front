@@ -254,6 +254,62 @@
   gap: 0.3rem;
 }
 
+.field-hint {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+// ═══════════════════════════════════
+// PHONE INPUT WITH DIAL CODE
+// ═══════════════════════════════════
+.phone-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.dial-select {
+  flex-shrink: 0;
+  padding: 0.8rem 0.6rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 0.9rem;
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  transition: var(--ease);
+  appearance: none;
+  min-width: 100px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(26,71,42,0.08);
+  }
+}
+
+.phone-local-input {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 0.95rem;
+  transition: var(--ease);
+  background: var(--card);
+  color: var(--text);
+  min-width: 0;
+
+  &:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(26,71,42,0.08);
+  }
+
+  &::placeholder { color: var(--text-muted); font-size: 0.9rem; }
+}
+
 // ═══════════════════════════════════
 // PLAYERS LIST
 // ═══════════════════════════════════
