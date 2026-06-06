@@ -496,6 +496,99 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  async exportLicencesPdfWithPhotos(): Promise<void> {
+    this.closeExportPreview();
+    this.flash('Génération PDF avec photos...');
+    const { jsPDF } = await import('jspdf');
+    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+    const W = 210, M = 12;
+    let y = 18;
+    const ROW_H = 16;
+    const PHOTO_SIZE = 13;
+
+    // Titre
+    doc.setFontSize(14);
+    doc.setTextColor(26, 71, 42);
+    doc.text('Tournoi FJU — Licences joueurs 2026', M, y);
+    y += 6;
+    doc.setFontSize(8);
+    doc.setTextColor(120, 120, 120);
+    doc.text(
+      `${this.filteredPlayersCount} joueur(s) · Exporté le ${new Date().toLocaleDateString('fr-FR')}`,
+      M, y
+    );
+    y += 10;
+
+    this.filteredTeamsForLicences.forEach(team => {
+      if (y > 265) { doc.addPage(); y = 18; }
+
+      // En-tête équipe
+      doc.setFillColor(26, 71, 42);
+      doc.rect(M, y, W - 2 * M, 7.5, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      doc.text(team.name, M + 2.5, y + 5.2);
+      const badge = team.validated ? 'Validée ✓' : 'En attente';
+      doc.setFontSize(7.5);
+      doc.text(badge, W - M - 2.5 - doc.getTextWidth(badge), y + 5.2);
+      y += 8.5;
+
+      // En-têtes colonnes
+      doc.setFillColor(240, 240, 240);
+      doc.setDrawColor(210, 210, 210);
+      doc.rect(M, y, W - 2 * M, 5.5, 'FD');
+      doc.setTextColor(100, 100, 100);
+      doc.setFontSize(7);
+      doc.text('Photo', M + 2, y + 3.8);
+      doc.text('Nom du joueur', M + 18, y + 3.8);
+      doc.text('Rôle', W - M - 22, y + 3.8);
+      y += 6;
+
+      team.players.forEach((player, pi) => {
+        if (y > 270) { doc.addPage(); y = 18; }
+        const bg: [number, number, number] = pi % 2 === 0 ? [255, 255, 255] : [250, 251, 252];
+        doc.setFillColor(...bg);
+        doc.setDrawColor(220, 220, 220);
+        doc.rect(M, y, W - 2 * M, ROW_H, 'FD');
+
+        // Photo
+        const photoUrl = this.getPhotoUrl(player.photo_path);
+        if (photoUrl && photoUrl.startsWith('data:')) {
+          try {
+            doc.addImage(photoUrl, 'JPEG', M + 1.5, y + 1.5, PHOTO_SIZE, PHOTO_SIZE);
+          } catch { /* photo corrompue */ }
+        } else {
+          doc.setFillColor(230, 230, 230);
+          doc.roundedRect(M + 1.5, y + 1.5, PHOTO_SIZE, PHOTO_SIZE, 2, 2, 'F');
+          doc.setTextColor(180, 180, 180);
+          doc.setFontSize(10);
+          doc.text('?', M + 6.5, y + 10.5);
+        }
+
+        // Nom
+        doc.setTextColor(30, 30, 30);
+        doc.setFontSize(9);
+        doc.text(player.player_name, M + 18, y + 8);
+
+        // Rôle
+        if (this.isCapitaine(team, player.player_name)) {
+          doc.setFillColor(255, 215, 0);
+          doc.setDrawColor(200, 160, 0);
+          doc.roundedRect(W - M - 22, y + 4, 20, 6, 2, 2, 'FD');
+          doc.setTextColor(120, 90, 0);
+          doc.setFontSize(7);
+          doc.text('★ Capitaine', W - M - 21, y + 8.2);
+        }
+
+        y += ROW_H;
+      });
+      y += 5;
+    });
+
+    doc.save('licences-avec-photos-fju-2026.pdf');
+    this.flash('PDF avec photos téléchargé ✓');
+  }
+
   closeLicencePreview(): void {
     this.ngZone.run(() => {
       this.showLicencePreview = false;

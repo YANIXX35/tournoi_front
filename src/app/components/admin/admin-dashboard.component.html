@@ -712,19 +712,33 @@
 
       <!-- Boutons de téléchargement -->
       <div class="ep-footer">
-        <span class="ep-footer-label">Télécharger en :</span>
-        <button class="ep-dl-btn ep-dl-excel" (click)="exportLicencesExcel(); closeExportPreview()">
-          <span class="ep-dl-icon">📊</span>
-          <span>Excel (.xlsx)</span>
-        </button>
-        <button class="ep-dl-btn ep-dl-csv" (click)="exportLicencesCsv(); closeExportPreview()">
-          <span class="ep-dl-icon">📋</span>
-          <span>CSV</span>
-        </button>
-        <button class="ep-dl-btn ep-dl-pdf" (click)="openLicencePdfPreview()">
-          <span class="ep-dl-icon">🪪</span>
-          <span>Aperçu PDF / Imprimer</span>
-        </button>
+        <div class="ep-footer-group">
+          <p class="ep-footer-note">Sans photos — données uniquement</p>
+          <div class="ep-footer-row">
+            <button class="ep-dl-btn ep-dl-excel" (click)="exportLicencesExcel(); closeExportPreview()">
+              <span class="ep-dl-icon">📊</span>
+              <span>Télécharger Excel</span>
+            </button>
+            <button class="ep-dl-btn ep-dl-csv" (click)="exportLicencesCsv(); closeExportPreview()">
+              <span class="ep-dl-icon">📋</span>
+              <span>Télécharger CSV</span>
+            </button>
+          </div>
+        </div>
+        <div class="ep-footer-sep"></div>
+        <div class="ep-footer-group">
+          <p class="ep-footer-note ep-footer-note--green">Avec photos des joueurs</p>
+          <div class="ep-footer-row">
+            <button class="ep-dl-btn ep-dl-pdf" (click)="exportLicencesPdfWithPhotos()">
+              <span class="ep-dl-icon">📄</span>
+              <span>Télécharger PDF</span>
+            </button>
+            <button class="ep-dl-btn ep-dl-cards" (click)="openLicencePdfPreview()">
+              <span class="ep-dl-icon">🪪</span>
+              <span>Imprimer cartes</span>
+            </button>
+          </div>
+        </div>
       </div>
 
     </div>
