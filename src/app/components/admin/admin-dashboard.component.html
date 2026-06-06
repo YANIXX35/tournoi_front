@@ -29,6 +29,10 @@
         <span class="nav-icon">🏆</span> Résultats
         <span class="nav-badge nav-badge-green" *ngIf="upcomingMatches > 0">{{ upcomingMatches }}</span>
       </a>
+      <a class="nav-item" [class.active]="activeSection === 'licences'" (click)="setSection('licences')">
+        <span class="nav-icon">🪪</span> Licences
+        <span class="nav-badge nav-badge-blue" *ngIf="totalPlayers > 0">{{ totalPlayers }}</span>
+      </a>
 
       <p class="nav-section-label" style="margin-top: 2rem">Général</p>
       <a class="nav-item" routerLink="/" target="_blank">
@@ -434,6 +438,92 @@
           </ng-container>
         </div>
       </div>
+
+    </div>
+
+    <!-- ══════════ SECTION : LICENCES ══════════ -->
+    <div *ngIf="activeSection === 'licences'" class="section-content">
+
+      <!-- Filtre par équipe -->
+      <div class="card" style="margin-bottom: 1.25rem">
+        <div class="card-header">
+          <h2>Licences joueurs — {{ totalPlayers }} joueur{{ totalPlayers > 1 ? 's' : '' }}</h2>
+          <div class="licence-filter">
+            <select [(ngModel)]="licenceTeamFilter" class="filter-select">
+              <option value="all">Toutes les équipes</option>
+              <option *ngFor="let t of teams" [value]="t.id">{{ t.name }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aucune équipe -->
+      <div class="empty-state" *ngIf="teams.length === 0">
+        Aucune équipe inscrite pour le moment.
+      </div>
+
+      <!-- Grille de licences par équipe -->
+      <ng-container *ngFor="let team of filteredTeamsForLicences">
+
+        <!-- En-tête équipe -->
+        <div class="team-licence-header">
+          <img *ngIf="getPhotoUrl(team.logo_path)" [src]="getPhotoUrl(team.logo_path)" class="team-licence-logo" alt="logo" />
+          <div class="team-licence-logo-placeholder" *ngIf="!getPhotoUrl(team.logo_path)">⚽</div>
+          <div>
+            <h3 class="team-licence-name">{{ team.name }}</h3>
+            <span class="team-licence-meta">Capitaine : {{ team.captain_name }} · {{ team.players?.length ?? 0 }} joueur{{ (team.players?.length ?? 0) > 1 ? 's' : '' }}</span>
+          </div>
+          <span class="status-pill" [class.pill-green]="team.validated" [class.pill-orange]="!team.validated" style="margin-left: auto">
+            {{ team.validated ? 'Validée' : 'En attente' }}
+          </span>
+        </div>
+
+        <!-- Cartes licences -->
+        <div class="licence-grid" *ngIf="team.players && team.players.length > 0">
+          <div class="licence-card" *ngFor="let player of team.players">
+
+            <!-- En-tête de la carte -->
+            <div class="licence-card-header">
+              <img src="fju.jpg" alt="FJU" class="licence-card-logo" />
+              <div class="licence-card-title">
+                <span class="licence-org">Comité d'organisation</span>
+                <span class="licence-year">LICENCE 2026</span>
+              </div>
+            </div>
+
+            <!-- Corps : photo + infos -->
+            <div class="licence-card-body">
+              <div class="licence-photo-wrap">
+                <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)" class="licence-photo" alt="photo" />
+                <div class="licence-photo-placeholder" *ngIf="!getPhotoUrl(player.photo_path)">👤</div>
+              </div>
+              <div class="licence-info">
+                <div class="licence-field">
+                  <span class="licence-field-label">Nom et prénom</span>
+                  <span class="licence-field-value">{{ player.player_name }}</span>
+                </div>
+                <div class="licence-field">
+                  <span class="licence-field-label">Équipe</span>
+                  <span class="licence-field-value">{{ team.name }}</span>
+                </div>
+                <div class="licence-capitaine-badge" *ngIf="isCapitaine(team, player.player_name)">
+                  ⭐ Capitaine
+                </div>
+              </div>
+            </div>
+
+            <!-- Pied de carte -->
+            <div class="licence-card-footer">
+              UNION &nbsp;·&nbsp; DISCIPLINE &nbsp;·&nbsp; TRAVAIL
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="!team.players || team.players.length === 0" style="padding: 1.5rem">
+          Aucun joueur enregistré pour cette équipe.
+        </div>
+
+      </ng-container>
 
     </div>
 

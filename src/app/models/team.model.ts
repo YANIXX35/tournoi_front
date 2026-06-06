@@ -1,3 +1,9 @@
+export interface AdminPlayer {
+  id: number;
+  player_name: string;
+  photo_path: string | null;
+}
+
 export interface Team {
   id: number;
   name: string;
@@ -6,7 +12,7 @@ export interface Team {
   logo_path: string | null;
   created_at: string;
   validated: number;
-  players: string[];
+  players: AdminPlayer[];
 }
 
 export interface PlayerRegistration {

@@ -3,8 +3,9 @@ import { Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { TournamentService } from '../../services/tournament.service';
 import { AuthService } from '../../services/auth.service';
-import { Team } from '../../models/team.model';
+import { Team, AdminPlayer } from '../../models/team.model';
 import { Match } from '../../models/match.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -15,7 +16,7 @@ import { Match } from '../../models/match.model';
 export class AdminDashboardComponent implements OnInit {
   teams: Team[] = [];
   matches: Match[] = [];
-  activeSection: 'overview' | 'teams' | 'matches' | 'results' = 'overview';
+  activeSection: 'overview' | 'teams' | 'matches' | 'results' | 'licences' = 'overview';
   sidebarOpen = false;
 
   // Matchs — création / édition complète
@@ -27,9 +28,14 @@ export class AdminDashboardComponent implements OnInit {
   scoringMatch: Match | null = null;
   scoreInput: { score1: number; score2: number } = { score1: 0, score2: 0 };
 
+  // Licences — filtre par équipe
+  licenceTeamFilter = 'all';
+
   phases = ['Poule', 'Quarts de finale', 'Demi-finale', 'Finale'];
   saveSuccess = '';
   today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  private readonly UPLOADS = `${environment.apiUrl}/uploads`;
 
   constructor(
     private adminService: AdminService,
@@ -59,7 +65,7 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  setSection(section: 'overview' | 'teams' | 'matches' | 'results'): void {
+  setSection(section: 'overview' | 'teams' | 'matches' | 'results' | 'licences'): void {
     this.ngZone.run(() => {
       this.activeSection = section;
       this.sidebarOpen = false;
@@ -76,6 +82,24 @@ export class AdminDashboardComponent implements OnInit {
   get totalMatches(): number { return this.matches.length; }
   get finishedMatches(): number { return this.matches.filter(m => m.status === 'finished').length; }
   get upcomingMatches(): number { return this.matches.filter(m => m.status === 'upcoming').length; }
+
+  get totalPlayers(): number {
+    return this.teams.reduce((acc, t) => acc + (t.players?.length ?? 0), 0);
+  }
+
+  // ── Licences ───────────────────────────────────────────
+  get filteredTeamsForLicences(): Team[] {
+    if (this.licenceTeamFilter === 'all') return this.teams;
+    return this.teams.filter(t => t.id === Number(this.licenceTeamFilter));
+  }
+
+  getPhotoUrl(path: string | null | undefined): string | null {
+    return path ? `${this.UPLOADS}/${path}` : null;
+  }
+
+  isCapitaine(team: Team, playerName: string): boolean {
+    return team.captain_name?.trim().toLowerCase() === playerName?.trim().toLowerCase();
+  }
 
   // ── Équipes CRUD ───────────────────────────────────────
   validateTeam(team: Team, validated: boolean): void {
@@ -112,17 +136,11 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   startEdit(match: Match): void {
-    this.ngZone.run(() => {
-      this.editingMatch = { ...match };
-      this.cdr.detectChanges();
-    });
+    this.ngZone.run(() => { this.editingMatch = { ...match }; this.cdr.detectChanges(); });
   }
 
   cancelEdit(): void {
-    this.ngZone.run(() => {
-      this.editingMatch = null;
-      this.cdr.detectChanges();
-    });
+    this.ngZone.run(() => { this.editingMatch = null; this.cdr.detectChanges(); });
   }
 
   saveMatch(): void {
@@ -140,30 +158,21 @@ export class AdminDashboardComponent implements OnInit {
   deleteMatch(id: number): void {
     if (!confirm('Supprimer ce match ?')) return;
     this.adminService.deleteMatch(id).subscribe({
-      next: () => this.ngZone.run(() => {
-        this.loadMatches();
-        this.flash('Match supprimé');
-      })
+      next: () => this.ngZone.run(() => { this.loadMatches(); this.flash('Match supprimé'); })
     });
   }
 
-  // ── Saisie rapide du score (section Résultats) ──────────
+  // ── Saisie rapide du score ──────────────────────────────
   openScore(match: Match): void {
     this.ngZone.run(() => {
       this.scoringMatch = match;
-      this.scoreInput = {
-        score1: match.score1 ?? 0,
-        score2: match.score2 ?? 0,
-      };
+      this.scoreInput = { score1: match.score1 ?? 0, score2: match.score2 ?? 0 };
       this.cdr.detectChanges();
     });
   }
 
   cancelScore(): void {
-    this.ngZone.run(() => {
-      this.scoringMatch = null;
-      this.cdr.detectChanges();
-    });
+    this.ngZone.run(() => { this.scoringMatch = null; this.cdr.detectChanges(); });
   }
 
   saveScore(): void {
@@ -181,10 +190,7 @@ export class AdminDashboardComponent implements OnInit {
         this.flash('Score enregistré ✓');
         this.cdr.detectChanges();
       }),
-      error: () => this.ngZone.run(() => {
-        this.flash('Erreur lors de la sauvegarde');
-        this.cdr.detectChanges();
-      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur sauvegarde'); this.cdr.detectChanges(); }),
     });
   }
 
@@ -198,10 +204,7 @@ export class AdminDashboardComponent implements OnInit {
     this.saveSuccess = msg;
     this.cdr.detectChanges();
     setTimeout(() => {
-      this.ngZone.run(() => {
-        this.saveSuccess = '';
-        this.cdr.detectChanges();
-      });
+      this.ngZone.run(() => { this.saveSuccess = ''; this.cdr.detectChanges(); });
     }, 3000);
   }
 
@@ -223,6 +226,7 @@ export class AdminDashboardComponent implements OnInit {
       teams: 'Gestion des équipes',
       matches: 'Gestion des matchs',
       results: 'Saisie des résultats',
+      licences: 'Licences joueurs',
     };
     return map[this.activeSection] || '';
   }
