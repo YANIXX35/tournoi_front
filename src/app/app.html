@@ -1,6 +1,6 @@
 <nav class="navbar">
   <a class="navbar-brand" routerLink="/" (click)="closeMenu()">
-    <div class="brand-icon">⚽</div>
+    <img src="fju.jpg" alt="FJU Logo" class="brand-logo" />
     <div class="brand-text">
       <span class="brand-title">Église Universel</span>
       <span class="brand-sub">Tournoi Football 2026</span>
@@ -28,7 +28,7 @@
 <!-- Mobile drawer -->
 <div class="mobile-menu" [class.open]="menuOpen">
   <div class="mobile-menu-header">
-    <span>⚽ Menu</span>
+    <span><img src="fju.jpg" alt="FJU" style="width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px;" />Menu</span>
     <button class="close-menu" (click)="closeMenu()">✕</button>
   </div>
   <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="closeMenu()">🏠 Accueil</a>
