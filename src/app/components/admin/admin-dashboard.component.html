@@ -182,6 +182,17 @@
       <div class="card">
         <div class="card-header">
           <h2>Toutes les équipes ({{ teams.length }})</h2>
+          <div class="export-btns">
+            <button class="btn-export btn-export-excel" (click)="exportExcel()" title="Télécharger Excel">
+              📊 Excel
+            </button>
+            <button class="btn-export btn-export-word" (click)="exportWord()" title="Télécharger Word">
+              📄 Word
+            </button>
+            <button class="btn-export btn-export-pdf" (click)="exportPdf()" title="Télécharger PDF">
+              🖨️ PDF
+            </button>
+          </div>
         </div>
         <div class="empty-state" *ngIf="teams.length === 0">Aucune inscription reçue.</div>
         <div class="team-cards-mobile" *ngIf="teams.length > 0">
@@ -467,7 +478,7 @@
 
         <!-- En-tête équipe -->
         <div class="team-licence-header">
-          <img *ngIf="getPhotoUrl(team.logo_path)" [src]="getPhotoUrl(team.logo_path)" class="team-licence-logo" alt="logo" />
+          <img *ngIf="getPhotoUrl(team.logo_path)" [src]="getPhotoUrl(team.logo_path)" class="team-licence-logo" alt="logo" loading="lazy" />
           <div class="team-licence-logo-placeholder" *ngIf="!getPhotoUrl(team.logo_path)">⚽</div>
           <div>
             <h3 class="team-licence-name">{{ team.name }}</h3>
@@ -494,7 +505,7 @@
             <!-- Corps : photo + infos -->
             <div class="licence-card-body">
               <div class="licence-photo-wrap">
-                <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)" class="licence-photo" alt="photo" />
+                <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)" class="licence-photo" alt="photo" loading="lazy" />
                 <div class="licence-photo-placeholder" *ngIf="!getPhotoUrl(player.photo_path)">👤</div>
               </div>
               <div class="licence-info">

@@ -729,6 +729,40 @@ $sidebar-w: 240px;
 }
 
 // ═══════════════════════════════
+// BOUTONS EXPORT
+// ═══════════════════════════════
+.export-btns {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.38rem 0.75rem;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+
+  &:hover { opacity: 0.85; transform: translateY(-1px); }
+}
+
+.btn-export-excel { background: #e8f5e9; color: #2e7d32; }
+.btn-export-word  { background: #e3f2fd; color: #1565c0; }
+.btn-export-pdf   { background: #fce4ec; color: #c62828; }
+
+@media (max-width: 480px) {
+  .export-btns { gap: 0.3rem; }
+  .btn-export { font-size: 0.72rem; padding: 0.3rem 0.55rem; }
+}
+
+// ═══════════════════════════════
 // NAV BADGE VERT (résultats)
 // ═══════════════════════════════
 .nav-badge-green {

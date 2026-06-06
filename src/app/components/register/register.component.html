@@ -41,7 +41,7 @@
             <span class="logo-upload-text">Ajouter le logo<br>de l'équipe</span>
             <span class="logo-hint">JPG, PNG, WEBP · Optionnel</span>
           </div>
-          <img *ngIf="logoPreview" [src]="logoPreview" class="logo-preview-img" alt="Logo équipe" />
+          <img *ngIf="logoPreview" [src]="logoPreview" class="logo-preview-img" alt="Logo équipe" loading="lazy" />
           <div *ngIf="uploadingLogo" class="logo-uploading-overlay">⏳ Envoi...</div>
           <input type="file" accept="image/*" (change)="onLogoSelected($event)" hidden />
         </label>
@@ -114,7 +114,7 @@
 
           <!-- Photo du joueur (facultative) -->
           <label class="player-photo-btn" [class.has-photo]="playerPhotoPreviews[i]" [title]="playerPhotoPreviews[i] ? 'Changer la photo' : 'Ajouter une photo (facultatif)'">
-            <img *ngIf="playerPhotoPreviews[i] && !playerPhotoUploading[i]" [src]="playerPhotoPreviews[i]" class="player-photo-img" alt="Photo joueur" />
+            <img *ngIf="playerPhotoPreviews[i] && !playerPhotoUploading[i]" [src]="playerPhotoPreviews[i]" class="player-photo-img" alt="Photo joueur" loading="lazy" />
             <span *ngIf="!playerPhotoPreviews[i] && !playerPhotoUploading[i]" class="player-photo-icon">📷</span>
             <span *ngIf="playerPhotoUploading[i]" class="player-photo-spinner"></span>
             <input type="file" accept="image/*" (change)="onPlayerPhotoSelected(i, $event)" hidden />

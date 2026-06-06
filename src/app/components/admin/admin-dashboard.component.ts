@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { Team, AdminPlayer } from '../../models/team.model';
 import { Match } from '../../models/match.model';
 import { environment } from '../../../environments/environment';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -192,6 +193,123 @@ export class AdminDashboardComponent implements OnInit {
       }),
       error: () => this.ngZone.run(() => { this.flash('Erreur sauvegarde'); this.cdr.detectChanges(); }),
     });
+  }
+
+  // ── Exports ────────────────────────────────────────────
+  exportExcel(): void {
+    const rows: any[][] = [
+      ['#', 'Équipe', 'Capitaine', 'Téléphone', 'Statut', 'Joueurs', 'Date inscription'],
+    ];
+    this.teams.forEach((team, idx) => {
+      rows.push([
+        idx + 1,
+        team.name,
+        team.captain_name,
+        team.phone,
+        team.validated ? 'Validée' : 'En attente',
+        team.players.map(p => p.player_name).join(', '),
+        team.created_at ? new Date(team.created_at).toLocaleDateString('fr-FR') : '',
+      ]);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{ wch: 4 }, { wch: 22 }, { wch: 20 }, { wch: 16 }, { wch: 12 }, { wch: 60 }, { wch: 16 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Équipes');
+    XLSX.writeFile(wb, 'equipes-tournoi-fju-2026.xlsx');
+    this.flash('Export Excel téléchargé ✓');
+  }
+
+  exportWord(): void {
+    const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    let body = '';
+    this.teams.forEach((team, idx) => {
+      const players = team.players.map((p, i) =>
+        `<tr><td style="padding:4px 8px;border:1px solid #ddd">${i + 1}</td><td style="padding:4px 8px;border:1px solid #ddd">${p.player_name}</td></tr>`
+      ).join('');
+      body += `
+        <div style="margin-bottom:28px;page-break-inside:avoid">
+          <h3 style="background:#1a472a;color:white;padding:6px 12px;margin:0 0 4px;font-size:13pt">
+            ${idx + 1}. ${team.name}
+          </h3>
+          <p style="margin:2px 0 6px;font-size:10pt;color:#555">
+            Capitaine : <b>${team.captain_name}</b> &nbsp;|&nbsp; Tél : ${team.phone} &nbsp;|&nbsp;
+            Statut : <b style="color:${team.validated ? '#2e7d32' : '#e65100'}">${team.validated ? 'Validée' : 'En attente'}</b>
+          </p>
+          <table style="border-collapse:collapse;width:100%;font-size:10pt">
+            <thead><tr>
+              <th style="padding:4px 8px;border:1px solid #ddd;background:#f5f5f5;width:40px">#</th>
+              <th style="padding:4px 8px;border:1px solid #ddd;background:#f5f5f5;text-align:left">Joueur</th>
+            </tr></thead>
+            <tbody>${players}</tbody>
+          </table>
+        </div>`;
+    });
+    const html = `
+      <html><head><meta charset="utf-8">
+      <style>body{font-family:Arial,sans-serif;margin:2cm;font-size:11pt}h1{color:#1a472a}h2{color:#555;font-size:11pt;font-weight:normal}</style>
+      </head><body>
+      <h1>Liste des équipes — Tournoi FJU Côte d'Ivoire 2026</h1>
+      <h2>Exporté le ${date} &nbsp;·&nbsp; ${this.teams.length} équipe(s)</h2>
+      <hr style="border-color:#1a472a;margin:12px 0 20px">
+      ${body}
+      </body></html>`;
+    const blob = new Blob([html], { type: 'application/msword' });
+    this._download(blob, 'equipes-tournoi-fju-2026.doc');
+    this.flash('Export Word téléchargé ✓');
+  }
+
+  exportPdf(): void {
+    const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    let body = '';
+    this.teams.forEach((team, idx) => {
+      const players = team.players.map((p, i) =>
+        `<tr><td>${i + 1}</td><td>${p.player_name}</td></tr>`
+      ).join('');
+      body += `
+        <div class="team-block">
+          <div class="team-head">${idx + 1}. ${team.name}
+            <span class="tag ${team.validated ? 'tag-ok' : 'tag-wait'}">${team.validated ? 'Validée' : 'En attente'}</span>
+          </div>
+          <div class="team-meta">Capitaine : <b>${team.captain_name}</b> &nbsp;·&nbsp; Tél : ${team.phone}</div>
+          <table><thead><tr><th>#</th><th>Joueur</th></tr></thead><tbody>${players}</tbody></table>
+        </div>`;
+    });
+    const win = window.open('', '_blank', 'width=850,height=1100');
+    if (!win) return;
+    win.document.write(`<!doctype html><html><head><meta charset="utf-8">
+      <title>Équipes — Tournoi FJU 2026</title>
+      <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial,sans-serif;font-size:10pt;color:#333;padding:1.5cm}
+        h1{color:#1a472a;font-size:16pt;margin-bottom:4px}
+        .sub{color:#777;font-size:9pt;margin-bottom:16px}
+        .team-block{margin-bottom:20px;page-break-inside:avoid}
+        .team-head{background:#1a472a;color:white;padding:5px 10px;font-size:11pt;font-weight:bold;display:flex;justify-content:space-between;align-items:center}
+        .team-meta{padding:3px 10px;background:#f5f5f5;font-size:9pt;color:#555}
+        table{width:100%;border-collapse:collapse;margin-top:2px}
+        th{background:#eee;padding:3px 8px;text-align:left;font-size:9pt;border:1px solid #ddd}
+        td{padding:3px 8px;border:1px solid #ddd;font-size:9pt}
+        .tag{font-size:8pt;padding:2px 8px;border-radius:20px;font-weight:normal}
+        .tag-ok{background:#e8f5e9;color:#2e7d32}
+        .tag-wait{background:#fff3e0;color:#e65100}
+        @media print{body{padding:0.8cm}.team-block{page-break-inside:avoid}}
+      </style></head><body>
+      <h1>Tournoi FJU — Côte d'Ivoire 2026</h1>
+      <div class="sub">Liste des équipes · Exporté le ${date} · ${this.teams.length} équipe(s)</div>
+      ${body}
+      <script>window.onload=function(){window.print()}<\/script>
+      </body></html>`);
+    win.document.close();
+    this.flash('Fenêtre PDF ouverte ✓');
+  }
+
+  private _download(blob: Blob, filename: string): void {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   // ── Utilitaires ────────────────────────────────────────

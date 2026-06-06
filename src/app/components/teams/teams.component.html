@@ -37,7 +37,7 @@
         <div class="card-header">
           <!-- Logo ou initiales -->
           <div class="team-logo">
-            <img *ngIf="team.logo_path" [src]="teamService.getLogoUrl(team.logo_path)" [alt]="team.name" />
+            <img *ngIf="team.logo_path" [src]="teamService.getLogoUrl(team.logo_path)" [alt]="team.name" loading="lazy" />
             <span *ngIf="!team.logo_path" class="team-initials">{{ team.name[0] }}</span>
           </div>
 

@@ -1,0 +1,28 @@
+{
+  "name": "Tournoi FJU Côte d'Ivoire 2026",
+  "short_name": "Tournoi FJU",
+  "description": "Application officielle du Tournoi de Football FJU Côte d'Ivoire 2026",
+  "theme_color": "#1a472a",
+  "background_color": "#0d1b2a",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "start_url": "/",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "fju.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "fju.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["sports", "entertainment"],
+  "screenshots": []
+}
