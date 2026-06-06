@@ -384,6 +384,24 @@
   &:hover { background: var(--border); }
 }
 
+// Slow warning
+.slow-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: #FFF7ED;
+  border: 1px solid #FED7AA;
+  border-radius: var(--r-md);
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+  animation: fadeUp 0.3s ease;
+
+  .slow-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+  strong { display: block; font-size: 0.9rem; color: #92400E; margin-bottom: 0.15rem; }
+  p { font-size: 0.82rem; color: #B45309; margin: 0; }
+}
+
 // Error banner
 .error-banner {
   background: var(--red-bg);
@@ -396,6 +414,44 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-retry-inline {
+  margin-left: auto;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 0.3rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--ease);
+  white-space: nowrap;
+
+  &:hover { opacity: 0.85; }
+}
+
+// Spinner dans le bouton
+.btn-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 // ═══════════════════════════════════

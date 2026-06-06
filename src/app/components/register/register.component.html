@@ -69,7 +69,7 @@
 
       <div class="form-group">
         <label>Téléphone du capitaine *</label>
-        <input type="tel" formControlName="phone" placeholder="06 00 00 00 00" />
+        <input type="tel" formControlName="phone" placeholder="07 00 00 00 00" />
         <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.invalid">
           ⚠ Champ requis
         </span>
@@ -103,12 +103,28 @@
         + Ajouter un joueur ({{ players.length }}/20)
       </button>
 
-      <div class="error-banner" *ngIf="errorMsg">⚠ {{ errorMsg }}</div>
+      <!-- Avertissement cold start -->
+      <div *ngIf="slowWarning && loading" class="slow-warning">
+        <span class="slow-icon">⏳</span>
+        <div>
+          <strong>Le serveur démarre...</strong>
+          <p>Première connexion — veuillez patienter 30 à 60 secondes.</p>
+        </div>
+      </div>
+
+      <!-- Erreur + Réessayer -->
+      <div class="error-banner" *ngIf="errorMsg">
+        ⚠ {{ errorMsg }}
+        <button type="button" class="btn-retry-inline" (click)="retry()">↺ Réessayer</button>
+      </div>
 
       <div class="form-actions">
-        <button type="button" class="btn-ghost" (click)="prevStep()">← Retour</button>
+        <button type="button" class="btn-ghost" (click)="prevStep()" [disabled]="loading">← Retour</button>
         <button type="submit" class="btn-primary" (click)="submit()" [disabled]="loading">
-          {{ loading ? 'Envoi en cours...' : "✓ Envoyer l'inscription" }}
+          <span *ngIf="!loading">✓ Envoyer l'inscription</span>
+          <span *ngIf="loading" class="btn-loading">
+            <span class="spinner"></span> Envoi en cours...
+          </span>
         </button>
       </div>
     </div>
