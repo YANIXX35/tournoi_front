@@ -271,6 +271,52 @@
   animation: fadeUp 0.2s ease both;
 }
 
+// Photo du joueur
+.player-photo-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px dashed var(--border);
+  background: #F5F7F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  transition: var(--ease);
+
+  &:hover {
+    border-color: var(--green);
+    background: #E8F5E9;
+  }
+
+  &.has-photo {
+    border-style: solid;
+    border-color: var(--green);
+    background: transparent;
+  }
+
+  .player-photo-icon { font-size: 1rem; line-height: 1; }
+
+  .player-photo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .player-photo-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+}
+
 .player-num-badge {
   width: 28px;
   height: 28px;

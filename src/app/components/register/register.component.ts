@@ -1,5 +1,5 @@
 import { Component, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { TeamService } from '../../services/team.service';
 import { timeout, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -22,6 +22,10 @@ export class RegisterComponent implements OnDestroy {
   logoPath: string | null = null;
   uploadingLogo = false;
   logoUploadWarning = '';
+
+  playerPhotoPreviews: (string | null)[] = [null, null];
+  playerPhotoUploading: boolean[] = [false, false];
+  playerPhotoPaths: (string | null)[] = [null, null];
 
   private slowTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -47,16 +51,33 @@ export class RegisterComponent implements OnDestroy {
     return this.teamForm.get('players') as FormArray;
   }
 
-  createPlayer(): FormControl {
-    return this.fb.control('', Validators.required);
+  playerGroup(i: number): FormGroup {
+    return this.players.at(i) as FormGroup;
+  }
+
+  createPlayer(): FormGroup {
+    return this.fb.group({
+      name: ['', Validators.required],
+      photo: [null],
+    });
   }
 
   addPlayer(): void {
-    if (this.players.length < 20) this.players.push(this.createPlayer());
+    if (this.players.length < 20) {
+      this.players.push(this.createPlayer());
+      this.playerPhotoPreviews.push(null);
+      this.playerPhotoUploading.push(false);
+      this.playerPhotoPaths.push(null);
+    }
   }
 
   removePlayer(i: number): void {
-    if (this.players.length > 1) this.players.removeAt(i);
+    if (this.players.length > 1) {
+      this.players.removeAt(i);
+      this.playerPhotoPreviews.splice(i, 1);
+      this.playerPhotoUploading.splice(i, 1);
+      this.playerPhotoPaths.splice(i, 1);
+    }
   }
 
   onLogoSelected(event: Event): void {
@@ -85,6 +106,44 @@ export class RegisterComponent implements OnDestroy {
     });
   }
 
+  onPlayerPhotoSelected(index: number, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.ngZone.run(() => {
+        this.playerPhotoPreviews[index] = e.target?.result as string;
+        this.cdr.detectChanges();
+      });
+    };
+    reader.readAsDataURL(file);
+
+    this.playerPhotoUploading[index] = true;
+
+    this.teamService.uploadLogo(file).pipe(
+      timeout(30000),
+      catchError(() => of(null))
+    ).subscribe(res => {
+      this.ngZone.run(() => {
+        this.playerPhotoUploading[index] = false;
+        if (res && res.logo_path) {
+          this.playerPhotoPaths[index] = res.logo_path;
+        } else {
+          this.playerPhotoPaths[index] = null;
+        }
+        this.cdr.detectChanges();
+      });
+    });
+  }
+
+  removePlayerPhoto(i: number): void {
+    this.playerPhotoPreviews[i] = null;
+    this.playerPhotoPaths[i] = null;
+    this.playerGroup(i).get('photo')?.setValue(null);
+  }
+
   nextStep(): void {
     const f = this.teamForm;
     if (f.get('name')?.valid && f.get('captain_name')?.valid && f.get('phone')?.valid) {
@@ -101,14 +160,19 @@ export class RegisterComponent implements OnDestroy {
   submit(): void {
     if (this.loading) return;
 
-    const players = (this.players.value as string[]).filter((n: string) => n.trim());
+    const players = (this.players.controls as FormGroup[])
+      .map((ctrl, i) => ({
+        player_name: ((ctrl.get('name')?.value as string) || '').trim(),
+        photo_path: this.playerPhotoPaths[i] || null,
+      }))
+      .filter(p => p.player_name);
+
     if (players.length === 0) { this.errorMsg = 'Ajoutez au moins un joueur.'; return; }
 
     this.loading = true;
     this.errorMsg = '';
     this.slowWarning = false;
 
-    // Message "serveur démarre" après 8s
     this.slowTimer = setTimeout(() => {
       if (this.loading) this.slowWarning = true;
     }, 8000);

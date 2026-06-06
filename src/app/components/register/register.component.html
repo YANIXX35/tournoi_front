@@ -88,11 +88,20 @@
       <p class="form-card-sub">Entrez le nom de chaque joueur participant (maximum 20 joueurs).</p>
 
       <div formArrayName="players" class="players-section">
-        <div *ngFor="let ctrl of players.controls; let i = index" class="player-row">
+        <div *ngFor="let ctrl of players.controls; let i = index" class="player-row" [formGroupName]="i">
+
+          <!-- Photo du joueur (facultative) -->
+          <label class="player-photo-btn" [class.has-photo]="playerPhotoPreviews[i]" [title]="playerPhotoPreviews[i] ? 'Changer la photo' : 'Ajouter une photo (facultatif)'">
+            <img *ngIf="playerPhotoPreviews[i] && !playerPhotoUploading[i]" [src]="playerPhotoPreviews[i]" class="player-photo-img" alt="Photo joueur" />
+            <span *ngIf="!playerPhotoPreviews[i] && !playerPhotoUploading[i]" class="player-photo-icon">📷</span>
+            <span *ngIf="playerPhotoUploading[i]" class="player-photo-spinner"></span>
+            <input type="file" accept="image/*" (change)="onPlayerPhotoSelected(i, $event)" hidden />
+          </label>
+
           <div class="player-num-badge">{{ i + 1 }}</div>
           <input
             type="text"
-            [formControlName]="i"
+            formControlName="name"
             placeholder="Nom du joueur"
             class="player-input" />
           <button type="button" class="btn-remove" (click)="removePlayer(i)" *ngIf="players.length > 1">✕</button>

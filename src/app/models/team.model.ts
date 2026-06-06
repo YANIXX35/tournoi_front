@@ -9,10 +9,15 @@ export interface Team {
   players: string[];
 }
 
+export interface PlayerRegistration {
+  player_name: string;
+  photo_path: string | null;
+}
+
 export interface TeamRegistration {
   name: string;
   captain_name: string;
   phone: string;
   logo_path: string | null;
-  players: string[];
+  players: PlayerRegistration[];
 }
