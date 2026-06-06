@@ -15,14 +15,14 @@
 
     <nav class="sidebar-nav">
       <p class="nav-section-label">Menu</p>
-      <a class="nav-item" [class.active]="activeSection === 'overview'" (click)="activeSection = 'overview'; sidebarOpen = false">
+      <a class="nav-item" [class.active]="activeSection === 'overview'" (click)="setSection('overview')">
         <span class="nav-icon">📊</span> Vue d'ensemble
       </a>
-      <a class="nav-item" [class.active]="activeSection === 'teams'" (click)="activeSection = 'teams'; sidebarOpen = false">
+      <a class="nav-item" [class.active]="activeSection === 'teams'" (click)="setSection('teams')">
         <span class="nav-icon">👥</span> Équipes
         <span class="nav-badge" *ngIf="pendingTeams > 0">{{ pendingTeams }}</span>
       </a>
-      <a class="nav-item" [class.active]="activeSection === 'matches'" (click)="activeSection = 'matches'; sidebarOpen = false">
+      <a class="nav-item" [class.active]="activeSection === 'matches'" (click)="setSection('matches')">
         <span class="nav-icon">⚽</span> Matchs
       </a>
 
@@ -109,7 +109,7 @@
         </div>
         <div class="stat-value">{{ pendingTeams }}</div>
         <div class="stat-sub">
-          <span class="badge-white" (click)="activeSection = 'teams'" style="cursor:pointer">
+          <span class="badge-white" (click)="setSection('teams')" style="cursor:pointer">
             Voir les équipes →
           </span>
         </div>
@@ -124,7 +124,7 @@
         <div class="card">
           <div class="card-header">
             <h2>Dernières inscriptions</h2>
-            <button class="btn-link" (click)="activeSection = 'teams'">Voir tout →</button>
+            <button class="btn-link" (click)="setSection('teams')">Voir tout →</button>
           </div>
           <div class="empty-state" *ngIf="teams.length === 0">Aucune équipe inscrite.</div>
           <!-- Mobile cards -->
@@ -149,7 +149,7 @@
         <div class="card">
           <div class="card-header">
             <h2>Prochains matchs</h2>
-            <button class="btn-link" (click)="activeSection = 'matches'">Voir tout →</button>
+            <button class="btn-link" (click)="setSection('matches')">Voir tout →</button>
           </div>
           <div class="empty-state" *ngIf="matches.length === 0">Aucun match programmé.</div>
           <div class="match-mini" *ngFor="let m of matches.slice(0, 5)">

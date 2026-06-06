@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { TournamentService } from '../../services/tournament.service';
@@ -28,7 +28,9 @@ export class AdminDashboardComponent implements OnInit {
     private adminService: AdminService,
     private tournamentService: TournamentService,
     public auth: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
   ) {}
 
   ngOnInit(): void {
@@ -37,11 +39,23 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   loadTeams(): void {
-    this.adminService.getTeams().subscribe({ next: d => this.teams = d });
+    this.adminService.getTeams().subscribe({
+      next: d => this.ngZone.run(() => { this.teams = d; this.cdr.detectChanges(); })
+    });
   }
 
   loadMatches(): void {
-    this.tournamentService.getMatches().subscribe({ next: d => this.matches = d });
+    this.tournamentService.getMatches().subscribe({
+      next: d => this.ngZone.run(() => { this.matches = d; this.cdr.detectChanges(); })
+    });
+  }
+
+  setSection(section: 'overview' | 'teams' | 'matches'): void {
+    this.ngZone.run(() => {
+      this.activeSection = section;
+      this.sidebarOpen = false;
+      this.cdr.detectChanges();
+    });
   }
 
   // --- Stats ---
@@ -54,53 +68,71 @@ export class AdminDashboardComponent implements OnInit {
 
   // --- Équipes CRUD ---
   validateTeam(team: Team, validated: boolean): void {
-    this.adminService.validateTeam(team.id, validated).subscribe(() => {
-      this.loadTeams();
-      this.flash(validated ? 'Équipe validée ✓' : 'Équipe rejetée');
+    this.adminService.validateTeam(team.id, validated).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.loadTeams();
+        this.flash(validated ? 'Équipe validée ✓' : 'Équipe rejetée');
+      })
     });
   }
 
   deleteTeam(id: number): void {
     if (!confirm('Supprimer cette équipe définitivement ?')) return;
-    this.adminService.deleteTeam(id).subscribe(() => {
-      this.loadTeams();
-      this.flash('Équipe supprimée');
+    this.adminService.deleteTeam(id).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.loadTeams();
+        this.flash('Équipe supprimée');
+      })
     });
   }
 
   // --- Matchs CRUD ---
   createMatch(): void {
     if (!this.newMatch.team1_name || !this.newMatch.team2_name) return;
-    this.adminService.createMatch(this.newMatch).subscribe(() => {
-      this.loadMatches();
-      this.newMatch = {};
-      this.showNewMatchForm = false;
-      this.flash('Match créé ✓');
+    this.adminService.createMatch(this.newMatch).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.loadMatches();
+        this.newMatch = {};
+        this.showNewMatchForm = false;
+        this.flash('Match créé ✓');
+        this.cdr.detectChanges();
+      })
     });
   }
 
   startEdit(match: Match): void {
-    this.editingMatch = { ...match };
+    this.ngZone.run(() => {
+      this.editingMatch = { ...match };
+      this.cdr.detectChanges();
+    });
   }
 
   cancelEdit(): void {
-    this.editingMatch = null;
+    this.ngZone.run(() => {
+      this.editingMatch = null;
+      this.cdr.detectChanges();
+    });
   }
 
   saveMatch(): void {
     if (!this.editingMatch) return;
-    this.adminService.updateMatch(this.editingMatch.id, this.editingMatch).subscribe(() => {
-      this.loadMatches();
-      this.editingMatch = null;
-      this.flash('Match mis à jour ✓');
+    this.adminService.updateMatch(this.editingMatch.id, this.editingMatch).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.loadMatches();
+        this.editingMatch = null;
+        this.flash('Match mis à jour ✓');
+        this.cdr.detectChanges();
+      })
     });
   }
 
   deleteMatch(id: number): void {
     if (!confirm('Supprimer ce match ?')) return;
-    this.adminService.deleteMatch(id).subscribe(() => {
-      this.loadMatches();
-      this.flash('Match supprimé');
+    this.adminService.deleteMatch(id).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.loadMatches();
+        this.flash('Match supprimé');
+      })
     });
   }
 
@@ -111,7 +143,13 @@ export class AdminDashboardComponent implements OnInit {
 
   private flash(msg: string): void {
     this.saveSuccess = msg;
-    setTimeout(() => this.saveSuccess = '', 3000);
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.ngZone.run(() => {
+        this.saveSuccess = '';
+        this.cdr.detectChanges();
+      });
+    }, 3000);
   }
 
   getStatusLabel(s: string): string {

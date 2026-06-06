@@ -586,7 +586,7 @@ $sidebar-w: 240px;
     &.open { left: 0; }
   }
 
-  .sidebar-overlay { display: block; }
+  .sidebar-overlay { display: none; &.visible { display: block; } }
 
   .main-content {
     margin-left: 0;
