@@ -471,7 +471,7 @@
           <div class="team-licence-logo-placeholder" *ngIf="!getPhotoUrl(team.logo_path)">⚽</div>
           <div>
             <h3 class="team-licence-name">{{ team.name }}</h3>
-            <span class="team-licence-meta">Capitaine : {{ team.captain_name }} · {{ team.players?.length ?? 0 }} joueur{{ (team.players?.length ?? 0) > 1 ? 's' : '' }}</span>
+            <span class="team-licence-meta">Capitaine : {{ team.captain_name }} · {{ team.players.length }} joueur{{ team.players.length > 1 ? 's' : '' }}</span>
           </div>
           <span class="status-pill" [class.pill-green]="team.validated" [class.pill-orange]="!team.validated" style="margin-left: auto">
             {{ team.validated ? 'Validée' : 'En attente' }}
