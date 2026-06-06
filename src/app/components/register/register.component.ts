@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { TeamService } from '../../services/team.service';
+import { timeout, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -18,6 +20,7 @@ export class RegisterComponent {
   logoPreview: string | null = null;
   logoPath: string | null = null;
   uploadingLogo = false;
+  logoUploadWarning = '';
 
   constructor(private fb: FormBuilder, private teamService: TeamService) {
     this.teamForm = this.fb.group({
@@ -37,9 +40,7 @@ export class RegisterComponent {
   }
 
   addPlayer(): void {
-    if (this.players.length < 20) {
-      this.players.push(this.createPlayer());
-    }
+    if (this.players.length < 20) this.players.push(this.createPlayer());
   }
 
   removePlayer(i: number): void {
@@ -51,14 +52,26 @@ export class RegisterComponent {
     const file = input.files?.[0];
     if (!file) return;
 
+    // Aperçu immédiat sans attendre le serveur
     const reader = new FileReader();
     reader.onload = (e) => this.logoPreview = e.target?.result as string;
     reader.readAsDataURL(file);
 
     this.uploadingLogo = true;
-    this.teamService.uploadLogo(file).subscribe({
-      next: (res) => { this.logoPath = res.logo_path; this.uploadingLogo = false; },
-      error: () => { this.uploadingLogo = false; }
+    this.logoUploadWarning = '';
+
+    this.teamService.uploadLogo(file).pipe(
+      timeout(20000),
+      catchError(() => of(null))
+    ).subscribe(res => {
+      this.uploadingLogo = false;
+      if (res && res.logo_path) {
+        this.logoPath = res.logo_path;
+      } else {
+        // Echec upload : on garde l'aperçu visuel mais le logo ne sera pas sauvegardé
+        this.logoPath = null;
+        this.logoUploadWarning = 'Logo non enregistré (serveur lent). Vous pouvez continuer sans.';
+      }
     });
   }
 
@@ -73,34 +86,26 @@ export class RegisterComponent {
     }
   }
 
-  prevStep(): void {
-    this.step = 1;
-  }
+  prevStep(): void { this.step = 1; }
 
   submit(): void {
     if (this.loading) return;
-
     const players = (this.players.value as string[]).filter(n => n.trim());
-    if (players.length === 0) {
-      this.errorMsg = 'Ajoutez au moins un joueur.';
-      return;
-    }
+    if (players.length === 0) { this.errorMsg = 'Ajoutez au moins un joueur.'; return; }
 
     this.loading = true;
     this.errorMsg = '';
-
     const { name, captain_name, phone } = this.teamForm.value;
 
-    this.teamService.register({
-      name, captain_name, phone,
-      logo_path: this.logoPath,
-      players,
-    }).subscribe({
-      next: () => { this.success = true; this.loading = false; },
-      error: (err) => {
-        this.errorMsg = err.error?.error || 'Une erreur est survenue.';
+    this.teamService.register({ name, captain_name, phone, logo_path: this.logoPath, players })
+      .pipe(timeout(30000), catchError(err => of({ _error: err })))
+      .subscribe((res: any) => {
         this.loading = false;
-      }
-    });
+        if (res?._error) {
+          this.errorMsg = res._error?.error?.error || 'Erreur lors de l\'inscription. Réessayez.';
+        } else {
+          this.success = true;
+        }
+      });
   }
 }

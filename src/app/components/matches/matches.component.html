@@ -16,7 +16,13 @@
 <div class="matches-wrap">
   <div *ngIf="loading" class="loading-state">Chargement des matchs...</div>
 
-  <div *ngIf="!loading">
+  <div *ngIf="hasError" class="error-state">
+    <span class="error-icon">⚡</span>
+    <p>Impossible de charger les matchs.</p>
+    <button class="retry-btn" (click)="load()">↺ Réessayer</button>
+  </div>
+
+  <div *ngIf="!loading && !hasError">
     <p class="matches-count" *ngIf="filteredMatches.length > 0">
       {{ filteredMatches.length }} match{{ filteredMatches.length > 1 ? 's' : '' }}
     </p>

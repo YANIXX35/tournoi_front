@@ -6,7 +6,13 @@
 <div class="results-wrap">
   <div *ngIf="loading" class="loading-state">Chargement des résultats...</div>
 
-  <div *ngIf="!loading">
+  <div *ngIf="hasError" class="error-state">
+    <span class="error-icon">⚡</span>
+    <p>Impossible de charger les résultats.</p>
+    <button class="retry-btn" (click)="load()">↺ Réessayer</button>
+  </div>
+
+  <div *ngIf="!loading && !hasError">
 
     <!-- ═══ PODIUM ═══ -->
     <section class="podium-section" *ngIf="standings.length >= 3">

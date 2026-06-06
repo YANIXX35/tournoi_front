@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TournamentService } from '../../services/tournament.service';
 import { Match } from '../../models/match.model';
+import { timeout, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-matches',
@@ -14,34 +16,34 @@ export class MatchesComponent implements OnInit {
   phases: string[] = [];
   selectedPhase = 'Tous';
   loading = true;
+  hasError = false;
 
   constructor(private tournamentService: TournamentService) {}
 
-  ngOnInit(): void {
-    this.tournamentService.getMatches().subscribe({
-      next: (data) => {
-        this.matches = data;
-        this.phases = ['Tous', ...new Set(data.map(m => m.phase))];
-        this.filteredMatches = data;
-        this.loading = false;
-      },
-      error: () => { this.loading = false; }
+  ngOnInit(): void { this.load(); }
+
+  load(): void {
+    this.loading = true;
+    this.hasError = false;
+    this.tournamentService.getMatches().pipe(
+      timeout(15000),
+      catchError(() => of(null))
+    ).subscribe(data => {
+      this.loading = false;
+      if (!data) { this.hasError = true; return; }
+      this.matches = data;
+      this.phases = ['Tous', ...new Set(data.map((m: Match) => m.phase))];
+      this.filteredMatches = data;
     });
   }
 
   filterByPhase(phase: string): void {
     this.selectedPhase = phase;
-    this.filteredMatches = phase === 'Tous'
-      ? this.matches
-      : this.matches.filter(m => m.phase === phase);
+    this.filteredMatches = phase === 'Tous' ? this.matches : this.matches.filter(m => m.phase === phase);
   }
 
   getStatusLabel(status: string): string {
-    const labels: Record<string, string> = {
-      upcoming: 'À venir',
-      ongoing: 'En cours',
-      finished: 'Terminé',
-    };
+    const labels: Record<string, string> = { upcoming: 'À venir', ongoing: 'En cours', finished: 'Terminé' };
     return labels[status] || status;
   }
 }

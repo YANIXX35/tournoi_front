@@ -189,6 +189,15 @@
   color: var(--green);
 }
 
+.logo-warning {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--orange);
+  text-align: center;
+  max-width: 180px;
+  line-height: 1.4;
+}
+
 .btn-change-logo {
   margin-top: 0.5rem;
   background: none;

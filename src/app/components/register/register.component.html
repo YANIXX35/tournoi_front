@@ -42,12 +42,13 @@
             <span class="logo-hint">JPG, PNG, WEBP · Optionnel</span>
           </div>
           <img *ngIf="logoPreview" [src]="logoPreview" class="logo-preview-img" alt="Logo équipe" />
-          <div *ngIf="uploadingLogo" class="logo-uploading-overlay">Envoi...</div>
+          <div *ngIf="uploadingLogo" class="logo-uploading-overlay">⏳ Envoi...</div>
           <input type="file" accept="image/*" (change)="onLogoSelected($event)" hidden />
         </label>
-        <button *ngIf="logoPreview" type="button" class="btn-change-logo" (click)="logoPreview = null; logoPath = null">
+        <button *ngIf="logoPreview" type="button" class="btn-change-logo" (click)="logoPreview = null; logoPath = null; logoUploadWarning = ''">
           Changer le logo
         </button>
+        <p *ngIf="logoUploadWarning" class="logo-warning">⚠ {{ logoUploadWarning }}</p>
       </div>
 
       <div class="form-group">
