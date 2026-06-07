@@ -15,6 +15,7 @@ import { TeamsComponent } from './components/teams/teams.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AdminLoginComponent } from './components/admin/admin-login.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard.component';
+import { ButeursComponent } from './components/buteurs/buteurs.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { AdminDashboardComponent } from './components/admin/admin-dashboard.comp
     RegisterComponent,
     AdminLoginComponent,
     AdminDashboardComponent,
+    ButeursComponent,
     RevealDirective,
   ],
   imports: [

@@ -1,0 +1,92 @@
+<div class="buteurs-page">
+
+  <div class="buteurs-hero">
+    <p class="hero-label">Statistiques individuelles</p>
+    <h1 class="hero-title">Buteurs &amp; Passeurs</h1>
+    <p class="hero-sub">Classement des meilleurs joueurs du tournoi</p>
+  </div>
+
+  <div class="buteurs-body">
+
+    <!-- Onglets -->
+    <div class="tabs">
+      <button class="tab-btn" [class.active]="tab === 'goal'" (click)="tab = 'goal'">
+        ⚽ Buteurs
+        <span class="tab-count" *ngIf="scorers.length > 0">{{ scorers.length }}</span>
+      </button>
+      <button class="tab-btn" [class.active]="tab === 'assist'" (click)="tab = 'assist'">
+        🅰️ Passeurs
+        <span class="tab-count" *ngIf="assisters.length > 0">{{ assisters.length }}</span>
+      </button>
+    </div>
+
+    <!-- Chargement -->
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Chargement des statistiques…</p>
+    </div>
+
+    <!-- Erreur -->
+    <div class="empty-state" *ngIf="error && !loading">
+      <span class="es-icon">⚠️</span>
+      <p>Impossible de charger les statistiques.</p>
+    </div>
+
+    <!-- Liste vide -->
+    <div class="empty-state" *ngIf="!loading && !error && list.length === 0">
+      <span class="es-icon">⚽</span>
+      <p>Aucun {{ tab === 'goal' ? 'buteur' : 'passeur' }} enregistré pour l'instant.</p>
+      <small>Les stats seront mises à jour dès le début du tournoi.</small>
+    </div>
+
+    <!-- Classement -->
+    <div class="ranking" *ngIf="!loading && !error && list.length > 0">
+
+      <!-- Podium top 3 -->
+      <div class="podium" *ngIf="list.length >= 3">
+        <div class="podium-card podium-2nd" *ngIf="list[1]">
+          <div class="podium-medal">🥈</div>
+          <div class="podium-name">{{ list[1].player_name }}</div>
+          <div class="podium-team">{{ list[1].team_name }}</div>
+          <div class="podium-count">{{ list[1].total }} {{ tab === 'goal' ? 'but(s)' : 'passe(s)' }}</div>
+          <div class="podium-bar bar-2"></div>
+        </div>
+        <div class="podium-card podium-1st" *ngIf="list[0]">
+          <div class="podium-medal">🥇</div>
+          <div class="podium-name">{{ list[0].player_name }}</div>
+          <div class="podium-team">{{ list[0].team_name }}</div>
+          <div class="podium-count">{{ list[0].total }} {{ tab === 'goal' ? 'but(s)' : 'passe(s)' }}</div>
+          <div class="podium-bar bar-1"></div>
+        </div>
+        <div class="podium-card podium-3rd" *ngIf="list[2]">
+          <div class="podium-medal">🥉</div>
+          <div class="podium-name">{{ list[2].player_name }}</div>
+          <div class="podium-team">{{ list[2].team_name }}</div>
+          <div class="podium-count">{{ list[2].total }} {{ tab === 'goal' ? 'but(s)' : 'passe(s)' }}</div>
+          <div class="podium-bar bar-3"></div>
+        </div>
+      </div>
+
+      <!-- Liste complète -->
+      <div class="rank-list">
+        <div class="rank-row" *ngFor="let s of list; let i = index">
+          <div class="rank-pos" [class.gold]="i===0" [class.silver]="i===1" [class.bronze]="i===2">
+            {{ i < 3 ? (i===0 ? '🥇' : i===1 ? '🥈' : '🥉') : (i + 1) }}
+          </div>
+          <div class="rank-info">
+            <span class="rank-name">{{ s.player_name }}</span>
+            <span class="rank-team">{{ s.team_name }}</span>
+          </div>
+          <div class="rank-bar-wrap">
+            <div class="rank-bar" [style.width.%]="(s.total / list[0].total) * 100"></div>
+          </div>
+          <div class="rank-total">
+            {{ s.total }} <span class="rank-unit">{{ tab === 'goal' ? '⚽' : '🅰️' }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

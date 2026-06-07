@@ -7,11 +7,13 @@ import { TeamsComponent } from './components/teams/teams.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AdminLoginComponent } from './components/admin/admin-login.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard.component';
+import { ButeursComponent } from './components/buteurs/buteurs.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'matchs', component: MatchesComponent },
+  { path: 'buteurs', component: ButeursComponent },
   { path: 'resultats', component: ResultsComponent },
   { path: 'equipes', component: TeamsComponent },
   { path: 'inscription', component: RegisterComponent },

@@ -1,0 +1,207 @@
+.buteurs-page {
+  min-height: 100vh;
+  background: #f4f6f8;
+}
+
+// ── Hero ──────────────────────────────────────────────
+.buteurs-hero {
+  background: linear-gradient(135deg, #0d1b2a 0%, #1a472a 100%);
+  padding: 4rem 1.5rem 3rem;
+  text-align: center;
+  color: white;
+
+  .hero-label {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #22c55e;
+    margin: 0 0 .5rem;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    margin: 0 0 .5rem;
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: rgba(255,255,255,.65);
+    margin: 0;
+  }
+}
+
+// ── Body ──────────────────────────────────────────────
+.buteurs-body {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+// ── Onglets ───────────────────────────────────────────
+.tabs {
+  display: flex;
+  gap: .75rem;
+  margin-bottom: 2rem;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .55rem 1.25rem;
+  border-radius: 99px;
+  border: 2px solid #ddd;
+  background: white;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #555;
+  transition: all .2s;
+
+  &.active {
+    background: #1a472a;
+    border-color: #1a472a;
+    color: white;
+  }
+
+  &:hover:not(.active) { border-color: #1a472a; color: #1a472a; }
+}
+
+.tab-count {
+  background: #22c55e;
+  color: white;
+  border-radius: 99px;
+  font-size: .7rem;
+  padding: .1rem .45rem;
+  font-weight: 700;
+}
+
+// ── États ─────────────────────────────────────────────
+.loading-state, .empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #888;
+
+  p { font-size: 1rem; margin: .5rem 0 .25rem; }
+  small { font-size: .82rem; color: #aaa; }
+  .es-icon { font-size: 2.5rem; display: block; margin-bottom: .75rem; }
+}
+
+.spinner {
+  width: 36px; height: 36px;
+  border: 3px solid #e0e0e0;
+  border-top-color: #1a472a;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ── Podium ────────────────────────────────────────────
+.podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.podium-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  border-radius: 16px;
+  padding: 1.25rem 1rem 0;
+  width: 180px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  text-align: center;
+
+  .podium-medal { font-size: 2rem; margin-bottom: .35rem; }
+  .podium-name  { font-weight: 700; font-size: .95rem; color: #1a1a1a; }
+  .podium-team  { font-size: .78rem; color: #888; margin: .2rem 0 .5rem; }
+  .podium-count { font-size: .82rem; font-weight: 600; color: #1a472a; margin-bottom: .75rem; }
+
+  .podium-bar {
+    width: 100%;
+    border-radius: 0 0 0 0;
+  }
+
+  &.podium-1st { order: 2; .podium-bar { height: 48px; background: linear-gradient(180deg, #FFD700, #f59e0b); border-radius: 0 0 16px 16px; } }
+  &.podium-2nd { order: 1; .podium-bar { height: 32px; background: linear-gradient(180deg, #C0C0C0, #9ca3af); border-radius: 0 0 16px 16px; } }
+  &.podium-3rd { order: 3; .podium-bar { height: 20px; background: linear-gradient(180deg, #CD7F32, #b45309); border-radius: 0 0 16px 16px; } }
+}
+
+@media (max-width: 560px) {
+  .podium { gap: .5rem; }
+  .podium-card { width: calc(33% - .5rem); padding: .75rem .5rem 0; .podium-name { font-size: .8rem; } }
+}
+
+// ── Liste complète ────────────────────────────────────
+.rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.rank-row {
+  display: grid;
+  grid-template-columns: 48px 1fr auto auto;
+  align-items: center;
+  gap: .75rem;
+  background: white;
+  border-radius: 10px;
+  padding: .75rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  transition: transform .15s;
+
+  &:hover { transform: translateX(4px); }
+}
+
+.rank-pos {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  color: #aaa;
+
+  &.gold   { color: #f59e0b; }
+  &.silver { color: #9ca3af; }
+  &.bronze { color: #b45309; }
+}
+
+.rank-info {
+  display: flex;
+  flex-direction: column;
+
+  .rank-name { font-weight: 600; font-size: .92rem; color: #1a1a1a; }
+  .rank-team { font-size: .78rem; color: #888; }
+}
+
+.rank-bar-wrap {
+  width: 120px;
+  height: 6px;
+  background: #eee;
+  border-radius: 99px;
+  overflow: hidden;
+
+  @media (max-width: 560px) { display: none; }
+}
+
+.rank-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #1a472a, #22c55e);
+  border-radius: 99px;
+  transition: width .4s ease;
+}
+
+.rank-total {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1a472a;
+  min-width: 40px;
+  text-align: right;
+
+  .rank-unit { font-size: .85rem; }
+}
