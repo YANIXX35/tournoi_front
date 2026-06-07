@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { TournamentService } from '../../services/tournament.service';
-import { TopScorer } from '../../models/match.model';
+import { TopScorer, Announcement } from '../../models/match.model';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +17,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   scorers: TopScorer[] = [];
   assisters: TopScorer[] = [];
   scorerTab: 'goal' | 'assist' = 'goal';
+  announcements: Announcement[] = [];
+  dismissedAnnouncements = new Set<number>();
 
   constructor(
     private router: Router,
@@ -28,6 +30,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.updateCountdown();
     this.timer = setInterval(() => this.updateCountdown(), 1000);
     this.loadTopScorers();
+    this.loadAnnouncements();
   }
 
   ngOnDestroy(): void {
@@ -66,6 +69,22 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   get displayList(): TopScorer[] {
     return this.scorerTab === 'goal' ? this.scorers : this.assisters;
+  }
+
+  loadAnnouncements(): void {
+    this.tournamentService.getAnnouncements().subscribe({
+      next: list => { this.announcements = list; this.cdr.detectChanges(); },
+      error: () => {},
+    });
+  }
+
+  dismiss(id: number): void {
+    this.dismissedAnnouncements.add(id);
+    this.cdr.detectChanges();
+  }
+
+  get visibleAnnouncements(): Announcement[] {
+    return this.announcements.filter(a => !this.dismissedAnnouncements.has(a.id));
   }
 
   goRegister(): void {

@@ -11,6 +11,9 @@
     class="filter-pill">
     {{ phase }}
   </button>
+  <button class="filter-pill pdf-btn" (click)="exportPdf()" *ngIf="matches.length > 0" title="Télécharger le programme en PDF">
+    📄 Programme PDF
+  </button>
 </div>
 
 <div class="matches-wrap">

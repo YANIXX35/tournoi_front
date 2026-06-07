@@ -4,7 +4,7 @@ import { AdminService } from '../../services/admin.service';
 import { TournamentService } from '../../services/tournament.service';
 import { AuthService } from '../../services/auth.service';
 import { Team, AdminPlayer } from '../../models/team.model';
-import { Match, Goal } from '../../models/match.model';
+import { Match, Goal, Announcement, GalleryPhoto, AdminLog } from '../../models/match.model';
 import { environment } from '../../../environments/environment';
 import * as XLSX from 'xlsx';
 
@@ -17,7 +17,7 @@ import * as XLSX from 'xlsx';
 export class AdminDashboardComponent implements OnInit, OnDestroy {
   teams: Team[] = [];
   matches: Match[] = [];
-  activeSection: 'overview' | 'teams' | 'matches' | 'results' | 'licences' | 'scorers' = 'overview';
+  activeSection: 'overview' | 'teams' | 'matches' | 'results' | 'licences' | 'scorers' | 'gallery' | 'announcements' | 'logs' = 'overview';
   sidebarOpen = false;
 
   // Matchs — création / édition complète
@@ -107,7 +107,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  setSection(section: 'overview' | 'teams' | 'matches' | 'results' | 'licences' | 'scorers'): void {
+  setSection(section: 'overview' | 'teams' | 'matches' | 'results' | 'licences' | 'scorers' | 'gallery' | 'announcements' | 'logs'): void {
     this.ngZone.run(() => {
       this.activeSection = section;
       this.sidebarOpen = false;
@@ -120,6 +120,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       this.newPlayerPhotoPreview = null;
       this.editPlayerPhotoPreview = null;
       this.editPlayerNewPhotoPath = undefined;
+      if (section === 'gallery') this.loadGallery();
+      if (section === 'announcements') this.loadAnnouncements();
+      if (section === 'logs') this.loadLogs();
       this.cdr.detectChanges();
     });
   }
@@ -840,6 +843,143 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     return map[phase] || '#888';
   }
 
+  // ── Galerie ────────────────────────────────────────────
+  galleryPhotos: GalleryPhoto[] = [];
+  newPhotoTitle = '';
+  newPhotoPath: string | null = null;
+  newPhotoPreview: string | null = null;
+  galleryUploading = false;
+
+  loadGallery(): void {
+    this.adminService.getGallery().subscribe({
+      next: photos => this.ngZone.run(() => { this.galleryPhotos = photos; this.cdr.detectChanges(); }),
+      error: () => {},
+    });
+  }
+
+  onGalleryPhotoSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.galleryUploading = true;
+    this._resizeToBase64(file, 1200, 900).then(dataUrl => this.ngZone.run(() => {
+      this.newPhotoPath = dataUrl;
+      this.newPhotoPreview = dataUrl;
+      this.galleryUploading = false;
+      this.cdr.detectChanges();
+    })).catch(() => this.ngZone.run(() => { this.galleryUploading = false; this.cdr.detectChanges(); }));
+  }
+
+  private _resizeToBase64(file: File, maxW: number, maxH: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = ev => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          const ratio = Math.min(maxW / img.width, maxH / img.height, 1);
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * ratio);
+          canvas.height = Math.round(img.height * ratio);
+          canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.src = ev.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  addGalleryPhoto(): void {
+    if (!this.newPhotoPath) { this.flash('Sélectionnez une photo'); return; }
+    this.adminService.addPhoto({ title: this.newPhotoTitle.trim() || undefined, photo_path: this.newPhotoPath }).subscribe({
+      next: photo => this.ngZone.run(() => {
+        this.galleryPhotos.unshift(photo);
+        this.newPhotoTitle = ''; this.newPhotoPath = null; this.newPhotoPreview = null;
+        this.flash('Photo ajoutée ✓'); this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur ajout photo'); }),
+    });
+  }
+
+  deleteGalleryPhoto(id: number): void {
+    if (!confirm('Supprimer cette photo ?')) return;
+    this.adminService.deletePhoto(id).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.galleryPhotos = this.galleryPhotos.filter(p => p.id !== id);
+        this.flash('Photo supprimée ✓'); this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur suppression'); }),
+    });
+  }
+
+  // ── Annonces ───────────────────────────────────────────
+  announcements: Announcement[] = [];
+  newAnnouncement: Partial<Announcement> = { type: 'info' };
+  editingAnnouncement: Announcement | null = null;
+
+  loadAnnouncements(): void {
+    this.adminService.getAnnouncements().subscribe({
+      next: list => this.ngZone.run(() => { this.announcements = list; this.cdr.detectChanges(); }),
+      error: () => {},
+    });
+  }
+
+  addAnnouncement(): void {
+    const { title, content, type } = this.newAnnouncement;
+    if (!title?.trim() || !content?.trim()) { this.flash('Titre et contenu requis'); return; }
+    this.adminService.addAnnouncement({ title: title.trim(), content: content.trim(), type }).subscribe({
+      next: ann => this.ngZone.run(() => {
+        this.announcements.unshift(ann);
+        this.newAnnouncement = { type: 'info' };
+        this.flash('Annonce publiée ✓'); this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur publication'); }),
+    });
+  }
+
+  toggleAnnouncement(ann: Announcement): void {
+    this.adminService.updateAnnouncement(ann.id, { active: !ann.active }).subscribe({
+      next: () => this.ngZone.run(() => {
+        ann.active = !ann.active; this.flash('Mis à jour ✓'); this.cdr.detectChanges();
+      }),
+      error: () => {},
+    });
+  }
+
+  deleteAnnouncement(id: number): void {
+    if (!confirm('Supprimer cette annonce ?')) return;
+    this.adminService.deleteAnnouncement(id).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.announcements = this.announcements.filter(a => a.id !== id);
+        this.flash('Supprimée ✓'); this.cdr.detectChanges();
+      }),
+      error: () => {},
+    });
+  }
+
+  // ── Historique admin ───────────────────────────────────
+  adminLogs: AdminLog[] = [];
+  logsLoading = false;
+
+  loadLogs(): void {
+    this.logsLoading = true;
+    this.adminService.getLogs().subscribe({
+      next: logs => this.ngZone.run(() => {
+        this.adminLogs = logs; this.logsLoading = false; this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => { this.logsLoading = false; this.cdr.detectChanges(); }),
+    });
+  }
+
+  getLogLabel(action: string): string {
+    const map: Record<string, string> = {
+      gallery_add: '📷 Photo ajoutée', gallery_delete: '🗑 Photo supprimée',
+      announcement_add: '📢 Annonce publiée', announcement_update: '✏ Annonce modifiée', announcement_delete: '🗑 Annonce supprimée',
+    };
+    return map[action] || action;
+  }
+
   getSectionTitle(): string {
     const map: Record<string, string> = {
       overview: "Vue d'ensemble",
@@ -848,6 +988,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       results: 'Saisie des résultats',
       licences: 'Licences joueurs',
       scorers: 'Buteurs & Passeurs',
+      gallery: 'Galerie photos',
+      announcements: 'Annonces & Actualités',
+      logs: 'Historique admin',
     };
     return map[this.activeSection] || '';
   }

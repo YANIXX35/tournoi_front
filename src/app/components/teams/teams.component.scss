@@ -205,6 +205,20 @@
   gap: 0.4rem;
 }
 
+.team-detail-link {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1.1rem;
+  background: var(--emerald);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.18s;
+  &:hover { background: #16a34a; }
+}
+
 .player-pill {
   display: flex;
   align-items: center;

@@ -8,6 +8,8 @@ import { RegisterComponent } from './components/register/register.component';
 import { AdminLoginComponent } from './components/admin/admin-login.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard.component';
 import { ButeursComponent } from './components/buteurs/buteurs.component';
+import { TeamDetailComponent } from './components/team-detail/team-detail.component';
+import { GalleryComponent } from './components/gallery/gallery.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
@@ -16,6 +18,8 @@ const routes: Routes = [
   { path: 'buteurs', component: ButeursComponent },
   { path: 'resultats', component: ResultsComponent },
   { path: 'equipes', component: TeamsComponent },
+  { path: 'equipes/:id', component: TeamDetailComponent },
+  { path: 'galerie', component: GalleryComponent },
   { path: 'inscription', component: RegisterComponent },
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard] },

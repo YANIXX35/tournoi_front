@@ -28,6 +28,42 @@ export interface TopScorer {
   total: number;
 }
 
+export interface Announcement {
+  id: number;
+  title: string;
+  content: string;
+  type: 'info' | 'warning' | 'urgent';
+  active?: boolean;
+  created_at: string;
+}
+
+export interface GalleryPhoto {
+  id: number;
+  title: string | null;
+  photo_path: string;
+  created_at: string;
+}
+
+export interface TeamDetail {
+  id: number;
+  name: string;
+  captain_name: string;
+  logo_path: string | null;
+  created_at: string | null;
+  players: { id: number; player_name: string; photo_path: string | null }[];
+  matches: Match[];
+  stats: { played: number; won: number; drawn: number; lost: number; goals_for: number; goals_against: number; points: number };
+  scorers: { player_name: string; type: string; total: number }[];
+}
+
+export interface AdminLog {
+  id: number;
+  username: string;
+  action: string;
+  details: string | null;
+  created_at: string;
+}
+
 export interface Standing {
   id: number;
   name: string;

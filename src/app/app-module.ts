@@ -16,6 +16,8 @@ import { RegisterComponent } from './components/register/register.component';
 import { AdminLoginComponent } from './components/admin/admin-login.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard.component';
 import { ButeursComponent } from './components/buteurs/buteurs.component';
+import { TeamDetailComponent } from './components/team-detail/team-detail.component';
+import { GalleryComponent } from './components/gallery/gallery.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { ButeursComponent } from './components/buteurs/buteurs.component';
     AdminLoginComponent,
     AdminDashboardComponent,
     ButeursComponent,
+    TeamDetailComponent,
+    GalleryComponent,
     RevealDirective,
   ],
   imports: [

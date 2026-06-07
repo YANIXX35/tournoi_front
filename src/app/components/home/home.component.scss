@@ -1,4 +1,42 @@
 // ═══════════════════════════════════
+// ANNONCES
+// ═══════════════════════════════════
+.home-announcements {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  padding: .75rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.announcement {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  padding: .85rem 1rem;
+  border-radius: 10px;
+  border-left: 4px solid;
+  animation: slideDown .3s ease;
+
+  &.ann-info    { background: #eff6ff; border-color: #3b82f6; .ann-title { color: #1d4ed8; } }
+  &.ann-warning { background: #fffbeb; border-color: #f59e0b; .ann-title { color: #92400e; } }
+  &.ann-urgent  { background: #fef2f2; border-color: #ef4444; .ann-title { color: #dc2626; } }
+}
+
+@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+
+.ann-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.ann-body { flex: 1; }
+.ann-title { font-size: .88rem; font-weight: 700; display: block; margin-bottom: .2rem; }
+.ann-content { font-size: .84rem; color: #555; margin: 0; }
+.ann-close {
+  background: none; border: none; cursor: pointer; color: #aaa; font-size: 1rem;
+  padding: 0 .25rem; flex-shrink: 0;
+  &:hover { color: #555; }
+}
+
+// ═══════════════════════════════════
 // HERO SECTION
 // ═══════════════════════════════════
 .home-hero {

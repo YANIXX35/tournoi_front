@@ -45,6 +45,18 @@
   </div>
 </div>
 
+<!-- ANNONCES -->
+<div class="home-announcements" *ngIf="visibleAnnouncements.length > 0">
+  <div class="announcement" *ngFor="let a of visibleAnnouncements" [class]="'ann-' + a.type">
+    <div class="ann-icon">{{ a.type === 'urgent' ? '🚨' : a.type === 'warning' ? '⚠️' : 'ℹ️' }}</div>
+    <div class="ann-body">
+      <strong class="ann-title">{{ a.title }}</strong>
+      <p class="ann-content">{{ a.content }}</p>
+    </div>
+    <button class="ann-close" (click)="dismiss(a.id)">✕</button>
+  </div>
+</div>
+
 <!-- FEATURES GRID -->
 <section class="home-features">
   <p class="features-label" appReveal>Tout ce qu'il vous faut</p>

@@ -1,0 +1,62 @@
+.gallery-page { min-height: 100vh; background: #0d1b2a; }
+
+.gallery-hero {
+  padding: 4rem 1.5rem 2.5rem; text-align: center; color: white;
+  .hero-label { font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: #22c55e; margin: 0 0 .5rem; }
+  .hero-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0 0 .5rem; }
+  .hero-sub { font-size: 1rem; color: rgba(255,255,255,.6); margin: 0; }
+}
+
+.gallery-body { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+
+.gallery-loading, .gallery-empty {
+  text-align: center; padding: 4rem 1rem; color: rgba(255,255,255,.5);
+  .ge-icon { font-size: 2.5rem; display: block; margin-bottom: .75rem; }
+  p { font-size: 1rem; margin: .5rem 0 .25rem; }
+  small { font-size: .82rem; opacity: .6; }
+}
+
+.spinner { width: 36px; height: 36px; border: 3px solid rgba(255,255,255,.15); border-top-color: #22c55e; border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 1rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.gallery-item {
+  position: relative; border-radius: 12px; overflow: hidden; cursor: pointer;
+  aspect-ratio: 4/3; background: #1a2a3a;
+  transition: transform .2s;
+  &:hover { transform: scale(1.02); }
+  &:hover .gallery-overlay { opacity: 1; }
+
+  img { width: 100%; height: 100%; object-fit: cover; display: block; }
+}
+
+.gallery-overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,.5);
+  display: flex; align-items: flex-end; justify-content: space-between;
+  padding: .75rem; opacity: 0; transition: opacity .2s;
+  span { color: white; font-size: .82rem; font-weight: 600; }
+  .gallery-zoom { font-size: 1.2rem; }
+}
+
+// ── Lightbox ──────────────────────────────────────────
+.lightbox {
+  position: fixed; inset: 0; background: rgba(0,0,0,.92);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 9999; padding: 1.5rem; cursor: pointer;
+
+  img { max-width: 90vw; max-height: 80vh; border-radius: 8px; object-fit: contain; cursor: default; }
+  .lb-caption { color: rgba(255,255,255,.7); font-size: .9rem; margin-top: .75rem; cursor: default; }
+}
+
+.lb-close {
+  position: absolute; top: 1rem; right: 1.25rem;
+  background: rgba(255,255,255,.1); border: none; color: white;
+  font-size: 1.2rem; width: 40px; height: 40px; border-radius: 50%;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  &:hover { background: rgba(255,255,255,.2); }
+}

@@ -36,6 +36,15 @@
       <a class="nav-item" [class.active]="activeSection === 'scorers'" (click)="setSection('scorers')">
         <span class="nav-icon">⚽</span> Buteurs &amp; Passeurs
       </a>
+      <a class="nav-item" [class.active]="activeSection === 'gallery'" (click)="setSection('gallery')">
+        <span class="nav-icon">📷</span> Galerie photos
+      </a>
+      <a class="nav-item" [class.active]="activeSection === 'announcements'" (click)="setSection('announcements')">
+        <span class="nav-icon">📢</span> Annonces
+      </a>
+      <a class="nav-item" [class.active]="activeSection === 'logs'" (click)="setSection('logs')">
+        <span class="nav-icon">📋</span> Historique
+      </a>
 
       <p class="nav-section-label" style="margin-top: 2rem">Général</p>
       <a class="nav-item" routerLink="/" target="_blank">
@@ -776,6 +785,113 @@
           </ng-container>
         </div>
 
+      </div>
+
+    </div>
+
+    <!-- ══════════ SECTION : GALERIE ══════════ -->
+    <div *ngIf="activeSection === 'gallery'" class="section-content">
+
+      <!-- Upload -->
+      <div class="gallery-upload-card">
+        <h3 class="guc-title">Ajouter une photo</h3>
+        <div class="guc-form">
+          <label class="guc-photo-label" [class.uploading]="galleryUploading">
+            <div class="guc-preview" *ngIf="newPhotoPreview">
+              <img [src]="newPhotoPreview" alt="preview" />
+            </div>
+            <div class="guc-placeholder" *ngIf="!newPhotoPreview">
+              <span>📷</span><small>{{ galleryUploading ? 'Chargement…' : 'Cliquer pour sélectionner' }}</small>
+            </div>
+            <input type="file" accept="image/*" hidden (change)="onGalleryPhotoSelected($event)" [disabled]="galleryUploading" />
+          </label>
+          <div class="guc-fields">
+            <input class="guc-input" type="text" placeholder="Titre / légende (optionnel)" [(ngModel)]="newPhotoTitle" />
+            <button class="btn-primary" (click)="addGalleryPhoto()" [disabled]="!newPhotoPath || galleryUploading">
+              + Publier la photo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grille -->
+      <div class="admin-gallery-grid" *ngIf="galleryPhotos.length > 0">
+        <div class="agp-item" *ngFor="let p of galleryPhotos">
+          <img [src]="p.photo_path" [alt]="p.title || 'photo'" />
+          <div class="agp-overlay">
+            <span class="agp-title" *ngIf="p.title">{{ p.title }}</span>
+            <button class="agp-del" (click)="deleteGalleryPhoto(p.id)">🗑</button>
+          </div>
+        </div>
+      </div>
+      <p class="empty-hint" *ngIf="galleryPhotos.length === 0">Aucune photo publiée. Ajoutez-en une ci-dessus.</p>
+
+    </div>
+
+    <!-- ══════════ SECTION : ANNONCES ══════════ -->
+    <div *ngIf="activeSection === 'announcements'" class="section-content">
+
+      <!-- Formulaire -->
+      <div class="ann-form-card">
+        <h3 class="afc-title">Nouvelle annonce</h3>
+        <div class="afc-row">
+          <select class="afc-select" [(ngModel)]="newAnnouncement.type">
+            <option value="info">ℹ️ Information</option>
+            <option value="warning">⚠️ Avertissement</option>
+            <option value="urgent">🚨 Urgent</option>
+          </select>
+          <input class="afc-input" type="text" placeholder="Titre de l'annonce" [(ngModel)]="newAnnouncement.title" />
+        </div>
+        <textarea class="afc-textarea" placeholder="Contenu de l'annonce…" [(ngModel)]="newAnnouncement.content" rows="3"></textarea>
+        <button class="btn-primary" (click)="addAnnouncement()">📢 Publier</button>
+      </div>
+
+      <!-- Liste -->
+      <div class="ann-list">
+        <div class="ann-admin-item" *ngFor="let a of announcements" [class.inactive]="!a.active">
+          <div class="aai-type">{{ a.type === 'urgent' ? '🚨' : a.type === 'warning' ? '⚠️' : 'ℹ️' }}</div>
+          <div class="aai-body">
+            <strong>{{ a.title }}</strong>
+            <p>{{ a.content }}</p>
+            <small>{{ a.created_at | date:'dd/MM/yyyy HH:mm' }}</small>
+          </div>
+          <div class="aai-actions">
+            <button class="btn-sm" [class.btn-green]="!a.active" [class.btn-gray]="a.active" (click)="toggleAnnouncement(a)">
+              {{ a.active ? 'Désactiver' : 'Activer' }}
+            </button>
+            <button class="btn-sm btn-red" (click)="deleteAnnouncement(a.id)">🗑</button>
+          </div>
+        </div>
+        <p class="empty-hint" *ngIf="announcements.length === 0">Aucune annonce. Publiez-en une ci-dessus.</p>
+      </div>
+
+    </div>
+
+    <!-- ══════════ SECTION : HISTORIQUE ══════════ -->
+    <div *ngIf="activeSection === 'logs'" class="section-content">
+
+      <div class="logs-loading" *ngIf="logsLoading">Chargement…</div>
+
+      <div class="logs-table-wrap" *ngIf="!logsLoading">
+        <p class="empty-hint" *ngIf="adminLogs.length === 0">Aucune action enregistrée pour le moment.</p>
+        <table class="logs-table" *ngIf="adminLogs.length > 0">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Admin</th>
+              <th>Action</th>
+              <th>Détails</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let log of adminLogs">
+              <td class="log-date">{{ log.created_at | date:'dd/MM HH:mm' }}</td>
+              <td class="log-user">{{ log.username }}</td>
+              <td class="log-action">{{ getLogLabel(log.action) }}</td>
+              <td class="log-details">{{ log.details || '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
     </div>

@@ -1,0 +1,40 @@
+<div class="gallery-page">
+
+  <div class="gallery-hero">
+    <p class="hero-label">Photos du tournoi</p>
+    <h1 class="hero-title">Galerie</h1>
+    <p class="hero-sub">Les meilleurs moments du Tournoi FJU 2026</p>
+  </div>
+
+  <div class="gallery-body">
+
+    <div class="gallery-loading" *ngIf="loading">
+      <div class="spinner"></div><p>Chargement…</p>
+    </div>
+
+    <div class="gallery-empty" *ngIf="!loading && photos.length === 0">
+      <span class="ge-icon">📷</span>
+      <p>Aucune photo publiée pour le moment.</p>
+      <small>Revenez pendant le tournoi !</small>
+    </div>
+
+    <div class="gallery-grid" *ngIf="!loading && photos.length > 0">
+      <div class="gallery-item" *ngFor="let p of photos" (click)="open(p)">
+        <img [src]="p.photo_path" [alt]="p.title || 'Photo du tournoi'" loading="lazy" />
+        <div class="gallery-overlay">
+          <span *ngIf="p.title">{{ p.title }}</span>
+          <span class="gallery-zoom">🔍</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" *ngIf="selectedPhoto" (click)="close()">
+    <button class="lb-close" (click)="close()">✕</button>
+    <img [src]="selectedPhoto.photo_path" [alt]="selectedPhoto.title || ''" (click)="$event.stopPropagation()" />
+    <p class="lb-caption" *ngIf="selectedPhoto.title" (click)="$event.stopPropagation()">{{ selectedPhoto.title }}</p>
+  </div>
+
+</div>

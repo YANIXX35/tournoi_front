@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
-import { Match, Goal } from '../models/match.model';
+import { Match, Goal, Announcement, GalleryPhoto, AdminLog } from '../models/match.model';
 import { Team } from '../models/team.model';
 import { environment } from '../../environments/environment';
 
@@ -64,6 +64,36 @@ export class AdminService {
     const form = new FormData();
     form.append('photo', file);
     return this.http.post<{ photo_path: string }>(`${API}/uploads/photo`, form, { headers: this.headers() });
+  }
+
+  // --- Galerie ---
+  getGallery(): Observable<GalleryPhoto[]> {
+    return this.http.get<GalleryPhoto[]>(`${API}/gallery`, { headers: this.headers() });
+  }
+  addPhoto(data: { title?: string; photo_path: string }): Observable<GalleryPhoto> {
+    return this.http.post<GalleryPhoto>(`${API}/gallery`, data, { headers: this.headers() });
+  }
+  deletePhoto(id: number): Observable<any> {
+    return this.http.delete(`${API}/gallery/${id}`, { headers: this.headers() });
+  }
+
+  // --- Annonces ---
+  getAnnouncements(): Observable<Announcement[]> {
+    return this.http.get<Announcement[]>(`${API}/announcements`, { headers: this.headers() });
+  }
+  addAnnouncement(data: Partial<Announcement>): Observable<Announcement> {
+    return this.http.post<Announcement>(`${API}/announcements`, data, { headers: this.headers() });
+  }
+  updateAnnouncement(id: number, data: Partial<Announcement>): Observable<any> {
+    return this.http.put(`${API}/announcements/${id}`, data, { headers: this.headers() });
+  }
+  deleteAnnouncement(id: number): Observable<any> {
+    return this.http.delete(`${API}/announcements/${id}`, { headers: this.headers() });
+  }
+
+  // --- Logs ---
+  getLogs(): Observable<AdminLog[]> {
+    return this.http.get<AdminLog[]>(`${API}/logs`, { headers: this.headers() });
   }
 
   // --- Buteurs & Passeurs ---

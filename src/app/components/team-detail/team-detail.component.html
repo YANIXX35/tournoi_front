@@ -1,0 +1,109 @@
+<div class="td-page">
+
+  <!-- Loading -->
+  <div class="td-loading" *ngIf="loading">
+    <div class="spinner"></div><p>Chargement…</p>
+  </div>
+
+  <!-- Erreur -->
+  <div class="td-error" *ngIf="error && !loading">
+    <p>⚠️ Équipe introuvable.</p>
+    <button routerLink="/equipes">← Retour aux équipes</button>
+  </div>
+
+  <ng-container *ngIf="team && !loading">
+
+    <!-- Hero équipe -->
+    <div class="td-hero">
+      <button class="td-back" routerLink="/equipes">← Équipes</button>
+      <div class="td-hero-inner">
+        <div class="td-logo-wrap">
+          <img *ngIf="getPhotoUrl(team.logo_path)" [src]="getPhotoUrl(team.logo_path)!"
+               class="td-logo" alt="logo" (error)="onPhotoError(team.logo_path)" />
+          <div *ngIf="!getPhotoUrl(team.logo_path)" class="td-logo-placeholder">
+            {{ team.name[0]?.toUpperCase() }}
+          </div>
+        </div>
+        <div class="td-hero-info">
+          <h1 class="td-name">{{ team.name }}</h1>
+          <p class="td-captain">👤 Capitaine : {{ team.captain_name }}</p>
+          <p class="td-players-count">{{ team.players.length }} joueur(s)</p>
+        </div>
+      </div>
+
+      <!-- Stats bande -->
+      <div class="td-stats-strip">
+        <div class="td-stat"><span class="ts-num">{{ team.stats.played }}</span><span class="ts-lbl">Matchs joués</span></div>
+        <div class="td-stat"><span class="ts-num ts-win">{{ team.stats.won }}</span><span class="ts-lbl">Victoires</span></div>
+        <div class="td-stat"><span class="ts-num ts-draw">{{ team.stats.drawn }}</span><span class="ts-lbl">Nuls</span></div>
+        <div class="td-stat"><span class="ts-num ts-loss">{{ team.stats.lost }}</span><span class="ts-lbl">Défaites</span></div>
+        <div class="td-stat"><span class="ts-num">{{ team.stats.goals_for }}</span><span class="ts-lbl">Buts marqués</span></div>
+        <div class="td-stat"><span class="ts-num gold">{{ team.stats.points }}</span><span class="ts-lbl">Points</span></div>
+      </div>
+    </div>
+
+    <div class="td-body">
+
+      <!-- Joueurs -->
+      <section class="td-section">
+        <h2 class="td-section-title">👥 Joueurs</h2>
+        <div class="td-players-grid">
+          <div class="td-player-card" *ngFor="let p of team.players">
+            <div class="td-player-photo">
+              <img *ngIf="getPhotoUrl(p.photo_path)" [src]="getPhotoUrl(p.photo_path)!"
+                   alt="photo" (error)="onPhotoError(p.photo_path)" />
+              <div class="td-player-placeholder" *ngIf="!getPhotoUrl(p.photo_path)">👤</div>
+            </div>
+            <div class="td-player-name">{{ p.player_name }}</div>
+            <div class="td-captain-badge" *ngIf="p.player_name === team.captain_name">⭐ Capitaine</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Matchs -->
+      <section class="td-section" *ngIf="team.matches.length > 0">
+        <h2 class="td-section-title">📅 Matchs</h2>
+        <div class="td-matches">
+          <div class="td-match-card" *ngFor="let m of team.matches" [class]="'result-' + getMatchResult(m)">
+            <div class="tdm-phase">{{ m.phase }}</div>
+            <div class="tdm-teams">
+              <span class="tdm-team">{{ team.name }}</span>
+              <span class="tdm-score">{{ getScore(m) }}</span>
+              <span class="tdm-team">{{ getOpponent(m) }}</span>
+            </div>
+            <div class="tdm-meta">
+              <span>{{ m.match_date | date:'dd/MM/yyyy' }}</span>
+              <span class="tdm-status" [class]="'st-' + m.status">
+                {{ m.status === 'finished' ? 'Terminé' : m.status === 'ongoing' ? '🔴 En cours' : '⏳ À venir' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Buteurs -->
+      <section class="td-section" *ngIf="goalScorers.length > 0 || assisters.length > 0">
+        <h2 class="td-section-title">⚽ Statistiques individuelles</h2>
+        <div class="td-scorers-grid">
+          <div *ngIf="goalScorers.length > 0">
+            <h3 class="td-sub-title">Buteurs</h3>
+            <div class="td-scorer-row" *ngFor="let s of goalScorers; let i = index">
+              <span class="td-rank">{{ i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i+1 }}</span>
+              <span class="td-sname">{{ s.player_name }}</span>
+              <span class="td-stotal">{{ s.total }} ⚽</span>
+            </div>
+          </div>
+          <div *ngIf="assisters.length > 0">
+            <h3 class="td-sub-title">Passeurs</h3>
+            <div class="td-scorer-row" *ngFor="let s of assisters; let i = index">
+              <span class="td-rank">{{ i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i+1 }}</span>
+              <span class="td-sname">{{ s.player_name }}</span>
+              <span class="td-stotal">{{ s.total }} 🅰️</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </ng-container>
+</div>

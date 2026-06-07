@@ -50,10 +50,9 @@
       <div *ngFor="let team of teams; let i = index"
            class="team-card"
            [class.expanded]="expandedTeam === team.id"
-           (click)="toggleTeam(team.id)"
            appReveal [revealDelay]="i * 60">
 
-        <div class="card-header">
+        <div class="card-header" (click)="toggleTeam(team.id)">
           <!-- Logo ou initiales -->
           <div class="team-logo">
             <img *ngIf="team.logo_path" [src]="teamService.getLogoUrl(team.logo_path)" [alt]="team.name" loading="lazy" />
@@ -69,7 +68,7 @@
           <div class="expand-btn">{{ expandedTeam === team.id ? '▲' : '▼' }}</div>
         </div>
 
-        <!-- Players (expanded) -->
+        <!-- Players (expanded) + lien vers page équipe -->
         <div class="players-panel" *ngIf="expandedTeam === team.id">
           <p class="players-title">Liste des joueurs</p>
           <div class="players-grid">
@@ -78,6 +77,7 @@
               <span class="player-name">{{ name }}</span>
             </div>
           </div>
+          <a class="team-detail-link" [routerLink]="['/equipes', team.id]">Voir la fiche équipe →</a>
         </div>
       </div>
     </div>
