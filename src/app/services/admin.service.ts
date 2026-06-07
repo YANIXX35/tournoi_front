@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
-import { Match } from '../models/match.model';
+import { Match, Goal } from '../models/match.model';
 import { Team } from '../models/team.model';
 import { environment } from '../../environments/environment';
 
@@ -64,5 +64,22 @@ export class AdminService {
     const form = new FormData();
     form.append('photo', file);
     return this.http.post<{ photo_path: string }>(`${API}/uploads/photo`, form, { headers: this.headers() });
+  }
+
+  // --- Buteurs & Passeurs ---
+  getMatchGoals(matchId: number): Observable<Goal[]> {
+    return this.http.get<Goal[]>(`${API}/matches/${matchId}/goals`, { headers: this.headers() });
+  }
+
+  addGoal(matchId: number, data: Partial<Goal>): Observable<Goal> {
+    return this.http.post<Goal>(`${API}/matches/${matchId}/goals`, data, { headers: this.headers() });
+  }
+
+  updateGoal(goalId: number, data: Partial<Goal>): Observable<any> {
+    return this.http.put(`${API}/goals/${goalId}`, data, { headers: this.headers() });
+  }
+
+  deleteGoal(goalId: number): Observable<any> {
+    return this.http.delete(`${API}/goals/${goalId}`, { headers: this.headers() });
   }
 }

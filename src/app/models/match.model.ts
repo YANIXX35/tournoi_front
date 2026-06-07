@@ -12,6 +12,22 @@ export interface Match {
   status: 'upcoming' | 'ongoing' | 'finished';
 }
 
+export interface Goal {
+  id: number;
+  match_id: number;
+  player_name: string;
+  team_name: string;
+  type: 'goal' | 'assist';
+  minute: number | null;
+}
+
+export interface TopScorer {
+  player_name: string;
+  team_name: string;
+  type: 'goal' | 'assist';
+  total: number;
+}
+
 export interface Standing {
   id: number;
   name: string;

@@ -33,6 +33,9 @@
         <span class="nav-icon">🪪</span> Licences
         <span class="nav-badge nav-badge-blue" *ngIf="totalPlayers > 0">{{ totalPlayers }}</span>
       </a>
+      <a class="nav-item" [class.active]="activeSection === 'scorers'" (click)="setSection('scorers')">
+        <span class="nav-icon">⚽</span> Buteurs &amp; Passeurs
+      </a>
 
       <p class="nav-section-label" style="margin-top: 2rem">Général</p>
       <a class="nav-item" routerLink="/" target="_blank">
@@ -643,6 +646,135 @@
         </div><!-- /licence-grid -->
 
       </ng-container>
+
+    </div>
+
+    <!-- ══════════ SECTION : BUTEURS & PASSEURS ══════════ -->
+    <div *ngIf="activeSection === 'scorers'" class="section-content">
+
+      <div class="scorers-admin-layout">
+
+        <!-- Liste des matchs (gauche) -->
+        <div class="scorers-match-list">
+          <h3 class="scorers-panel-title">Sélectionner un match</h3>
+          <p class="scorers-panel-sub" *ngIf="matches.length === 0">Aucun match créé.</p>
+          <div
+            *ngFor="let m of matches"
+            class="scorers-match-item"
+            [class.active]="selectedMatchForGoals?.id === m.id"
+            (click)="selectMatchForGoals(m)"
+          >
+            <div class="smi-teams">{{ m.team1_name }} vs {{ m.team2_name }}</div>
+            <div class="smi-meta">{{ m.match_date | date:'dd/MM' }} · {{ m.match_time?.slice(0,5) || '—' }}</div>
+          </div>
+        </div>
+
+        <!-- Panneau buts (droite) -->
+        <div class="scorers-goals-panel">
+
+          <ng-container *ngIf="!selectedMatchForGoals">
+            <div class="scorers-empty-state">
+              <span class="ses-icon">⚽</span>
+              <p>Cliquez sur un match pour gérer ses buteurs et passeurs.</p>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="selectedMatchForGoals">
+            <h3 class="scorers-panel-title">
+              {{ selectedMatchForGoals.team1_name }} vs {{ selectedMatchForGoals.team2_name }}
+            </h3>
+
+            <!-- Formulaire d'ajout -->
+            <div class="goal-form">
+              <div class="goal-form-row">
+                <select class="goal-select" [(ngModel)]="newGoal.type">
+                  <option value="goal">⚽ But</option>
+                  <option value="assist">🅰️ Passe décisive</option>
+                </select>
+                <input
+                  class="goal-input"
+                  type="text"
+                  placeholder="Nom du joueur"
+                  [(ngModel)]="newGoal.player_name"
+                  (keyup.enter)="addGoal()"
+                />
+                <select class="goal-select" [(ngModel)]="newGoal.team_name">
+                  <option [value]="selectedMatchForGoals.team1_name">{{ selectedMatchForGoals.team1_name }}</option>
+                  <option [value]="selectedMatchForGoals.team2_name">{{ selectedMatchForGoals.team2_name }}</option>
+                </select>
+                <input
+                  class="goal-input goal-input--min"
+                  type="number"
+                  placeholder="Min."
+                  [(ngModel)]="newGoal.minute"
+                  min="1" max="120"
+                />
+                <button class="btn-sm btn-green" (click)="addGoal()">+ Ajouter</button>
+              </div>
+            </div>
+
+            <!-- Liste des buts -->
+            <div class="goals-loading" *ngIf="goalsLoading">Chargement…</div>
+
+            <div *ngIf="!goalsLoading">
+              <p class="goals-empty" *ngIf="matchGoals.length === 0">Aucun but / passe enregistré pour ce match.</p>
+
+              <table class="goals-table" *ngIf="matchGoals.length > 0">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Joueur</th>
+                    <th>Équipe</th>
+                    <th>Min.</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let g of matchGoals">
+                    <!-- Mode visualisation -->
+                    <ng-container *ngIf="editingGoal?.id !== g.id">
+                      <td><span class="goal-type-badge" [class.assist]="g.type === 'assist'">{{ g.type === 'goal' ? '⚽ But' : '🅰️ Passe' }}</span></td>
+                      <td>{{ g.player_name }}</td>
+                      <td>{{ g.team_name }}</td>
+                      <td>{{ g.minute ? g.minute + "'" : '—' }}</td>
+                      <td class="goals-actions">
+                        <button class="btn-sm btn-gray" (click)="startEditGoal(g)">✏</button>
+                        <button class="btn-sm btn-red" (click)="deleteGoal(g.id)">🗑</button>
+                      </td>
+                    </ng-container>
+                    <!-- Mode édition inline -->
+                    <ng-container *ngIf="editingGoal?.id === g.id">
+                      <td>
+                        <select class="goal-select goal-select--sm" [(ngModel)]="editingGoal!.type">
+                          <option value="goal">⚽ But</option>
+                          <option value="assist">🅰️ Passe</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input class="goal-input" type="text" [(ngModel)]="editingGoal!.player_name" (keyup.enter)="saveEditGoal()" />
+                      </td>
+                      <td>
+                        <select class="goal-select goal-select--sm" [(ngModel)]="editingGoal!.team_name">
+                          <option [value]="selectedMatchForGoals!.team1_name">{{ selectedMatchForGoals!.team1_name }}</option>
+                          <option [value]="selectedMatchForGoals!.team2_name">{{ selectedMatchForGoals!.team2_name }}</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input class="goal-input goal-input--min" type="number" [(ngModel)]="editingGoal!.minute" min="1" max="120" (keyup.enter)="saveEditGoal()" />
+                      </td>
+                      <td class="goals-actions">
+                        <button class="btn-sm btn-green" (click)="saveEditGoal()">✓</button>
+                        <button class="btn-sm btn-gray" (click)="cancelEditGoal()">✕</button>
+                      </td>
+                    </ng-container>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+        </div>
+
+      </div>
 
     </div>
 

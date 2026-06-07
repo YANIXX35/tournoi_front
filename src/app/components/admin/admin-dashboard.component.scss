@@ -2116,3 +2116,171 @@ $sidebar-w: 240px;
   .ep-footer-sep { width: 100%; height: 1px; }
   .ep-dl-btn { font-size: .78rem; padding: .45rem .75rem; }
 }
+
+// ═══════════════════════════════
+// BUTEURS & PASSEURS (admin)
+// ═══════════════════════════════
+.scorers-admin-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.scorers-panel-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a472a;
+  margin: 0 0 .5rem;
+}
+
+.scorers-panel-sub {
+  font-size: .85rem;
+  color: #888;
+}
+
+.scorers-match-list {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.scorers-match-item {
+  padding: .65rem .85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all .18s;
+  margin-bottom: .4rem;
+
+  &:hover { background: #f0f7f2; border-color: #c3e6d0; }
+  &.active { background: #1a472a; color: white; border-color: #1a472a; .smi-meta { color: rgba(255,255,255,.6); } }
+
+  .smi-teams { font-weight: 600; font-size: .9rem; }
+  .smi-meta  { font-size: .75rem; color: #888; margin-top: 2px; }
+}
+
+.scorers-goals-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  min-height: 300px;
+}
+
+.scorers-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  color: #aaa;
+  text-align: center;
+
+  .ses-icon { font-size: 2.5rem; margin-bottom: .75rem; }
+  p { font-size: .9rem; }
+}
+
+.goal-form { margin-bottom: 1.25rem; }
+
+.goal-form-row {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.goal-select {
+  padding: .45rem .6rem;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  font-size: .84rem;
+  background: white;
+  cursor: pointer;
+
+  &--sm { padding: .3rem .45rem; font-size: .8rem; }
+}
+
+.goal-input {
+  padding: .45rem .7rem;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  font-size: .84rem;
+  flex: 1;
+  min-width: 120px;
+  outline: none;
+
+  &:focus { border-color: #1a472a; }
+  &--min { flex: 0 0 72px; min-width: 72px; }
+}
+
+.goals-loading {
+  padding: 1.5rem;
+  text-align: center;
+  color: #888;
+  font-size: .9rem;
+}
+
+.goals-empty {
+  padding: 1.25rem 0;
+  color: #aaa;
+  font-size: .9rem;
+  text-align: center;
+}
+
+.goals-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .88rem;
+
+  th {
+    text-align: left;
+    font-size: .78rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    padding: .4rem .6rem;
+    border-bottom: 2px solid #eee;
+  }
+
+  td {
+    padding: .55rem .6rem;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+}
+
+.goal-type-badge {
+  display: inline-block;
+  padding: .18rem .5rem;
+  border-radius: 99px;
+  font-size: .75rem;
+  font-weight: 600;
+  background: #e8f5e9;
+  color: #1a472a;
+
+  &.assist { background: #e8eaf6; color: #3949ab; }
+}
+
+.goals-actions {
+  display: flex;
+  gap: .35rem;
+}
+
+.btn-red {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+
+  &:hover { background: #fee2e2; }
+}

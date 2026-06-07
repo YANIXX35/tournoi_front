@@ -4,7 +4,7 @@ import { AdminService } from '../../services/admin.service';
 import { TournamentService } from '../../services/tournament.service';
 import { AuthService } from '../../services/auth.service';
 import { Team, AdminPlayer } from '../../models/team.model';
-import { Match } from '../../models/match.model';
+import { Match, Goal } from '../../models/match.model';
 import { environment } from '../../../environments/environment';
 import * as XLSX from 'xlsx';
 
@@ -17,7 +17,7 @@ import * as XLSX from 'xlsx';
 export class AdminDashboardComponent implements OnInit, OnDestroy {
   teams: Team[] = [];
   matches: Match[] = [];
-  activeSection: 'overview' | 'teams' | 'matches' | 'results' | 'licences' = 'overview';
+  activeSection: 'overview' | 'teams' | 'matches' | 'results' | 'licences' | 'scorers' = 'overview';
   sidebarOpen = false;
 
   // Matchs — création / édition complète
@@ -46,6 +46,13 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   newPlayerPhotoPath: string | null = null;
   newPlayerPhotoPreview: string | null = null;
   uploadingPhoto = false;
+
+  // Buteurs & Passeurs
+  selectedMatchForGoals: Match | null = null;
+  matchGoals: Goal[] = [];
+  newGoal: Partial<Goal> = { type: 'goal', minute: null };
+  editingGoal: Goal | null = null;
+  goalsLoading = false;
 
   // Recherche matchs
   matchSearchQuery = '';
@@ -731,6 +738,96 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }, 3000);
   }
 
+  // ── Buteurs & Passeurs ─────────────────────────────────
+  selectMatchForGoals(match: Match): void {
+    if (this.selectedMatchForGoals?.id === match.id) {
+      this.selectedMatchForGoals = null;
+      this.matchGoals = [];
+      return;
+    }
+    this.ngZone.run(() => {
+      this.selectedMatchForGoals = match;
+      this.newGoal = { type: 'goal', minute: null, team_name: match.team1_name };
+      this.editingGoal = null;
+      this.goalsLoading = true;
+      this.cdr.detectChanges();
+    });
+    this.adminService.getMatchGoals(match.id).subscribe({
+      next: goals => this.ngZone.run(() => {
+        this.matchGoals = goals;
+        this.goalsLoading = false;
+        this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => {
+        this.goalsLoading = false;
+        this.flash('Erreur chargement des buts');
+        this.cdr.detectChanges();
+      }),
+    });
+  }
+
+  getMatchPlayers(match: Match): string[] {
+    const t1 = this.teams.find(t => t.name === match.team1_name);
+    const t2 = this.teams.find(t => t.name === match.team2_name);
+    const names: string[] = [];
+    if (t1) t1.players.forEach(p => names.push(p.player_name));
+    if (t2) t2.players.forEach(p => names.push(p.player_name));
+    return names;
+  }
+
+  addGoal(): void {
+    if (!this.selectedMatchForGoals) return;
+    const { player_name, team_name, type, minute } = this.newGoal;
+    if (!player_name?.trim() || !team_name) { this.flash('Joueur et équipe requis'); return; }
+    this.adminService.addGoal(this.selectedMatchForGoals.id, { player_name: player_name.trim(), team_name, type, minute: minute || null }).subscribe({
+      next: goal => this.ngZone.run(() => {
+        this.matchGoals.push(goal);
+        this.newGoal = { type: 'goal', minute: null, team_name: this.selectedMatchForGoals!.team1_name };
+        this.flash('Ajouté ✓');
+        this.cdr.detectChanges();
+      }),
+      error: (err) => this.ngZone.run(() => {
+        this.flash(err?.error?.error || 'Erreur lors de l\'ajout');
+        this.cdr.detectChanges();
+      }),
+    });
+  }
+
+  startEditGoal(goal: Goal): void {
+    this.ngZone.run(() => { this.editingGoal = { ...goal }; this.cdr.detectChanges(); });
+  }
+
+  cancelEditGoal(): void {
+    this.ngZone.run(() => { this.editingGoal = null; this.cdr.detectChanges(); });
+  }
+
+  saveEditGoal(): void {
+    if (!this.editingGoal) return;
+    const { id, player_name, team_name, type, minute } = this.editingGoal;
+    this.adminService.updateGoal(id, { player_name, team_name, type, minute: minute || null }).subscribe({
+      next: () => this.ngZone.run(() => {
+        const idx = this.matchGoals.findIndex(g => g.id === id);
+        if (idx >= 0) this.matchGoals[idx] = { ...this.editingGoal! };
+        this.editingGoal = null;
+        this.flash('Modifié ✓');
+        this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur modification'); this.cdr.detectChanges(); }),
+    });
+  }
+
+  deleteGoal(goalId: number): void {
+    if (!confirm('Supprimer ce but / cette passe ?')) return;
+    this.adminService.deleteGoal(goalId).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.matchGoals = this.matchGoals.filter(g => g.id !== goalId);
+        this.flash('Supprimé ✓');
+        this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur suppression'); }),
+    });
+  }
+
   getStatusLabel(s: string): string {
     return s === 'upcoming' ? 'À venir' : s === 'ongoing' ? 'En cours' : 'Terminé';
   }
@@ -750,6 +847,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       matches: 'Gestion des matchs',
       results: 'Saisie des résultats',
       licences: 'Licences joueurs',
+      scorers: 'Buteurs & Passeurs',
     };
     return map[this.activeSection] || '';
   }
