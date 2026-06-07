@@ -79,51 +79,12 @@
   </div>
 </section>
 
-<!-- BUTEURS & PASSEURS -->
-<section class="home-scorers" appReveal>
-  <div class="scorers-inner">
-    <p class="scorers-label">Statistiques</p>
-    <h2 class="scorers-title">Buteurs &amp; Passeurs</h2>
-
-    <div class="scorers-tabs">
-      <button class="scorer-tab" [class.active]="scorerTab === 'goal'" (click)="scorerTab = 'goal'">
-        ⚽ Buteurs <span class="tab-count" *ngIf="scorers.length">{{ scorers.length }}</span>
-      </button>
-      <button class="scorer-tab" [class.active]="scorerTab === 'assist'" (click)="scorerTab = 'assist'">
-        🅰️ Passeurs <span class="tab-count" *ngIf="assisters.length">{{ assisters.length }}</span>
-      </button>
-    </div>
-
-    <div class="scorers-list" *ngIf="displayList.length > 0; else noStats">
-      <div class="scorer-row" *ngFor="let s of displayList; let i = index">
-        <div class="scorer-rank" [class.gold]="i === 0" [class.silver]="i === 1" [class.bronze]="i === 2">
-          {{ i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1 }}
-        </div>
-        <div class="scorer-info">
-          <span class="scorer-name">{{ s.player_name }}</span>
-          <span class="scorer-team">{{ s.team_name }}</span>
-        </div>
-        <div class="scorer-count">
-          <span class="scorer-icon">{{ scorerTab === 'goal' ? '⚽' : '🅰️' }}</span>
-          <span class="scorer-num">{{ s.total }}</span>
-        </div>
-      </div>
-    </div>
-
-    <ng-template #noStats>
-      <p class="scorers-empty">Aucun {{ scorerTab === 'goal' ? 'buteur' : 'passeur' }} enregistré pour l'instant.</p>
-    </ng-template>
-
-    <a class="scorers-link" routerLink="/resultats">Voir tous les résultats →</a>
-  </div>
-</section>
-
 <!-- STATS STRIP -->
 <section class="home-stats">
   <div class="stats-inner">
     <div class="stat-item" appReveal [revealDelay]="0">
-      <div class="stat-num">16</div>
-      <div class="stat-desc">Équipes max</div>
+      <div class="stat-num">34</div>
+      <div class="stat-desc">Équipes participantes</div>
     </div>
     <div class="stat-item" appReveal [revealDelay]="80">
       <div class="stat-num">32</div>
