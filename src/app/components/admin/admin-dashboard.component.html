@@ -719,7 +719,8 @@
             <div *ngIf="!goalsLoading">
               <p class="goals-empty" *ngIf="matchGoals.length === 0">Aucun but / passe enregistré pour ce match.</p>
 
-              <table class="goals-table" *ngIf="matchGoals.length > 0">
+              <div class="goals-table-wrap" *ngIf="matchGoals.length > 0">
+              <table class="goals-table">
                 <thead>
                   <tr>
                     <th>Type</th>
@@ -770,6 +771,7 @@
                   </tr>
                 </tbody>
               </table>
+              </div>
             </div>
           </ng-container>
         </div>
