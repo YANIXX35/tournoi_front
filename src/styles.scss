@@ -1,3 +1,6 @@
+/* Google Fonts — Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 /* ═══════════════════════════════════════════
    DESIGN TOKENS — Sports Color System
    ═══════════════════════════════════════════ */
@@ -65,7 +68,7 @@ html {
 }
 
 body {
-  font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.55;

@@ -11,30 +11,33 @@
     <!-- Onglets -->
     <div class="tabs">
       <button class="tab-btn" [class.active]="tab === 'goal'" (click)="tab = 'goal'">
-        ⚽ Buteurs
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        Buteurs
         <span class="tab-count" *ngIf="scorers.length > 0">{{ scorers.length }}</span>
       </button>
       <button class="tab-btn" [class.active]="tab === 'assist'" (click)="tab = 'assist'">
-        🅰️ Passeurs
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+        Passeurs
         <span class="tab-count" *ngIf="assisters.length > 0">{{ assisters.length }}</span>
       </button>
     </div>
 
     <!-- Chargement -->
-    <div class="loading-state" *ngIf="loading">
-      <div class="spinner"></div>
-      <p>Chargement des statistiques…</p>
-    </div>
+    <div class="loading-state" *ngIf="loading"></div>
 
     <!-- Erreur -->
-    <div class="empty-state" *ngIf="error && !loading">
-      <span class="es-icon">⚠️</span>
+    <div class="b-empty-state" *ngIf="error && !loading">
+      <div class="bes-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      </div>
       <p>Impossible de charger les statistiques.</p>
     </div>
 
     <!-- Liste vide -->
-    <div class="empty-state" *ngIf="!loading && !error && list.length === 0">
-      <span class="es-icon">⚽</span>
+    <div class="b-empty-state" *ngIf="!loading && !error && list.length === 0">
+      <div class="bes-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      </div>
       <p>Aucun {{ tab === 'goal' ? 'buteur' : 'passeur' }} enregistré pour l'instant.</p>
       <small>Les stats seront mises à jour dès le début du tournoi.</small>
     </div>
@@ -45,21 +48,21 @@
       <!-- Podium top 3 -->
       <div class="podium" *ngIf="list.length >= 3">
         <div class="podium-card podium-2nd" *ngIf="list[1]">
-          <div class="podium-medal">🥈</div>
+          <div class="podium-medal silver">2</div>
           <div class="podium-name">{{ list[1].player_name }}</div>
           <div class="podium-team">{{ list[1].team_name }}</div>
           <div class="podium-count">{{ list[1].total }} {{ tab === 'goal' ? 'but(s)' : 'passe(s)' }}</div>
           <div class="podium-bar bar-2"></div>
         </div>
         <div class="podium-card podium-1st" *ngIf="list[0]">
-          <div class="podium-medal">🥇</div>
+          <div class="podium-medal gold">1</div>
           <div class="podium-name">{{ list[0].player_name }}</div>
           <div class="podium-team">{{ list[0].team_name }}</div>
           <div class="podium-count">{{ list[0].total }} {{ tab === 'goal' ? 'but(s)' : 'passe(s)' }}</div>
           <div class="podium-bar bar-1"></div>
         </div>
         <div class="podium-card podium-3rd" *ngIf="list[2]">
-          <div class="podium-medal">🥉</div>
+          <div class="podium-medal bronze">3</div>
           <div class="podium-name">{{ list[2].player_name }}</div>
           <div class="podium-team">{{ list[2].team_name }}</div>
           <div class="podium-count">{{ list[2].total }} {{ tab === 'goal' ? 'but(s)' : 'passe(s)' }}</div>
@@ -70,8 +73,8 @@
       <!-- Liste complète -->
       <div class="rank-list">
         <div class="rank-row" *ngFor="let s of list; let i = index">
-          <div class="rank-pos" [class.gold]="i===0" [class.silver]="i===1" [class.bronze]="i===2">
-            {{ i < 3 ? (i===0 ? '🥇' : i===1 ? '🥈' : '🥉') : (i + 1) }}
+          <div class="rank-pos">
+            <div class="rank-medal" [class]="i===0?'gold':i===1?'silver':i===2?'bronze':''">{{ i + 1 }}</div>
           </div>
           <div class="rank-info">
             <span class="rank-name">{{ s.player_name }}</span>
@@ -80,9 +83,7 @@
           <div class="rank-bar-wrap">
             <div class="rank-bar" [style.width.%]="(s.total / list[0].total) * 100"></div>
           </div>
-          <div class="rank-total">
-            {{ s.total }} <span class="rank-unit">{{ tab === 'goal' ? '⚽' : '🅰️' }}</span>
-          </div>
+          <div class="rank-total">{{ s.total }}</div>
         </div>
       </div>
 

@@ -849,6 +849,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   newPhotoPath: string | null = null;
   newPhotoPreview: string | null = null;
   galleryUploading = false;
+  editingGalleryPhoto: GalleryPhoto | null = null;
+  editingGalleryTitle = '';
 
   loadGallery(): void {
     this.adminService.getGallery().subscribe({
@@ -902,12 +904,37 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  startEditGalleryPhoto(p: GalleryPhoto): void {
+    this.editingGalleryPhoto = p;
+    this.editingGalleryTitle = p.title || '';
+  }
+
+  cancelEditGalleryPhoto(): void {
+    this.editingGalleryPhoto = null;
+  }
+
+  saveEditGalleryPhoto(): void {
+    if (!this.editingGalleryPhoto) return;
+    const id = this.editingGalleryPhoto.id;
+    const title = this.editingGalleryTitle.trim() || undefined;
+    this.adminService.updatePhoto(id, { title }).subscribe({
+      next: () => this.ngZone.run(() => {
+        const p = this.galleryPhotos.find(x => x.id === id);
+        if (p) p.title = title ?? null;
+        this.editingGalleryPhoto = null;
+        this.flash('Titre modifié'); this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur modification'); }),
+    });
+  }
+
   deleteGalleryPhoto(id: number): void {
     if (!confirm('Supprimer cette photo ?')) return;
     this.adminService.deletePhoto(id).subscribe({
       next: () => this.ngZone.run(() => {
         this.galleryPhotos = this.galleryPhotos.filter(p => p.id !== id);
-        this.flash('Photo supprimée ✓'); this.cdr.detectChanges();
+        if (this.editingGalleryPhoto?.id === id) this.editingGalleryPhoto = null;
+        this.flash('Photo supprimée'); this.cdr.detectChanges();
       }),
       error: () => this.ngZone.run(() => { this.flash('Erreur suppression'); }),
     });

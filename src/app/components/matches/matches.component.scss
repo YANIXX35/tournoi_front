@@ -7,13 +7,15 @@
   overflow: hidden;
 
   &::before {
-    content: '⚽';
+    content: '';
     position: absolute;
-    right: -40px;
-    top: -40px;
-    font-size: 12rem;
-    opacity: 0.04;
-    transform: rotate(-20deg);
+    right: -60px;
+    top: -60px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,.05) 0%, transparent 70%);
+    pointer-events: none;
   }
 
   h1 {
@@ -64,10 +66,14 @@
   }
 
   &.pdf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
     margin-left: auto;
     background: #1a472a;
     border-color: #1a472a;
     color: white;
+    svg { flex-shrink: 0; }
     &:hover { background: #145220; }
   }
 }
@@ -257,7 +263,8 @@
   span {
     display: flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.35rem;
+    svg { flex-shrink: 0; opacity: .7; }
   }
 }
 

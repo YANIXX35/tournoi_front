@@ -73,6 +73,9 @@ export class AdminService {
   addPhoto(data: { title?: string; photo_path: string }): Observable<GalleryPhoto> {
     return this.http.post<GalleryPhoto>(`${API}/gallery`, data, { headers: this.headers() });
   }
+  updatePhoto(id: number, data: { title?: string }): Observable<any> {
+    return this.http.patch(`${API}/gallery/${id}`, data, { headers: this.headers() });
+  }
   deletePhoto(id: number): Observable<any> {
     return this.http.delete(`${API}/gallery/${id}`, { headers: this.headers() });
   }

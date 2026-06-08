@@ -16,42 +16,53 @@
     <nav class="sidebar-nav">
       <p class="nav-section-label">Menu</p>
       <a class="nav-item" [class.active]="activeSection === 'overview'" (click)="setSection('overview')">
-        <span class="nav-icon">📊</span> Vue d'ensemble
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span>
+        Vue d'ensemble
       </a>
       <a class="nav-item" [class.active]="activeSection === 'teams'" (click)="setSection('teams')">
-        <span class="nav-icon">👥</span> Équipes
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
+        Équipes
         <span class="nav-badge" *ngIf="pendingTeams > 0">{{ pendingTeams }}</span>
       </a>
       <a class="nav-item" [class.active]="activeSection === 'matches'" (click)="setSection('matches')">
-        <span class="nav-icon">⚽</span> Matchs
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
+        Matchs
       </a>
       <a class="nav-item" [class.active]="activeSection === 'results'" (click)="setSection('results')">
-        <span class="nav-icon">🏆</span> Résultats
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="18" width="12" height="4"></rect></svg></span>
+        Résultats
         <span class="nav-badge nav-badge-green" *ngIf="upcomingMatches > 0">{{ upcomingMatches }}</span>
       </a>
       <a class="nav-item" [class.active]="activeSection === 'licences'" (click)="setSection('licences')">
-        <span class="nav-icon">🪪</span> Licences
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></span>
+        Licences
         <span class="nav-badge nav-badge-blue" *ngIf="totalPlayers > 0">{{ totalPlayers }}</span>
       </a>
       <a class="nav-item" [class.active]="activeSection === 'scorers'" (click)="setSection('scorers')">
-        <span class="nav-icon">⚽</span> Buteurs &amp; Passeurs
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></span>
+        Buteurs &amp; Passeurs
       </a>
       <a class="nav-item" [class.active]="activeSection === 'gallery'" (click)="setSection('gallery')">
-        <span class="nav-icon">📷</span> Galerie photos
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span>
+        Galerie photos
       </a>
       <a class="nav-item" [class.active]="activeSection === 'announcements'" (click)="setSection('announcements')">
-        <span class="nav-icon">📢</span> Annonces
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"></path></svg></span>
+        Annonces
       </a>
       <a class="nav-item" [class.active]="activeSection === 'logs'" (click)="setSection('logs')">
-        <span class="nav-icon">📋</span> Historique
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
+        Historique
       </a>
 
       <p class="nav-section-label" style="margin-top: 2rem">Général</p>
       <a class="nav-item" routerLink="/" target="_blank">
-        <span class="nav-icon">🌐</span> Voir le site
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></span>
+        Voir le site
       </a>
       <a class="nav-item nav-logout" (click)="logout()">
-        <span class="nav-icon">🚪</span> Déconnexion
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span>
+        Déconnexion
       </a>
     </nav>
 
@@ -71,8 +82,9 @@
     <div class="toast" *ngIf="saveSuccess">{{ saveSuccess }}</div>
 
     <!-- Mobile menu toggle -->
-    <button class="mobile-sidebar-toggle" (click)="sidebarOpen = true">
-      ☰ Menu
+    <button class="mobile-sidebar-toggle" (click)="sidebarOpen = true" aria-label="Ouvrir le menu">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      Menu
     </button>
 
     <!-- Header -->
@@ -81,7 +93,10 @@
         <h1 class="main-title">{{ getSectionTitle() }}</h1>
         <p class="main-subtitle">Tournoi FJU — Côte d'Ivoire 2026</p>
       </div>
-      <div class="header-date">📅 {{ today }}</div>
+      <div class="header-date">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        {{ today }}
+      </div>
     </div>
 
     <!-- ── CARTES STATISTIQUES ── -->
@@ -89,7 +104,7 @@
       <div class="stat-card">
         <div class="stat-top">
           <span class="stat-label">Équipes inscrites</span>
-          <span class="stat-icon">👥</span>
+          <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
         </div>
         <div class="stat-value">{{ totalTeams }}</div>
         <div class="stat-sub">
@@ -101,7 +116,7 @@
       <div class="stat-card">
         <div class="stat-top">
           <span class="stat-label">Matchs programmés</span>
-          <span class="stat-icon">📅</span>
+          <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
         </div>
         <div class="stat-value">{{ totalMatches }}</div>
         <div class="stat-sub">
@@ -112,7 +127,7 @@
       <div class="stat-card">
         <div class="stat-top">
           <span class="stat-label">Matchs terminés</span>
-          <span class="stat-icon">🏁</span>
+          <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="18" width="12" height="4"></rect></svg></span>
         </div>
         <div class="stat-value">{{ finishedMatches }}</div>
         <div class="stat-sub">
@@ -156,8 +171,8 @@
                 <span class="status-pill" [class.pill-green]="team.validated" [class.pill-orange]="!team.validated">
                   {{ team.validated ? 'Validée' : 'En attente' }}
                 </span>
-                <button *ngIf="!team.validated" class="btn-sm btn-green" (click)="validateTeam(team, true)">✓</button>
-                <button *ngIf="team.validated" class="btn-sm btn-orange" (click)="validateTeam(team, false)">✕</button>
+                <button *ngIf="!team.validated" class="btn-sm btn-green" (click)="validateTeam(team, true)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                <button *ngIf="team.validated" class="btn-sm btn-orange" (click)="validateTeam(team, false)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               </div>
             </div>
           </div>
@@ -196,13 +211,13 @@
           <h2>Toutes les équipes ({{ teams.length }})</h2>
           <div class="export-btns">
             <button class="btn-export btn-export-excel" (click)="exportExcel()" title="Télécharger Excel (.xlsx)">
-              📊 Excel
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Excel
             </button>
             <button class="btn-export btn-export-word" (click)="exportCsv()" title="Télécharger CSV (s'ouvre dans Excel, Google Sheets...)">
-              📋 CSV
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> CSV
             </button>
             <button class="btn-export btn-export-pdf" (click)="exportPdf()" title="Télécharger PDF">
-              📄 PDF
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> PDF
             </button>
           </div>
         </div>
@@ -218,9 +233,9 @@
               <span class="status-pill" [class.pill-green]="team.validated" [class.pill-orange]="!team.validated">
                 {{ team.validated ? 'Validée' : 'En attente' }}
               </span>
-              <button *ngIf="!team.validated" class="btn-sm btn-green" (click)="validateTeam(team, true)">✓ Valider</button>
+              <button *ngIf="!team.validated" class="btn-sm btn-green" (click)="validateTeam(team, true)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Valider</button>
               <button *ngIf="team.validated" class="btn-sm btn-orange" (click)="validateTeam(team, false)">Rejeter</button>
-              <button class="btn-sm btn-red" (click)="deleteTeam(team.id)">🗑</button>
+              <button class="btn-sm btn-red" (click)="deleteTeam(team.id)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
             </div>
           </div>
           <!-- Pagination -->
@@ -241,7 +256,7 @@
         <div class="card-header">
           <h2>Matchs ({{ matches.length }})</h2>
           <button class="btn-primary" (click)="showNewMatchForm = !showNewMatchForm">
-            {{ showNewMatchForm ? '✕ Annuler' : '+ Nouveau match' }}
+            <ng-container *ngIf="showNewMatchForm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Annuler</ng-container><ng-container *ngIf="!showNewMatchForm">+ Nouveau match</ng-container>
           </button>
         </div>
 
@@ -331,8 +346,8 @@
                   </span>
                 </td>
                 <td class="td-actions">
-                  <button class="btn-sm btn-blue" (click)="startEdit(match)">✏ Modifier</button>
-                  <button class="btn-sm btn-red" (click)="deleteMatch(match.id)">🗑</button>
+                  <button class="btn-sm btn-blue" (click)="startEdit(match)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
+                  <button class="btn-sm btn-red" (click)="deleteMatch(match.id)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
                 </td>
               </tr>
 
@@ -361,7 +376,7 @@
                   </select>
                 </td>
                 <td class="td-actions">
-                  <button class="btn-sm btn-green" (click)="saveMatch()">✓ Sauver</button>
+                  <button class="btn-sm btn-green" (click)="saveMatch()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Sauver</button>
                   <button class="btn-sm btn-gray" (click)="cancelEdit()">Annuler</button>
                 </td>
               </tr>
@@ -386,7 +401,7 @@
         </div>
 
         <div class="empty-state" *ngIf="upcomingMatches === 0">
-          Tous les matchs ont un score enregistré ✓
+          Tous les matchs ont un score enregistré
         </div>
 
         <div class="score-cards" *ngIf="upcomingMatches > 0">
@@ -420,14 +435,14 @@
                   </div>
                 </div>
                 <div class="score-entry-actions">
-                  <button class="btn-primary" (click)="saveScore()">✓ Valider le score</button>
+                  <button class="btn-primary" (click)="saveScore()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Valider le score</button>
                   <button class="btn-sm btn-gray" (click)="cancelScore()">Annuler</button>
                 </div>
               </div>
 
               <!-- Bouton Entrer le score -->
               <button class="btn-enter-score" *ngIf="scoringMatch?.id !== m.id" (click)="openScore(m)">
-                ⚽ Entrer le score
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg> Entrer le score
               </button>
             </div>
           </ng-container>
@@ -470,13 +485,13 @@
                   </div>
                 </div>
                 <div class="score-entry-actions">
-                  <button class="btn-primary" (click)="saveScore()">✓ Modifier le score</button>
+                  <button class="btn-primary" (click)="saveScore()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Modifier le score</button>
                   <button class="btn-sm btn-gray" (click)="cancelScore()">Annuler</button>
                 </div>
               </div>
 
               <button class="btn-sm btn-gray" *ngIf="scoringMatch?.id !== m.id" (click)="openScore(m)" style="margin-top:0.75rem">
-                ✏ Modifier
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier
               </button>
             </div>
           </ng-container>
@@ -499,13 +514,13 @@
             </select>
             <div class="export-btns">
               <button class="btn-export btn-export-excel" (click)="openExportPreview()" title="Prévisualiser avant de télécharger">
-                📊 Excel
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Excel
               </button>
               <button class="btn-export btn-export-word" (click)="openExportPreview()" title="Prévisualiser avant de télécharger">
-                📋 CSV
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> CSV
               </button>
               <button class="btn-export btn-export-pdf" (click)="openExportPreview()" title="Prévisualiser avant de télécharger">
-                📄 PDF
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> PDF
               </button>
             </div>
           </div>
@@ -523,7 +538,7 @@
         <!-- En-tête équipe -->
         <div class="team-licence-header">
           <img *ngIf="getPhotoUrl(team.logo_path)" [src]="getPhotoUrl(team.logo_path)!" class="team-licence-logo" alt="logo" loading="lazy" (error)="onPhotoError(team.logo_path)" />
-          <div class="team-licence-logo-placeholder" *ngIf="!getPhotoUrl(team.logo_path)">⚽</div>
+          <div class="team-licence-logo-placeholder" *ngIf="!getPhotoUrl(team.logo_path)"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg></div>
           <div>
             <h3 class="team-licence-name">{{ team.name }}</h3>
             <span class="team-licence-meta">Capitaine : {{ team.captain_name }} · {{ team.players.length }} joueur{{ team.players.length > 1 ? 's' : '' }}</span>
@@ -551,7 +566,7 @@
               <div class="licence-card-body">
                 <div class="licence-photo-wrap">
                   <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)!" class="licence-photo" alt="photo" loading="lazy" (error)="onPhotoError(player.photo_path)" />
-                  <div class="licence-photo-placeholder" *ngIf="!getPhotoUrl(player.photo_path)">👤</div>
+                  <div class="licence-photo-placeholder" *ngIf="!getPhotoUrl(player.photo_path)"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.35"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
                 </div>
                 <div class="licence-info">
                   <div class="licence-field">
@@ -563,7 +578,7 @@
                     <span class="licence-field-value">{{ team.name }}</span>
                   </div>
                   <div class="licence-capitaine-badge" *ngIf="isCapitaine(team, player.player_name)">
-                    ⭐ Capitaine
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Capitaine
                   </div>
                 </div>
               </div>
@@ -572,8 +587,8 @@
               </div>
               <!-- Boutons CRUD -->
               <div class="lc-actions">
-                <button class="lc-btn lc-btn-edit" (click)="startEditPlayer(player, team.id)">✏ Modifier</button>
-                <button class="lc-btn lc-btn-del" (click)="confirmDeletePlayer(player.id)">🗑 Supprimer</button>
+                <button class="lc-btn lc-btn-edit" (click)="startEditPlayer(player, team.id)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
+                <button class="lc-btn lc-btn-del" (click)="confirmDeletePlayer(player.id)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Supprimer</button>
               </div>
             </div>
 
@@ -593,10 +608,10 @@
                          [src]="editPlayerPhotoPreview ? editPlayerPhotoPreview : getPhotoUrl(editingPlayer!.photo_path)!"
                          class="licence-photo" alt="photo"
                          (error)="onPhotoError(editingPlayer!.photo_path)" />
-                    <div class="licence-photo-placeholder" *ngIf="!editPlayerPhotoPreview && !getPhotoUrl(editingPlayer!.photo_path)">👤</div>
+                    <div class="licence-photo-placeholder" *ngIf="!editPlayerPhotoPreview && !getPhotoUrl(editingPlayer!.photo_path)"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.35"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
                   </div>
                   <label class="lc-photo-btn" [class.lc-photo-btn--uploading]="uploadingPhoto" title="Changer la photo">
-                    <span>{{ uploadingPhoto ? '…' : '📷' }}</span>
+                    <span *ngIf="uploadingPhoto">…</span><span *ngIf="!uploadingPhoto" class="lc-cam-ico"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
                     <input type="file" accept="image/*" (change)="onEditPlayerPhotoSelected($event)" hidden [disabled]="uploadingPhoto" />
                   </label>
                 </div>
@@ -607,7 +622,7 @@
                 </div>
               </div>
               <div class="lc-edit-actions">
-                <button class="btn-sm btn-green" (click)="saveEditPlayer()" [disabled]="uploadingPhoto">✓ Sauver</button>
+                <button class="btn-sm btn-green" (click)="saveEditPlayer()" [disabled]="uploadingPhoto"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Sauver</button>
                 <button class="btn-sm btn-gray" (click)="cancelEditPlayer()">Annuler</button>
               </div>
             </div>
@@ -633,10 +648,10 @@
               <div class="lc-edit-photo">
                 <div class="licence-photo-wrap">
                   <img *ngIf="newPlayerPhotoPreview" [src]="newPlayerPhotoPreview" class="licence-photo" alt="photo" />
-                  <div class="licence-photo-placeholder" *ngIf="!newPlayerPhotoPreview">👤</div>
+                  <div class="licence-photo-placeholder" *ngIf="!newPlayerPhotoPreview"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.35"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
                 </div>
                 <label class="lc-photo-btn" [class.lc-photo-btn--uploading]="uploadingPhoto" title="Ajouter une photo">
-                  <span>{{ uploadingPhoto ? '…' : '📷' }}</span>
+                  <span *ngIf="uploadingPhoto">…</span><span *ngIf="!uploadingPhoto" class="lc-cam-ico"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
                   <input type="file" accept="image/*" (change)="onNewPlayerPhotoSelected($event)" hidden [disabled]="uploadingPhoto" />
                 </label>
               </div>
@@ -647,7 +662,7 @@
               </div>
             </div>
             <div class="lc-edit-actions">
-              <button class="btn-sm btn-green" (click)="saveAddPlayer(team.id)" [disabled]="uploadingPhoto || !newPlayerName.trim()">✓ Ajouter</button>
+              <button class="btn-sm btn-green" (click)="saveAddPlayer(team.id)" [disabled]="uploadingPhoto || !newPlayerName.trim()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Ajouter</button>
               <button class="btn-sm btn-gray" (click)="cancelAddPlayer()">Annuler</button>
             </div>
           </div>
@@ -683,7 +698,7 @@
 
           <ng-container *ngIf="!selectedMatchForGoals">
             <div class="scorers-empty-state">
-              <span class="ses-icon">⚽</span>
+              <span class="ses-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg></span>
               <p>Cliquez sur un match pour gérer ses buteurs et passeurs.</p>
             </div>
           </ng-container>
@@ -697,8 +712,8 @@
             <div class="goal-form">
               <div class="goal-form-row">
                 <select class="goal-select" [(ngModel)]="newGoal.type">
-                  <option value="goal">⚽ But</option>
-                  <option value="assist">🅰️ Passe décisive</option>
+                  <option value="goal">But</option>
+                  <option value="assist">Passe décisive</option>
                 </select>
                 <input
                   class="goal-input"
@@ -743,21 +758,21 @@
                   <tr *ngFor="let g of matchGoals">
                     <!-- Mode visualisation -->
                     <ng-container *ngIf="editingGoal?.id !== g.id">
-                      <td><span class="goal-type-badge" [class.assist]="g.type === 'assist'">{{ g.type === 'goal' ? '⚽ But' : '🅰️ Passe' }}</span></td>
+                      <td><span class="goal-type-badge" [class.assist]="g.type === 'assist'">{{ g.type === 'goal' ? 'But' : 'Passe' }}</span></td>
                       <td>{{ g.player_name }}</td>
                       <td>{{ g.team_name }}</td>
                       <td>{{ g.minute ? g.minute + "'" : '—' }}</td>
                       <td class="goals-actions">
-                        <button class="btn-sm btn-gray" (click)="startEditGoal(g)">✏</button>
-                        <button class="btn-sm btn-red" (click)="deleteGoal(g.id)">🗑</button>
+                        <button class="btn-sm btn-gray" (click)="startEditGoal(g)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                        <button class="btn-sm btn-red" (click)="deleteGoal(g.id)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
                       </td>
                     </ng-container>
                     <!-- Mode édition inline -->
                     <ng-container *ngIf="editingGoal?.id === g.id">
                       <td>
                         <select class="goal-select goal-select--sm" [(ngModel)]="editingGoal!.type">
-                          <option value="goal">⚽ But</option>
-                          <option value="assist">🅰️ Passe</option>
+                          <option value="goal">But</option>
+                          <option value="assist">Passe</option>
                         </select>
                       </td>
                       <td>
@@ -773,8 +788,8 @@
                         <input class="goal-input goal-input--min" type="number" [(ngModel)]="editingGoal!.minute" min="1" max="120" (keyup.enter)="saveEditGoal()" />
                       </td>
                       <td class="goals-actions">
-                        <button class="btn-sm btn-green" (click)="saveEditGoal()">✓</button>
-                        <button class="btn-sm btn-gray" (click)="cancelEditGoal()">✕</button>
+                        <button class="btn-sm btn-green" (click)="saveEditGoal()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                        <button class="btn-sm btn-gray" (click)="cancelEditGoal()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                       </td>
                     </ng-container>
                   </tr>
@@ -801,7 +816,7 @@
               <img [src]="newPhotoPreview" alt="preview" />
             </div>
             <div class="guc-placeholder" *ngIf="!newPhotoPreview">
-              <span>📷</span><small>{{ galleryUploading ? 'Chargement…' : 'Cliquer pour sélectionner' }}</small>
+              <span class="guc-cam-ico"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span><small>{{ galleryUploading ? 'Chargement…' : 'Cliquer pour sélectionner' }}</small>
             </div>
             <input type="file" accept="image/*" hidden (change)="onGalleryPhotoSelected($event)" [disabled]="galleryUploading" />
           </label>
@@ -816,11 +831,34 @@
 
       <!-- Grille -->
       <div class="admin-gallery-grid" *ngIf="galleryPhotos.length > 0">
-        <div class="agp-item" *ngFor="let p of galleryPhotos">
-          <img [src]="p.photo_path" [alt]="p.title || 'photo'" />
-          <div class="agp-overlay">
-            <span class="agp-title" *ngIf="p.title">{{ p.title }}</span>
-            <button class="agp-del" (click)="deleteGalleryPhoto(p.id)">🗑</button>
+        <div class="agp-item" *ngFor="let p of galleryPhotos" [class.agp-editing]="editingGalleryPhoto?.id === p.id">
+          <div class="agp-thumb">
+            <img [src]="p.photo_path" [alt]="p.title || 'photo'" />
+          </div>
+          <!-- Barre titre + actions (mode normal) -->
+          <div class="agp-bar" *ngIf="editingGalleryPhoto?.id !== p.id">
+            <span class="agp-label">{{ p.title || 'Sans titre' }}</span>
+            <div class="agp-actions">
+              <button class="agp-btn agp-btn-edit" (click)="startEditGalleryPhoto(p)" title="Modifier le titre">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button class="agp-btn agp-btn-del" (click)="deleteGalleryPhoto(p.id)" title="Supprimer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              </button>
+            </div>
+          </div>
+          <!-- Barre édition titre (mode édition) -->
+          <div class="agp-edit-bar" *ngIf="editingGalleryPhoto?.id === p.id">
+            <input class="agp-edit-input" type="text" [(ngModel)]="editingGalleryTitle"
+                   placeholder="Titre de la photo…" (keyup.enter)="saveEditGalleryPhoto()" autofocus />
+            <div class="agp-actions">
+              <button class="agp-btn agp-btn-save" (click)="saveEditGalleryPhoto()" title="Sauver">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+              <button class="agp-btn agp-btn-cancel" (click)="cancelEditGalleryPhoto()" title="Annuler">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -836,20 +874,20 @@
         <h3 class="afc-title">Nouvelle annonce</h3>
         <div class="afc-row">
           <select class="afc-select" [(ngModel)]="newAnnouncement.type">
-            <option value="info">ℹ️ Information</option>
-            <option value="warning">⚠️ Avertissement</option>
-            <option value="urgent">🚨 Urgent</option>
+            <option value="info">Information</option>
+            <option value="warning">Avertissement</option>
+            <option value="urgent">Urgent</option>
           </select>
           <input class="afc-input" type="text" placeholder="Titre de l'annonce" [(ngModel)]="newAnnouncement.title" />
         </div>
         <textarea class="afc-textarea" placeholder="Contenu de l'annonce…" [(ngModel)]="newAnnouncement.content" rows="3"></textarea>
-        <button class="btn-primary" (click)="addAnnouncement()">📢 Publier</button>
+        <button class="btn-primary" (click)="addAnnouncement()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> Publier</button>
       </div>
 
       <!-- Liste -->
       <div class="ann-list">
         <div class="ann-admin-item" *ngFor="let a of announcements" [class.inactive]="!a.active">
-          <div class="aai-type">{{ a.type === 'urgent' ? '🚨' : a.type === 'warning' ? '⚠️' : 'ℹ️' }}</div>
+          <div class="aai-type"><ng-container [ngSwitch]="a.type"><ng-container *ngSwitchCase="'urgent'"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></ng-container><ng-container *ngSwitchCase="'warning'"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></ng-container><ng-container *ngSwitchDefault><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></ng-container></ng-container></div>
           <div class="aai-body">
             <strong>{{ a.title }}</strong>
             <p>{{ a.content }}</p>
@@ -859,7 +897,7 @@
             <button class="btn-sm" [class.btn-green]="!a.active" [class.btn-gray]="a.active" (click)="toggleAnnouncement(a)">
               {{ a.active ? 'Désactiver' : 'Activer' }}
             </button>
-            <button class="btn-sm btn-red" (click)="deleteAnnouncement(a.id)">🗑</button>
+            <button class="btn-sm btn-red" (click)="deleteAnnouncement(a.id)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
           </div>
         </div>
         <p class="empty-hint" *ngIf="announcements.length === 0">Aucune annonce. Publiez-en une ci-dessus.</p>
@@ -905,7 +943,7 @@
       <!-- En-tête -->
       <div class="ep-header">
         <div class="ep-title">
-          <span class="ep-icon">👁</span>
+          <span class="ep-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
           <div>
             <h2>Prévisualisation de l'export</h2>
             <p>
@@ -915,7 +953,7 @@
             </p>
           </div>
         </div>
-        <button class="ep-close" (click)="closeExportPreview()">✕</button>
+        <button class="ep-close" (click)="closeExportPreview()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
 
       <!-- Tableau de prévisualisation -->
@@ -945,11 +983,11 @@
                 </td>
                 <td class="ep-td-player">
                   <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)!" class="ep-avatar" alt="" (error)="onPhotoError(player.photo_path)" />
-                  <span class="ep-avatar-ph" *ngIf="!getPhotoUrl(player.photo_path)">👤</span>
+                  <span class="ep-avatar-ph" *ngIf="!getPhotoUrl(player.photo_path)"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.35"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
                   {{ player.player_name }}
                 </td>
                 <td>
-                  <span class="ep-cap-badge" *ngIf="isCapitaine(team, player.player_name)">★ Cap.</span>
+                  <span class="ep-cap-badge" *ngIf="isCapitaine(team, player.player_name)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Cap.</span>
                 </td>
               </tr>
             </ng-container>
@@ -966,11 +1004,11 @@
           <p class="ep-footer-note">Sans photos — données uniquement</p>
           <div class="ep-footer-row">
             <button class="ep-dl-btn ep-dl-excel" (click)="exportLicencesExcel(); closeExportPreview()">
-              <span class="ep-dl-icon">📊</span>
+              <span class="ep-dl-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
               <span>Télécharger Excel</span>
             </button>
             <button class="ep-dl-btn ep-dl-csv" (click)="exportLicencesCsv(); closeExportPreview()">
-              <span class="ep-dl-icon">📋</span>
+              <span class="ep-dl-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></span>
               <span>Télécharger CSV</span>
             </button>
           </div>
@@ -980,7 +1018,7 @@
           <p class="ep-footer-note ep-footer-note--green">Avec photos des joueurs</p>
           <div class="ep-footer-row">
             <button class="ep-dl-btn ep-dl-pdf" (click)="exportLicencesPdfWithPhotos()">
-              <span class="ep-dl-icon">📄</span>
+              <span class="ep-dl-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
               <span>Télécharger PDF</span>
             </button>
             <button class="ep-dl-btn ep-dl-cards" (click)="openLicencePdfPreview()">
@@ -1015,7 +1053,7 @@
           <button class="lp-btn-print" (click)="printLicences()">
             🖨&nbsp; Télécharger / Imprimer
           </button>
-          <button class="lp-btn-close" (click)="closeLicencePreview()">✕</button>
+          <button class="lp-btn-close" (click)="closeLicencePreview()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
       </div>
 
@@ -1037,13 +1075,13 @@
           <!-- En-tête équipe -->
           <div class="lp-team-header">
             <img *ngIf="getPhotoUrl(team.logo_path)" [src]="getPhotoUrl(team.logo_path)!" class="lp-team-logo" alt="logo" (error)="onPhotoError(team.logo_path)" />
-            <span *ngIf="!getPhotoUrl(team.logo_path)" class="lp-team-logo-ph">⚽</span>
+            <span *ngIf="!getPhotoUrl(team.logo_path)" class="lp-team-logo-ph"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg></span>
             <div class="lp-team-info">
               <strong>{{ team.name }}</strong>
               <span>Cap. {{ team.captain_name }} &nbsp;·&nbsp; {{ team.players.length }} joueur(s)</span>
             </div>
             <span class="lp-team-badge" [class.lp-badge-ok]="team.validated">
-              {{ team.validated ? '✓ Validée' : 'En attente' }}
+              <ng-container *ngIf="team.validated"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Validée</ng-container><ng-container *ngIf="!team.validated">En attente</ng-container>
             </span>
           </div>
 
@@ -1070,7 +1108,7 @@
                     class="lp-player-photo"
                     alt="photo"
                     (error)="onPhotoError(player.photo_path)" />
-                  <div *ngIf="!getPhotoUrl(player.photo_path)" class="lp-photo-ph">👤</div>
+                  <div *ngIf="!getPhotoUrl(player.photo_path)" class="lp-photo-ph"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.35"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
                 </div>
 
                 <!-- Infos joueur -->
@@ -1084,7 +1122,7 @@
                     <span class="lp-fvalue lp-fteam">{{ team.name }}</span>
                   </div>
                   <div class="lp-cap-badge" *ngIf="isCapitaine(team, player.player_name)">
-                    ⭐ Capitaine
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Capitaine
                   </div>
                 </div>
               </div>

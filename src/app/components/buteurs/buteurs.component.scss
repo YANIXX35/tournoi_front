@@ -1,33 +1,48 @@
 .buteurs-page {
   min-height: 100vh;
-  background: #f4f6f8;
+  background: var(--bg);
 }
 
 // ── Hero ──────────────────────────────────────────────
 .buteurs-hero {
-  background: linear-gradient(135deg, #0d1b2a 0%, #1a472a 100%);
-  padding: 4rem 1.5rem 3rem;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--green) 80%, #163d26 100%);
+  padding: 4.5rem 1.5rem 3.5rem;
   text-align: center;
   color: white;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 100%, rgba(255,215,0,.06) 0%, transparent 55%);
+    pointer-events: none;
+  }
 
   .hero-label {
-    font-size: .78rem;
+    font-size: .73rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: .1em;
-    color: #22c55e;
-    margin: 0 0 .5rem;
+    letter-spacing: .14em;
+    color: var(--emerald);
+    margin: 0 0 .6rem;
+    position: relative;
   }
 
   .hero-title {
-    font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 800;
+    font-size: clamp(1.9rem, 5vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -.03em;
     margin: 0 0 .5rem;
+    position: relative;
   }
 
   .hero-sub {
     font-size: 1rem;
-    color: rgba(255,255,255,.65);
+    color: rgba(255,255,255,.6);
     margin: 0;
+    position: relative;
   }
 }
 
@@ -35,69 +50,108 @@
 .buteurs-body {
   max-width: 860px;
   margin: 0 auto;
-  padding: 2rem 1.25rem 4rem;
+  padding: 2.5rem 1.25rem 5rem;
 }
 
 // ── Onglets ───────────────────────────────────────────
 .tabs {
   display: flex;
-  gap: .75rem;
-  margin-bottom: 2rem;
+  gap: .65rem;
+  margin-bottom: 2.5rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  padding: .3rem;
+  width: fit-content;
 }
 
 .tab-btn {
   display: flex;
   align-items: center;
-  gap: .45rem;
+  gap: .4rem;
   padding: .55rem 1.25rem;
-  border-radius: 99px;
-  border: 2px solid #ddd;
-  background: white;
-  font-size: .9rem;
+  border-radius: var(--r-full);
+  border: none;
+  background: transparent;
+  font-size: .88rem;
   font-weight: 600;
   cursor: pointer;
-  color: #555;
-  transition: all .2s;
+  color: var(--text-muted);
+  transition: all .2s ease;
+  min-height: 44px;
+
+  svg { flex-shrink: 0; transition: color .2s; }
 
   &.active {
-    background: #1a472a;
-    border-color: #1a472a;
+    background: var(--green);
     color: white;
+    box-shadow: 0 3px 12px rgba(26,71,42,.3);
+    svg { color: white; }
   }
 
-  &:hover:not(.active) { border-color: #1a472a; color: #1a472a; }
+  &:not(.active):hover {
+    background: var(--bg);
+    color: var(--green);
+    svg { color: var(--green); }
+  }
 }
 
 .tab-count {
-  background: #22c55e;
-  color: white;
-  border-radius: 99px;
+  background: rgba(34,197,94,.15);
+  color: var(--green);
+  border-radius: var(--r-full);
   font-size: .7rem;
+  font-weight: 800;
   padding: .1rem .45rem;
-  font-weight: 700;
-}
-
-// ── États ─────────────────────────────────────────────
-.loading-state, .empty-state {
+  min-width: 20px;
   text-align: center;
-  padding: 4rem 1rem;
-  color: #888;
 
-  p { font-size: 1rem; margin: .5rem 0 .25rem; }
-  small { font-size: .82rem; color: #aaa; }
-  .es-icon { font-size: 2.5rem; display: block; margin-bottom: .75rem; }
+  .active & {
+    background: rgba(255,255,255,.2);
+    color: white;
+  }
 }
 
-.spinner {
-  width: 36px; height: 36px;
-  border: 3px solid #e0e0e0;
-  border-top-color: #1a472a;
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-  margin: 0 auto 1rem;
+// ── Empty/Error states ────────────────────────────────
+.loading-state {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: '';
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: bspin .8s linear infinite;
+  }
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes bspin { to { transform: rotate(360deg); } }
+
+.b-empty-state {
+  text-align: center;
+  padding: 4.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .75rem;
+
+  .bes-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted);
+    margin-bottom: .25rem;
+  }
+
+  p { color: var(--text-muted); font-size: 1rem; margin: 0; }
+  small { color: var(--text-muted); font-size: .84rem; opacity: .7; }
+}
 
 // ── Podium ────────────────────────────────────────────
 .podium {
@@ -112,31 +166,50 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: white;
-  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
   padding: 1.25rem 1rem 0;
   width: 180px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  box-shadow: var(--shadow-sm);
   text-align: center;
+  transition: var(--ease-spring);
 
-  .podium-medal { font-size: 2rem; margin-bottom: .35rem; }
-  .podium-name  { font-weight: 700; font-size: .95rem; color: #1a1a1a; }
-  .podium-team  { font-size: .78rem; color: #888; margin: .2rem 0 .5rem; }
-  .podium-count { font-size: .82rem; font-weight: 600; color: #1a472a; margin-bottom: .75rem; }
+  &:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 
-  .podium-bar {
-    width: 100%;
-    border-radius: 0 0 0 0;
-  }
+  .podium-name  { font-weight: 700; font-size: .92rem; color: var(--navy); margin-top: .4rem; }
+  .podium-team  { font-size: .75rem; color: var(--text-muted); margin: .2rem 0 .5rem; }
+  .podium-count { font-size: .8rem; font-weight: 700; color: var(--green); margin-bottom: .85rem; }
 
-  &.podium-1st { order: 2; .podium-bar { height: 48px; background: linear-gradient(180deg, #FFD700, #f59e0b); border-radius: 0 0 16px 16px; } }
-  &.podium-2nd { order: 1; .podium-bar { height: 32px; background: linear-gradient(180deg, #C0C0C0, #9ca3af); border-radius: 0 0 16px 16px; } }
-  &.podium-3rd { order: 3; .podium-bar { height: 20px; background: linear-gradient(180deg, #CD7F32, #b45309); border-radius: 0 0 16px 16px; } }
+  .podium-bar { width: 100%; border-radius: 0 0 var(--r-xl) var(--r-xl); }
+
+  &.podium-1st .podium-bar { height: 48px; background: linear-gradient(180deg, #ffd700, #f59e0b); }
+  &.podium-2nd .podium-bar { height: 32px; background: linear-gradient(180deg, #e5e7eb, #9ca3af); }
+  &.podium-3rd .podium-bar { height: 20px; background: linear-gradient(180deg, #d97706, #b45309); }
+}
+
+.podium-medal {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem;
+  font-weight: 900;
+
+  &.gold   { background: linear-gradient(135deg, #ffd700, #f59e0b); color: #78350f; box-shadow: 0 4px 14px rgba(255,215,0,.4); }
+  &.silver { background: linear-gradient(135deg, #e5e7eb, #9ca3af); color: #374151; }
+  &.bronze { background: linear-gradient(135deg, #d97706, #b45309); color: white; }
 }
 
 @media (max-width: 560px) {
   .podium { gap: .5rem; }
-  .podium-card { width: calc(33% - .5rem); padding: .75rem .5rem 0; .podium-name { font-size: .8rem; } }
+  .podium-card {
+    width: calc(33% - .4rem);
+    padding: .75rem .5rem 0;
+    border-radius: var(--r-lg);
+    .podium-name { font-size: .78rem; }
+    .podium-team { font-size: .7rem; }
+    .podium-medal { width: 30px; height: 30px; font-size: .8rem; }
+  }
 }
 
 // ── Liste complète ────────────────────────────────────
@@ -150,40 +223,54 @@
   display: grid;
   grid-template-columns: 48px 1fr auto auto;
   align-items: center;
-  gap: .75rem;
-  background: white;
-  border-radius: 10px;
-  padding: .75rem 1rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,.05);
-  transition: transform .15s;
+  gap: .85rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: .8rem 1.1rem;
+  transition: var(--ease);
 
-  &:hover { transform: translateX(4px); }
+  &:hover {
+    transform: translateX(4px);
+    border-color: rgba(34,197,94,.2);
+    box-shadow: var(--shadow-sm);
+  }
 }
 
 .rank-pos {
-  font-size: 1.1rem;
-  font-weight: 700;
-  text-align: center;
-  color: #aaa;
+  display: flex;
+  justify-content: center;
+}
 
-  &.gold   { color: #f59e0b; }
-  &.silver { color: #9ca3af; }
-  &.bronze { color: #b45309; }
+.rank-medal {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .82rem;
+  font-weight: 800;
+  background: var(--bg);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+
+  &.gold   { background: linear-gradient(135deg, #ffd700, #f59e0b); color: #78350f; border: none; box-shadow: 0 2px 8px rgba(255,215,0,.3); }
+  &.silver { background: linear-gradient(135deg, #e5e7eb, #9ca3af); color: #374151; border: none; }
+  &.bronze { background: linear-gradient(135deg, #d97706, #b45309); color: white; border: none; }
 }
 
 .rank-info {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 
-  .rank-name { font-weight: 600; font-size: .92rem; color: #1a1a1a; }
-  .rank-team { font-size: .78rem; color: #888; }
+  .rank-name { font-weight: 700; font-size: .92rem; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rank-team { font-size: .76rem; color: var(--text-muted); }
 }
 
 .rank-bar-wrap {
-  width: 120px;
-  height: 6px;
-  background: #eee;
-  border-radius: 99px;
+  width: 100px;
+  height: 5px;
+  background: var(--border-light);
+  border-radius: var(--r-full);
   overflow: hidden;
 
   @media (max-width: 560px) { display: none; }
@@ -191,17 +278,16 @@
 
 .rank-bar {
   height: 100%;
-  background: linear-gradient(90deg, #1a472a, #22c55e);
-  border-radius: 99px;
-  transition: width .4s ease;
+  background: linear-gradient(90deg, var(--green), var(--emerald));
+  border-radius: var(--r-full);
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+  min-width: 4px;
 }
 
 .rank-total {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #1a472a;
-  min-width: 40px;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--green);
+  min-width: 32px;
   text-align: right;
-
-  .rank-unit { font-size: .85rem; }
 }

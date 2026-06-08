@@ -1,29 +1,38 @@
 <div class="gallery-page">
 
   <div class="gallery-hero">
-    <p class="hero-label">Photos du tournoi</p>
-    <h1 class="hero-title">Galerie</h1>
-    <p class="hero-sub">Les meilleurs moments du Tournoi FJU 2026</p>
+    <p class="hero-label">Tournoi FJU 2026</p>
+    <h1 class="hero-title">Galerie Photos</h1>
+    <p class="hero-sub">Les meilleurs moments capturés pendant le tournoi</p>
   </div>
 
   <div class="gallery-body">
 
-    <div class="gallery-loading" *ngIf="loading">
-      <div class="spinner"></div><p>Chargement…</p>
+    <!-- Loading skeleton -->
+    <div class="gallery-skeleton" *ngIf="loading">
+      <div class="gallery-grid">
+        <div class="gal-skel-item" *ngFor="let i of [1,2,3,4,5,6]"></div>
+      </div>
     </div>
 
+    <!-- Vide -->
     <div class="gallery-empty" *ngIf="!loading && photos.length === 0">
-      <span class="ge-icon">📷</span>
+      <div class="ge-icon-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+      </div>
       <p>Aucune photo publiée pour le moment.</p>
       <small>Revenez pendant le tournoi !</small>
     </div>
 
+    <!-- Grille photos -->
     <div class="gallery-grid" *ngIf="!loading && photos.length > 0">
-      <div class="gallery-item" *ngFor="let p of photos" (click)="open(p)">
+      <div class="gallery-item" *ngFor="let p of photos" (click)="open(p)" role="button" [attr.aria-label]="'Voir ' + (p.title || 'la photo')" tabindex="0" (keydown.enter)="open(p)">
         <img [src]="p.photo_path" [alt]="p.title || 'Photo du tournoi'" loading="lazy" />
         <div class="gallery-overlay">
-          <span *ngIf="p.title">{{ p.title }}</span>
-          <span class="gallery-zoom">🔍</span>
+          <span class="gallery-caption" *ngIf="p.title">{{ p.title }}</span>
+          <div class="gallery-zoom">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+          </div>
         </div>
       </div>
     </div>
@@ -31,10 +40,14 @@
   </div>
 
   <!-- Lightbox -->
-  <div class="lightbox" *ngIf="selectedPhoto" (click)="close()">
-    <button class="lb-close" (click)="close()">✕</button>
-    <img [src]="selectedPhoto.photo_path" [alt]="selectedPhoto.title || ''" (click)="$event.stopPropagation()" />
-    <p class="lb-caption" *ngIf="selectedPhoto.title" (click)="$event.stopPropagation()">{{ selectedPhoto.title }}</p>
+  <div class="lightbox" *ngIf="selectedPhoto" (click)="close()" role="dialog" aria-modal="true" aria-label="Photo agrandie">
+    <button class="lb-close" (click)="close()" aria-label="Fermer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="lb-content" (click)="$event.stopPropagation()">
+      <img [src]="selectedPhoto.photo_path" [alt]="selectedPhoto.title || 'Photo du tournoi'" />
+      <p class="lb-caption" *ngIf="selectedPhoto.title">{{ selectedPhoto.title }}</p>
+    </div>
   </div>
 
 </div>
