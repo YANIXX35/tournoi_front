@@ -33,6 +33,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   licenceTeamFilter = 'all';
   showLicencePreview = false;
   exportPreviewOpen = false;
+  teamsForLicences: Team[] = [];
+  licencesLoading = false;
 
   // Photos — suivi des URLs cassées pour afficher le placeholder à la place
   private brokenPhotos = new Set<string>();
@@ -100,6 +102,15 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadTeamsWithPhotosForLicences(): void {
+    this.licencesLoading = true;
+    this.cdr.detectChanges();
+    this.adminService.getTeamsWithPhotos().subscribe({
+      next: d => this.ngZone.run(() => { this.teamsForLicences = d; this.licencesLoading = false; this.cdr.detectChanges(); }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur chargement photos licences'); this.licencesLoading = false; this.cdr.detectChanges(); }),
+    });
+  }
+
   loadMatches(): void {
     this.tournamentService.getMatches().subscribe({
       next: d => this.ngZone.run(() => { this.matches = d; this.cdr.detectChanges(); }),
@@ -123,6 +134,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       if (section === 'gallery') this.loadGallery();
       if (section === 'announcements') this.loadAnnouncements();
       if (section === 'logs') this.loadLogs();
+      if (section === 'licences') this.loadTeamsWithPhotosForLicences();
       this.cdr.detectChanges();
     });
   }
@@ -168,8 +180,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   // ── Licences ───────────────────────────────────────────
   get filteredTeamsForLicences(): Team[] {
-    if (this.licenceTeamFilter === 'all') return this.teams;
-    return this.teams.filter(t => t.id === Number(this.licenceTeamFilter));
+    const src = this.teamsForLicences.length ? this.teamsForLicences : this.teams;
+    if (this.licenceTeamFilter === 'all') return src;
+    return src.filter(t => t.id === Number(this.licenceTeamFilter));
   }
 
   getPhotoUrl(path: string | null | undefined): string | null {
@@ -322,6 +335,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.adminService.updatePlayer(this.editingPlayer.id, name, photoPath).subscribe({
       next: () => this.ngZone.run(() => {
         this.loadTeams();
+        this.loadTeamsWithPhotosForLicences();
         this.editingPlayer = null;
         this.editPlayerPhotoPreview = null;
         this.editPlayerNewPhotoPath = undefined;
@@ -337,6 +351,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.adminService.deletePlayer(playerId).subscribe({
       next: () => this.ngZone.run(() => {
         this.loadTeams();
+        this.loadTeamsWithPhotosForLicences();
         this.flash('Joueur supprimé ✓');
       }),
       error: () => this.ngZone.run(() => { this.flash('Erreur lors de la suppression'); }),
@@ -372,6 +387,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.adminService.addPlayer(teamId, name, this.newPlayerPhotoPath).subscribe({
       next: () => this.ngZone.run(() => {
         this.loadTeams();
+        this.loadTeamsWithPhotosForLicences();
         this.addingPlayerTeamId = null;
         this.newPlayerName = '';
         this.newPlayerPhotoPath = null;
@@ -681,7 +697,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     // Titre
     doc.setFontSize(16);
     doc.setTextColor(26, 71, 42);
-    doc.text('Tournoi de Football de l'Étoile Universelle — Côte d\'Ivoire 2026', M, y);
+    doc.text("Tournoi de Football de l'Étoile Universelle — Côte d'Ivoire 2026", M, y);
     y += 7;
     doc.setFontSize(9);
     doc.setTextColor(140, 140, 140);

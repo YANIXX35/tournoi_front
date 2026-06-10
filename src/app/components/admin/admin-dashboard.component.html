@@ -527,12 +527,18 @@
         </div>
       </div>
 
+      <!-- Chargement photos -->
+      <div *ngIf="licencesLoading" style="text-align:center;padding:2rem;color:#888;font-size:0.9rem;">
+        Chargement des photos…
+      </div>
+
       <!-- Aucune équipe -->
-      <div class="empty-state" *ngIf="teams.length === 0">
+      <div class="empty-state" *ngIf="!licencesLoading && teams.length === 0">
         Aucune équipe inscrite pour le moment.
       </div>
 
       <!-- Grille de licences par équipe -->
+      <ng-container *ngIf="!licencesLoading">
       <ng-container *ngFor="let team of filteredTeamsForLicences">
 
         <!-- En-tête équipe -->
@@ -670,6 +676,7 @@
         </div><!-- /licence-grid -->
 
       </ng-container>
+      </ng-container><!-- /!licencesLoading -->
 
     </div>
 

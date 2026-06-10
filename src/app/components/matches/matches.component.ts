@@ -69,7 +69,7 @@ export class MatchesComponent implements OnInit {
       doc.setFontSize(16); doc.setFont('helvetica', 'bold');
       doc.text('Programme des Matchs', w / 2, 12, { align: 'center' });
       doc.setFontSize(9); doc.setFont('helvetica', 'normal');
-      doc.text('Tournoi de Football de l'Étoile Universelle de Grand Bassam 2026', w / 2, 20, { align: 'center' });
+      doc.text("Tournoi de Football de l'Étoile Universelle de Grand Bassam 2026", w / 2, 20, { align: 'center' });
 
       let y = 36;
       const matches = this.selectedPhase === 'Tous' ? this.matches : this.filteredMatches;
