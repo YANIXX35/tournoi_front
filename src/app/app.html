@@ -1,8 +1,8 @@
 <nav class="navbar" [class.scrolled]="scrolled">
   <a class="navbar-brand" routerLink="/" (click)="closeMenu()">
-    <img src="fju.jpg" alt="FJU Logo" class="brand-logo" />
+    <img src="fju.jpg" alt="Logo Étoile Universelle" class="brand-logo" />
     <div class="brand-text">
-      <span class="brand-title">Église Universel</span>
+      <span class="brand-title">Étoile Universelle de Grand Bassam</span>
       <span class="brand-sub">Tournoi Football 2026</span>
     </div>
   </a>
@@ -30,7 +30,7 @@
 <!-- Mobile drawer -->
 <div class="mobile-menu" [class.open]="menuOpen">
   <div class="mobile-menu-header">
-    <span><img src="fju.jpg" alt="FJU" style="width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px;" />Menu</span>
+    <span><img src="fju.jpg" alt="Étoile Universelle" style="width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px;" />Menu</span>
     <button class="close-menu" (click)="closeMenu()">✕</button>
   </div>
   <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="closeMenu()">🏠 Accueil</a>
@@ -47,5 +47,5 @@
 </main>
 
 <footer class="site-footer">
-  ⚽ Tournoi de Football — Église Universel de Bassam 2026 · Tous droits réservés
+  ⚽ Tournoi de Football — Étoile Universelle de Grand Bassam 2026 · Tous droits réservés
 </footer>

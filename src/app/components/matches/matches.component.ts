@@ -65,7 +65,7 @@ export class MatchesComponent implements OnInit {
       doc.setFontSize(16); doc.setFont('helvetica', 'bold');
       doc.text('Programme des Matchs', w / 2, 12, { align: 'center' });
       doc.setFontSize(9); doc.setFont('helvetica', 'normal');
-      doc.text('Tournoi FJU — Église Universel de Bassam 2026', w / 2, 20, { align: 'center' });
+      doc.text('Tournoi de Football de l'Étoile Universelle de Grand Bassam 2026', w / 2, 20, { align: 'center' });
 
       let y = 36;
       const matches = this.selectedPhase === 'Tous' ? this.matches : this.filteredMatches;
@@ -101,7 +101,7 @@ export class MatchesComponent implements OnInit {
       doc.setTextColor(150, 150, 150); doc.setFontSize(7);
       doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')}`, w / 2, 288, { align: 'center' });
 
-      doc.save('programme-matchs-FJU-2026.pdf');
+      doc.save('programme-matchs-etoiles-universelle-2026.pdf');
     });
   }
 }

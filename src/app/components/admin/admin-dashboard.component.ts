@@ -519,7 +519,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     // Titre
     doc.setFontSize(14);
     doc.setTextColor(26, 71, 42);
-    doc.text('Tournoi FJU — Licences joueurs 2026', M, y);
+    doc.text('Tournoi de Football Étoile Universelle — Licences joueurs 2026', M, y);
     y += 6;
     doc.setFontSize(8);
     doc.setTextColor(120, 120, 120);
@@ -665,7 +665,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     // Titre
     doc.setFontSize(16);
     doc.setTextColor(26, 71, 42);
-    doc.text('Tournoi FJU — Côte d\'Ivoire 2026', M, y);
+    doc.text('Tournoi de Football de l'Étoile Universelle — Côte d\'Ivoire 2026', M, y);
     y += 7;
     doc.setFontSize(9);
     doc.setTextColor(140, 140, 140);

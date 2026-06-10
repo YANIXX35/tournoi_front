@@ -6,10 +6,10 @@
   <!-- ═══════════ SIDEBAR ═══════════ -->
   <aside class="sidebar" [class.open]="sidebarOpen">
     <div class="sidebar-logo">
-      <img src="fju.jpg" alt="FJU" class="sidebar-logo-img" />
+      <img src="fju.jpg" alt="Étoile Universelle" class="sidebar-logo-img" />
       <div class="logo-text">
-        <span class="logo-title">Tournoi FJU</span>
-        <span class="logo-sub">Église 2026</span>
+        <span class="logo-title">Tournoi de Football de l'Étoile Universelle</span>
+        <span class="logo-sub">Grand Bassam 2026</span>
       </div>
     </div>
 
@@ -91,7 +91,7 @@
     <div class="main-header">
       <div>
         <h1 class="main-title">{{ getSectionTitle() }}</h1>
-        <p class="main-subtitle">Tournoi FJU — Côte d'Ivoire 2026</p>
+        <p class="main-subtitle">Tournoi de Football de l'Étoile Universelle de Grand Bassam 2026</p>
       </div>
       <div class="header-date">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -557,7 +557,7 @@
             <!-- Carte normale (non en édition) -->
             <div class="licence-card" *ngIf="editingPlayer?.id !== player.id">
               <div class="licence-card-header">
-                <img src="fju.jpg" alt="FJU" class="licence-card-logo" />
+                <img src="fju.jpg" alt="Étoile Universelle" class="licence-card-logo" />
                 <div class="licence-card-title">
                   <span class="licence-org">Comité d'organisation</span>
                   <span class="licence-year">LICENCE 2026</span>
@@ -595,7 +595,7 @@
             <!-- Carte en mode édition -->
             <div class="licence-card licence-card--editing" *ngIf="editingPlayer?.id === player.id">
               <div class="licence-card-header">
-                <img src="fju.jpg" alt="FJU" class="licence-card-logo" />
+                <img src="fju.jpg" alt="Étoile Universelle" class="licence-card-logo" />
                 <div class="licence-card-title">
                   <span class="licence-org">Modifier</span>
                   <span class="licence-year">JOUEUR</span>
@@ -638,7 +638,7 @@
           <!-- ── Formulaire nouveau joueur ── -->
           <div class="licence-card licence-card--adding" *ngIf="addingPlayerTeamId === team.id">
             <div class="licence-card-header">
-              <img src="fju.jpg" alt="FJU" class="licence-card-logo" />
+              <img src="fju.jpg" alt="Étoile Universelle" class="licence-card-logo" />
               <div class="licence-card-title">
                 <span class="licence-org">Nouveau</span>
                 <span class="licence-year">JOUEUR</span>
@@ -1062,9 +1062,9 @@
 
         <!-- Titre du document -->
         <div class="lp-doc-title">
-          <img src="fju.jpg" class="lp-doc-logo" alt="FJU" />
+          <img src="fju.jpg" class="lp-doc-logo" alt="Étoile Universelle" />
           <div>
-            <strong>Tournoi FJU — Côte d'Ivoire 2026</strong>
+            <strong>Tournoi de Football de l'Étoile Universelle de Grand Bassam 2026</strong>
             <span>Licences joueurs · Édition 2026 · {{ today }}</span>
           </div>
         </div>
@@ -1089,9 +1089,9 @@
           <div class="lp-cards-grid" *ngIf="team.players && team.players.length > 0">
             <div class="lp-card" *ngFor="let player of team.players">
 
-              <!-- En-tête carte : dégradé vert + logo FJU -->
+              <!-- En-tête carte : dégradé vert + logo -->
               <div class="lp-card-hd">
-                <img src="fju.jpg" class="lp-card-logo" alt="FJU" />
+                <img src="fju.jpg" class="lp-card-logo" alt="Étoile Universelle" />
                 <div class="lp-card-hd-text">
                   <span class="lp-card-org">Comité d'organisation</span>
                   <span class="lp-card-yr">LICENCE 2026</span>
