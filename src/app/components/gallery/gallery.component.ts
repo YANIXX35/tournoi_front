@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { TournamentService } from '../../services/tournament.service';
 import { GalleryPhoto } from '../../models/match.model';
 
@@ -7,6 +7,7 @@ import { GalleryPhoto } from '../../models/match.model';
   templateUrl: './gallery.component.html',
   styleUrls: ['./gallery.component.scss'],
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GalleryComponent implements OnInit {
   photos: GalleryPhoto[] = [];
@@ -24,4 +25,8 @@ export class GalleryComponent implements OnInit {
 
   open(p: GalleryPhoto): void { this.selectedPhoto = p; }
   close(): void { this.selectedPhoto = null; }
+
+  stopPropagation(e: Event): void { e.stopPropagation(); }
+
+  trackByPhotoId(_: number, p: GalleryPhoto): number { return p.id; }
 }

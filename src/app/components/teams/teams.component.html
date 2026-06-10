@@ -47,7 +47,7 @@
 
     <!-- Grid -->
     <div class="teams-grid">
-      <div *ngFor="let team of teams; let i = index"
+      <div *ngFor="let team of teams; let i = index; trackBy: trackByTeamId"
            class="team-card"
            [class.expanded]="expandedTeam === team.id"
            appReveal [revealDelay]="i * 60">
@@ -72,7 +72,7 @@
         <div class="players-panel" *ngIf="expandedTeam === team.id">
           <p class="players-title">Liste des joueurs</p>
           <div class="players-grid">
-            <div *ngFor="let name of team.players; let i = index" class="player-pill">
+            <div *ngFor="let name of team.players; let i = index; trackBy: trackByIndex" class="player-pill">
               <span class="player-n">{{ i + 1 }}</span>
               <span class="player-name">{{ name }}</span>
             </div>

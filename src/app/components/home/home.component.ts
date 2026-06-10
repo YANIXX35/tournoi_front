@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { TournamentService } from '../../services/tournament.service';
 import { TopScorer, Announcement } from '../../models/match.model';
@@ -8,6 +8,7 @@ import { TopScorer, Announcement } from '../../models/match.model';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent implements OnInit, OnDestroy {
   countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
@@ -19,16 +20,27 @@ export class HomeComponent implements OnInit, OnDestroy {
   scorerTab: 'goal' | 'assist' = 'goal';
   announcements: Announcement[] = [];
   dismissedAnnouncements = new Set<number>();
+  visibleAnnouncements: Announcement[] = [];
+  hasStats = false;
+  displayList: TopScorer[] = [];
 
   constructor(
     private router: Router,
     private tournamentService: TournamentService,
     private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
   ) {}
 
   ngOnInit(): void {
     this.updateCountdown();
-    this.timer = setInterval(() => this.updateCountdown(), 1000);
+    // Hors zone Angular : le setInterval ne declenche plus un cycle CD complet
+    // toutes les secondes sur l'arbre entier
+    this.ngZone.runOutsideAngular(() => {
+      this.timer = setInterval(() => {
+        this.updateCountdown();
+        this.cdr.detectChanges();
+      }, 1000);
+    });
     this.loadTopScorers();
     this.loadAnnouncements();
   }
@@ -57,37 +69,44 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: data => {
         this.scorers = data.scorers.slice(0, 8);
         this.assisters = data.assisters.slice(0, 8);
+        this.hasStats = this.scorers.length > 0 || this.assisters.length > 0;
+        this.displayList = this.scorerTab === 'goal' ? this.scorers : this.assisters;
         this.cdr.detectChanges();
       },
       error: () => {},
     });
   }
 
-  get hasStats(): boolean {
-    return this.scorers.length > 0 || this.assisters.length > 0;
-  }
-
-  get displayList(): TopScorer[] {
-    return this.scorerTab === 'goal' ? this.scorers : this.assisters;
-  }
-
   loadAnnouncements(): void {
     this.tournamentService.getAnnouncements().subscribe({
-      next: list => { this.announcements = list; this.cdr.detectChanges(); },
+      next: list => {
+        this.announcements = list;
+        this._refreshVisible();
+        this.cdr.detectChanges();
+      },
       error: () => {},
     });
   }
 
-  dismiss(id: number): void {
-    this.dismissedAnnouncements.add(id);
-    this.cdr.detectChanges();
+  setTab(tab: 'goal' | 'assist'): void {
+    this.scorerTab = tab;
+    this.displayList = tab === 'goal' ? this.scorers : this.assisters;
+    this.cdr.markForCheck();
   }
 
-  get visibleAnnouncements(): Announcement[] {
-    return this.announcements.filter(a => !this.dismissedAnnouncements.has(a.id));
+  dismiss(id: number): void {
+    this.dismissedAnnouncements.add(id);
+    this._refreshVisible();
+    this.cdr.markForCheck();
+  }
+
+  private _refreshVisible(): void {
+    this.visibleAnnouncements = this.announcements.filter(a => !this.dismissedAnnouncements.has(a.id));
   }
 
   goRegister(): void {
     this.router.navigate(['/inscription']);
   }
+
+  trackByAnnouncementId(_: number, a: Announcement): number { return a.id; }
 }

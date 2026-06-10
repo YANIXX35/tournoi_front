@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { TournamentService } from '../../services/tournament.service';
 import { Match, Standing } from '../../models/match.model';
 import { timeout, catchError } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { of } from 'rxjs';
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.scss'],
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResultsComponent implements OnInit {
   finishedMatches: Match[] = [];
@@ -45,4 +46,7 @@ export class ResultsComponent implements OnInit {
     const diff = s.goals_for - s.goals_against;
     return diff > 0 ? `+${diff}` : `${diff}`;
   }
+
+  trackByMatchId(_: number, m: Match): number { return m.id; }
+  trackByStandingId(_: number, s: Standing): number { return s.id; }
 }

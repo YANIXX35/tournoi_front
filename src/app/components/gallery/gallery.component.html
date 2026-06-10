@@ -26,7 +26,7 @@
 
     <!-- Grille photos -->
     <div class="gallery-grid" *ngIf="!loading && photos.length > 0">
-      <div class="gallery-item" *ngFor="let p of photos" (click)="open(p)" role="button" [attr.aria-label]="'Voir ' + (p.title || 'la photo')" tabindex="0" (keydown.enter)="open(p)">
+      <div class="gallery-item" *ngFor="let p of photos; trackBy: trackByPhotoId" (click)="open(p)" role="button" [attr.aria-label]="'Voir ' + (p.title || 'la photo')" tabindex="0" (keydown.enter)="open(p)">
         <img [src]="p.photo_path" [alt]="p.title || 'Photo du tournoi'" loading="lazy" />
         <div class="gallery-overlay">
           <span class="gallery-caption" *ngIf="p.title">{{ p.title }}</span>
@@ -44,7 +44,7 @@
     <button class="lb-close" (click)="close()" aria-label="Fermer">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </button>
-    <div class="lb-content" (click)="$event.stopPropagation()">
+    <div class="lb-content" (click)="stopPropagation($event)">
       <img [src]="selectedPhoto.photo_path" [alt]="selectedPhoto.title || 'Photo du tournoi'" />
       <p class="lb-caption" *ngIf="selectedPhoto.title">{{ selectedPhoto.title }}</p>
     </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { TeamService } from '../../services/team.service';
 import { Team } from '../../models/team.model';
 import { timeout, catchError } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { of } from 'rxjs';
   templateUrl: './teams.component.html',
   styleUrls: ['./teams.component.scss'],
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamsComponent implements OnInit {
   teams: Team[] = [];
@@ -43,4 +44,7 @@ export class TeamsComponent implements OnInit {
   toggleTeam(id: number): void {
     this.expandedTeam = this.expandedTeam === id ? null : id;
   }
+
+  trackByTeamId(_: number, team: Team): number { return team.id; }
+  trackByIndex(index: number): number { return index; }
 }

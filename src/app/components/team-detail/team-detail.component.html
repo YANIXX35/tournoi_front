@@ -111,7 +111,7 @@
         </h2>
 
         <div class="td-players-grid">
-          <div class="td-player-card" *ngFor="let p of team.players">
+          <div class="td-player-card" *ngFor="let p of team.players; trackBy: trackByPlayerId">
             <div class="td-avatar">
               <img *ngIf="getPhotoUrl(p.photo_path)"
                    [src]="getPhotoUrl(p.photo_path)!"
@@ -138,7 +138,7 @@
         </h2>
 
         <div class="td-matches">
-          <div class="td-match" *ngFor="let m of team.matches" [class]="'r-' + getMatchResult(m)">
+          <div class="td-match" *ngFor="let m of team.matches; trackBy: trackByMatchId" [class]="'r-' + getMatchResult(m)">
             <div class="tdm-bar"></div>
             <div class="tdm-inner">
               <div class="tdm-header">
@@ -174,7 +174,7 @@
         <div class="td-scorers">
           <div class="td-scorer-col" *ngIf="goalScorers.length > 0">
             <h3 class="td-scorer-head">Buteurs</h3>
-            <div class="td-scorer-row" *ngFor="let s of goalScorers; let i = index">
+            <div class="td-scorer-row" *ngFor="let s of goalScorers; let i = index; trackBy: trackByScorer">
               <div class="td-medal" [class]="i===0?'gold':i===1?'silver':i===2?'bronze':''">{{ i + 1 }}</div>
               <span class="td-sname">{{ s.player_name }}</span>
               <span class="td-stotal">{{ s.total }}</span>
@@ -182,7 +182,7 @@
           </div>
           <div class="td-scorer-col" *ngIf="assisters.length > 0">
             <h3 class="td-scorer-head">Passeurs</h3>
-            <div class="td-scorer-row" *ngFor="let s of assisters; let i = index">
+            <div class="td-scorer-row" *ngFor="let s of assisters; let i = index; trackBy: trackByScorer">
               <div class="td-medal" [class]="i===0?'gold':i===1?'silver':i===2?'bronze':''">{{ i + 1 }}</div>
               <span class="td-sname">{{ s.player_name }}</span>
               <span class="td-stotal">{{ s.total }}</span>

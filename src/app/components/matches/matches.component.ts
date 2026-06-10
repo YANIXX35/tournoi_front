@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { TournamentService } from '../../services/tournament.service';
 import { Match } from '../../models/match.model';
 import { timeout, catchError } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { of } from 'rxjs';
   templateUrl: './matches.component.html',
   styleUrls: ['./matches.component.scss'],
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatchesComponent implements OnInit {
   matches: Match[] = [];
@@ -53,6 +54,9 @@ export class MatchesComponent implements OnInit {
     const labels: Record<string, string> = { upcoming: 'À venir', ongoing: 'En cours', finished: 'Terminé' };
     return labels[status] || status;
   }
+
+  trackByMatchId(_: number, m: Match): number { return m.id; }
+  trackByPhase(_: number, phase: string): string { return phase; }
 
   exportPdf(): void {
     import('jspdf').then(({ jsPDF }) => {

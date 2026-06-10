@@ -5,7 +5,7 @@
 
 <div class="filters-wrap">
   <button
-    *ngFor="let phase of phases"
+    *ngFor="let phase of phases; trackBy: trackByPhase"
     [class.active]="selectedPhase === phase"
     (click)="filterByPhase(phase)"
     class="filter-pill">
@@ -55,7 +55,7 @@
 
     <div class="matches-list">
       <div
-        *ngFor="let match of filteredMatches; let i = index"
+        *ngFor="let match of filteredMatches; let i = index; trackBy: trackByMatchId"
         class="match-card"
         [class]="'status-' + match.status"
         appReveal [revealDelay]="i * 50">

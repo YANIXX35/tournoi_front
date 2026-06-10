@@ -1,19 +1,23 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TournamentService } from '../../services/tournament.service';
-import { TeamDetail } from '../../models/match.model';
+import { Match, TeamDetail } from '../../models/match.model';
 
 @Component({
   selector: 'app-team-detail',
   templateUrl: './team-detail.component.html',
   styleUrls: ['./team-detail.component.scss'],
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamDetailComponent implements OnInit {
   team: TeamDetail | null = null;
   loading = true;
   error = false;
   brokenPhotos = new Set<string>();
+
+  goalScorers: { player_name: string; type: string; total: number }[] = [];
+  assisters:   { player_name: string; type: string; total: number }[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -26,7 +30,13 @@ export class TeamDetailComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) { this.router.navigate(['/equipes']); return; }
     this.tournamentService.getTeamDetail(id).subscribe({
-      next: team => { this.team = team; this.loading = false; this.cdr.detectChanges(); },
+      next: team => {
+        this.team = team;
+        this.goalScorers = team.scorers.filter(s => s.type === 'goal');
+        this.assisters   = team.scorers.filter(s => s.type === 'assist');
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
       error: () => { this.loading = false; this.error = true; this.cdr.detectChanges(); },
     });
   }
@@ -62,6 +72,7 @@ export class TeamDetailComponent implements OnInit {
     return isT1 ? `${m.score1} — ${m.score2}` : `${m.score2} — ${m.score1}`;
   }
 
-  get goalScorers() { return this.team?.scorers.filter(s => s.type === 'goal') ?? []; }
-  get assisters()   { return this.team?.scorers.filter(s => s.type === 'assist') ?? []; }
+  trackByPlayerId(_: number, p: { id: number }): number { return p.id; }
+  trackByMatchId(_: number, m: Match): number { return m.id; }
+  trackByScorer(_: number, s: { player_name: string; type: string }): string { return s.player_name + s.type; }
 }
