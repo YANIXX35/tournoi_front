@@ -508,6 +508,22 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   async exportLicencesPdfWithPhotos(): Promise<void> {
     this.closeExportPreview();
+    this.flash('Chargement des photos…');
+    this.cdr.detectChanges();
+
+    let teamsData: Team[];
+    try {
+      teamsData = await this.adminService.getTeamsWithPhotos().toPromise() ?? [];
+    } catch {
+      this.flash('Erreur chargement photos');
+      return;
+    }
+
+    const filteredTeams = this.licenceTeamFilter === 'all'
+      ? teamsData
+      : teamsData.filter(t => t.id === Number(this.licenceTeamFilter));
+    const playerCount = filteredTeams.reduce((acc, t) => acc + (t.players?.length ?? 0), 0);
+
     this.flash('Génération PDF avec photos...');
     const { jsPDF } = await import('jspdf');
     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
@@ -524,12 +540,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     doc.setFontSize(8);
     doc.setTextColor(120, 120, 120);
     doc.text(
-      `${this.filteredPlayersCount} joueur(s) · Exporté le ${new Date().toLocaleDateString('fr-FR')}`,
+      `${playerCount} joueur(s) · Exporté le ${new Date().toLocaleDateString('fr-FR')}`,
       M, y
     );
     y += 10;
 
-    this.filteredTeamsForLicences.forEach(team => {
+    filteredTeams.forEach(team => {
       if (y > 265) { doc.addPage(); y = 18; }
 
       // En-tête équipe

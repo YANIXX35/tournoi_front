@@ -2,6 +2,7 @@ export interface AdminPlayer {
   id: number;
   player_name: string;
   photo_path: string | null;
+  has_photo?: boolean;
 }
 
 export interface Team {

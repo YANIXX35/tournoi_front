@@ -22,6 +22,10 @@ export class AdminService {
     return this.http.get<Team[]>(`${API}/teams`, { headers: this.headers() });
   }
 
+  getTeamsWithPhotos(): Observable<Team[]> {
+    return this.http.get<Team[]>(`${API}/teams?photos=1`, { headers: this.headers() });
+  }
+
   validateTeam(id: number, validated: boolean): Observable<any> {
     return this.http.put(`${API}/teams/${id}`, { validated }, { headers: this.headers() });
   }
