@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TournamentService } from '../../services/tournament.service';
+import { PerformanceService } from '../../services/performance.service';
 import { Match, TeamDetail } from '../../models/match.model';
 
 @Component({
@@ -19,10 +20,13 @@ export class TeamDetailComponent implements OnInit {
   goalScorers: { player_name: string; type: string; total: number }[] = [];
   assisters:   { player_name: string; type: string; total: number }[] = [];
 
+  get isLiteMode(): boolean { return this.perf.isLiteMode; }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private tournamentService: TournamentService,
+    private perf: PerformanceService,
     private cdr: ChangeDetectorRef,
   ) {}
 

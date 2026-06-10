@@ -1,4 +1,5 @@
 import { Component, signal, HostListener } from '@angular/core';
+import { PerformanceService } from './services/performance.service';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,10 @@ export class App {
   protected readonly title = signal('frontend');
   menuOpen = false;
   scrolled = false;
+
+  constructor(private perf: PerformanceService) {
+    this.perf.init();
+  }
 
   toggleMenu(): void { this.menuOpen = !this.menuOpen; }
   closeMenu(): void  { this.menuOpen = false; }

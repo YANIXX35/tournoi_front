@@ -1,5 +1,10 @@
 <div class="td-page">
 
+  <!-- Bandeau mode économique -->
+  <div *ngIf="isLiteMode && !loading" style="background:#1a472a;color:#a8e6bc;font-size:0.78rem;text-align:center;padding:0.45rem 1rem;letter-spacing:0.01em;">
+    ⚡ Mode économique activé — photos masquées pour accélérer le chargement
+  </div>
+
   <!-- Skeleton loading -->
   <div *ngIf="loading">
     <div class="td-hero" style="padding-bottom:0">
