@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TournamentService } from '../../services/tournament.service';
 import { PerformanceService } from '../../services/performance.service';
 import { Match, TeamDetail } from '../../models/match.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-team-detail',
@@ -47,6 +48,8 @@ export class TeamDetailComponent implements OnInit {
 
   getPhotoUrl(path: string | null): string | null {
     if (!path || this.brokenPhotos.has(path)) return null;
+    if (path.startsWith('data:')) return path;
+    if (path.startsWith('/')) return `${environment.apiUrl}${path}`;
     return path;
   }
 
