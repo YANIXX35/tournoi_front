@@ -52,6 +52,7 @@
           <img *ngIf="getPhotoUrl(team.logo_path)"
                [src]="getPhotoUrl(team.logo_path)!"
                class="td-logo" [alt]="team.name"
+               loading="lazy"
                (error)="onPhotoError(team.logo_path)" />
           <div *ngIf="!getPhotoUrl(team.logo_path)" class="td-logo-initials">
             {{ team.name[0]?.toUpperCase() }}
@@ -116,6 +117,7 @@
               <img *ngIf="getPhotoUrl(p.photo_path)"
                    [src]="getPhotoUrl(p.photo_path)!"
                    [alt]="p.player_name"
+                   loading="lazy"
                    (error)="onPhotoError(p.photo_path)" />
               <div *ngIf="!getPhotoUrl(p.photo_path)" class="td-avatar-initial">
                 {{ p.player_name[0]?.toUpperCase() }}
