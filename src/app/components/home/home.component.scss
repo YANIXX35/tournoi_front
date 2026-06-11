@@ -722,6 +722,11 @@
 
   .stat-num { font-size: 1.8rem; }
   .stat-desc { font-size: 0.75rem; }
+
+  .home-scorers { padding: 3rem 1rem; }
+  .scorers-title { font-size: 1.6rem; margin-bottom: 1.25rem; }
+  .scorers-tabs { flex-wrap: wrap; gap: .5rem; }
+  .scorer-tab { min-height: 40px; }
 }
 
 @media (max-width: 480px) {

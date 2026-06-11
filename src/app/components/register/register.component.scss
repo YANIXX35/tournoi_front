@@ -615,10 +615,16 @@
 
   .form-card { padding: 1.25rem 1rem; }
 
+  // iOS Safari zooms into inputs with font-size < 16px — force 16px on mobile
+  .form-group input { font-size: 1rem; }
+  .player-input { font-size: 1rem; }
+  .phone-local-input { font-size: 1rem; }
+  .dial-select { font-size: 1rem; }
+
   .player-row { gap: 0.4rem; }
 
   .phone-input-group { gap: 0.4rem; }
-  .dial-select { min-width: 90px; font-size: 0.85rem; padding: 0.75rem 0.5rem; }
+  .dial-select { min-width: 90px; padding: 0.75rem 0.5rem; }
 
   .form-actions {
     flex-direction: column-reverse;
