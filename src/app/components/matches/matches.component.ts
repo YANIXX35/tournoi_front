@@ -18,6 +18,13 @@ export class MatchesComponent implements OnInit {
   selectedPhase = 'Tous';
   loading = true;
   hasError = false;
+  page = 1;
+  readonly pageSize = 10;
+
+  get paginatedMatches(): Match[] {
+    const start = (this.page - 1) * this.pageSize;
+    return this.filteredMatches.slice(start, start + this.pageSize);
+  }
 
   constructor(
     private tournamentService: TournamentService,
@@ -47,8 +54,11 @@ export class MatchesComponent implements OnInit {
 
   filterByPhase(phase: string): void {
     this.selectedPhase = phase;
+    this.page = 1;
     this.filteredMatches = phase === 'Tous' ? this.matches : this.matches.filter(m => m.phase === phase);
   }
+
+  onPageChange(p: number): void { this.page = p; this.cdr.markForCheck(); }
 
   getStatusLabel(status: string): string {
     const labels: Record<string, string> = { upcoming: 'À venir', ongoing: 'En cours', finished: 'Terminé' };

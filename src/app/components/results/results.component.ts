@@ -16,6 +16,13 @@ export class ResultsComponent implements OnInit {
   standings: Standing[] = [];
   loading = true;
   hasError = false;
+  matchPage = 1;
+  readonly matchPageSize = 8;
+
+  get paginatedMatches(): Match[] {
+    const start = (this.matchPage - 1) * this.matchPageSize;
+    return this.finishedMatches.slice(start, start + this.matchPageSize);
+  }
 
   constructor(
     private tournamentService: TournamentService,
@@ -47,6 +54,7 @@ export class ResultsComponent implements OnInit {
     return diff > 0 ? `+${diff}` : `${diff}`;
   }
 
+  onMatchPageChange(p: number): void { this.matchPage = p; this.cdr.markForCheck(); }
   trackByMatchId(_: number, m: Match): number { return m.id; }
   trackByStandingId(_: number, s: Standing): number { return s.id; }
 }

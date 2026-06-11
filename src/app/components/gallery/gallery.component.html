@@ -26,7 +26,7 @@
 
     <!-- Grille photos -->
     <div class="gallery-grid" *ngIf="!loading && photos.length > 0">
-      <div class="gallery-item" *ngFor="let p of photos; trackBy: trackByPhotoId" (click)="open(p)" role="button" [attr.aria-label]="'Voir ' + (p.title || 'la photo')" tabindex="0" (keydown.enter)="open(p)">
+      <div class="gallery-item" *ngFor="let p of paginatedPhotos; trackBy: trackByPhotoId" (click)="open(p)" role="button" [attr.aria-label]="'Voir ' + (p.title || 'la photo')" tabindex="0" (keydown.enter)="open(p)">
         <img [src]="p.photo_path" [alt]="p.title || 'Photo du tournoi'" loading="lazy" />
         <div class="gallery-overlay">
           <span class="gallery-caption" *ngIf="p.title">{{ p.title }}</span>
@@ -36,6 +36,14 @@
         </div>
       </div>
     </div>
+
+    <app-pagination
+      *ngIf="!loading && photos.length > pageSize"
+      [total]="photos.length"
+      [pageSize]="pageSize"
+      [page]="page"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
 
   </div>
 

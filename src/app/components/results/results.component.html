@@ -135,7 +135,7 @@
       </div>
 
       <div class="results-list">
-        <div *ngFor="let m of finishedMatches; let i = index; trackBy: trackByMatchId"
+        <div *ngFor="let m of paginatedMatches; let i = index; trackBy: trackByMatchId"
              class="result-card"
              appReveal [revealDelay]="i * 50">
           <div class="result-header">
@@ -153,6 +153,13 @@
           </div>
         </div>
       </div>
+
+      <app-pagination
+        [total]="finishedMatches.length"
+        [pageSize]="matchPageSize"
+        [page]="matchPage"
+        (pageChange)="onMatchPageChange($event)">
+      </app-pagination>
     </section>
 
   </div>

@@ -72,7 +72,7 @@
 
     <!-- Grid -->
     <div class="teams-grid" *ngIf="filteredTeams.length > 0">
-      <div *ngFor="let team of filteredTeams; let i = index; trackBy: trackByTeamId"
+      <div *ngFor="let team of paginatedTeams; let i = index; trackBy: trackByTeamId"
            class="team-card"
            [class.expanded]="expandedTeam === team.id"
            appReveal [revealDelay]="i * 60">
@@ -106,5 +106,12 @@
         </div>
       </div>
     </div>
+
+    <app-pagination
+      [total]="filteredTeams.length"
+      [pageSize]="pageSize"
+      [page]="page"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
   </div>
 </div>

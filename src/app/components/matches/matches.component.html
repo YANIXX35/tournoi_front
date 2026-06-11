@@ -55,7 +55,7 @@
 
     <div class="matches-list">
       <div
-        *ngFor="let match of filteredMatches; let i = index; trackBy: trackByMatchId"
+        *ngFor="let match of paginatedMatches; let i = index; trackBy: trackByMatchId"
         class="match-card"
         [class]="'status-' + match.status"
         appReveal [revealDelay]="i * 50">
@@ -105,5 +105,12 @@
         </div>
       </div>
     </div>
+
+    <app-pagination
+      [total]="filteredMatches.length"
+      [pageSize]="pageSize"
+      [page]="page"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
   </div>
 </div>

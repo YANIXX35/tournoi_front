@@ -18,6 +18,13 @@ export class TeamsComponent implements OnInit {
   loading = true;
   hasError = false;
   expandedTeam: number | null = null;
+  page = 1;
+  readonly pageSize = 12;
+
+  get paginatedTeams(): Team[] {
+    const start = (this.page - 1) * this.pageSize;
+    return this.filteredTeams.slice(start, start + this.pageSize);
+  }
 
   constructor(
     public teamService: TeamService,
@@ -47,6 +54,7 @@ export class TeamsComponent implements OnInit {
   onSearch(query: string): void {
     this.searchQuery = query;
     this.expandedTeam = null;
+    this.page = 1;
     if (!query.trim()) { this.filteredTeams = this.teams; this.cdr.markForCheck(); return; }
     const normalize = (s: string) =>
       s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -60,6 +68,13 @@ export class TeamsComponent implements OnInit {
   clearSearch(): void {
     this.searchQuery = '';
     this.filteredTeams = this.teams;
+    this.expandedTeam = null;
+    this.page = 1;
+    this.cdr.markForCheck();
+  }
+
+  onPageChange(p: number): void {
+    this.page = p;
     this.expandedTeam = null;
     this.cdr.markForCheck();
   }

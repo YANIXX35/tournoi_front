@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { OverloadInterceptor } from './interceptors/overload.interceptor';
+import { PaginationComponent } from './components/shared/pagination.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { AppRoutingModule } from './app-routing-module';
@@ -34,6 +35,7 @@ import { GalleryComponent } from './components/gallery/gallery.component';
     TeamDetailComponent,
     GalleryComponent,
     RevealDirective,
+    PaginationComponent,
   ],
   imports: [
     BrowserModule,
