@@ -1,7 +1,8 @@
 import { NgModule, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { OverloadInterceptor } from './interceptors/overload.interceptor';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { AppRoutingModule } from './app-routing-module';
@@ -47,6 +48,7 @@ import { GalleryComponent } from './components/gallery/gallery.component';
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
+    { provide: HTTP_INTERCEPTORS, useClass: OverloadInterceptor, multi: true },
   ],
   bootstrap: [App]
 })
