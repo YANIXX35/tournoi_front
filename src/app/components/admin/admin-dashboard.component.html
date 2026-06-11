@@ -206,6 +206,22 @@
 
     <!-- ══════════ SECTION : ÉQUIPES ══════════ -->
     <div *ngIf="activeSection === 'teams'" class="section-content">
+
+      <!-- Barre de recherche équipes -->
+      <div class="match-search-bar light-search" style="margin-bottom: 1rem">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          type="text"
+          [(ngModel)]="teamSearchQuery"
+          (ngModelChange)="teamsPage = 1"
+          placeholder="Rechercher par nom d'équipe ou capitaine..."
+          class="match-search-input"
+        />
+        <span class="match-search-count" *ngIf="teamSearchQuery">
+          {{ filteredTeams.length }} résultat(s)
+        </span>
+      </div>
+
       <div class="card">
         <div class="card-header">
           <h2>Toutes les équipes ({{ teams.length }})</h2>
@@ -222,7 +238,8 @@
           </div>
         </div>
         <div class="empty-state" *ngIf="teams.length === 0">Aucune inscription reçue.</div>
-        <div class="team-cards-mobile" *ngIf="teams.length > 0">
+        <div class="empty-state" *ngIf="teams.length > 0 && filteredTeams.length === 0">Aucune équipe ne correspond à "{{ teamSearchQuery }}".</div>
+        <div class="team-cards-mobile" *ngIf="filteredTeams.length > 0">
           <div class="team-card-row" *ngFor="let team of pagedTeams; let i = index">
             <div class="team-card-info">
               <span class="team-card-name">{{ (teamsPage - 1) * teamsPageSize + i + 1 }}. {{ team.name }}</span>
@@ -508,6 +525,15 @@
         <div class="card-header">
           <h2>Licences joueurs — {{ totalPlayers }} joueur{{ totalPlayers > 1 ? 's' : '' }}</h2>
           <div class="licence-header-actions">
+            <div class="licence-search-wrap">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input
+                type="text"
+                [(ngModel)]="licenceSearchQuery"
+                placeholder="Équipe ou joueur..."
+                class="licence-search-input"
+              />
+            </div>
             <select [(ngModel)]="licenceTeamFilter" class="filter-select">
               <option value="all">Toutes les équipes</option>
               <option *ngFor="let t of teams" [value]="t.id">{{ t.name }}</option>
@@ -688,9 +714,19 @@
         <!-- Liste des matchs (gauche) -->
         <div class="scorers-match-list">
           <h3 class="scorers-panel-title">Sélectionner un match</h3>
+          <div class="scorer-match-search" *ngIf="matches.length > 0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input
+              type="text"
+              [(ngModel)]="scorerMatchSearchQuery"
+              placeholder="Rechercher..."
+              class="scorer-search-input"
+            />
+          </div>
           <p class="scorers-panel-sub" *ngIf="matches.length === 0">Aucun match créé.</p>
+          <p class="scorers-panel-sub" *ngIf="matches.length > 0 && filteredScorerMatches.length === 0">Aucun résultat.</p>
           <div
-            *ngFor="let m of matches"
+            *ngFor="let m of filteredScorerMatches"
             class="scorers-match-item"
             [class.active]="selectedMatchForGoals?.id === m.id"
             (click)="selectMatchForGoals(m)"
@@ -940,6 +976,17 @@
       </div>
 
     </div>
+
+    <!-- Bouton retour en haut -->
+    <button
+      class="scroll-top-btn"
+      *ngIf="showScrollTop"
+      (click)="scrollToTop()"
+      title="Remonter en haut"
+      aria-label="Remonter en haut"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
 
   </main>
 

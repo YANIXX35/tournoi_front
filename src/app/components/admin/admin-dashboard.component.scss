@@ -2516,3 +2516,98 @@ $sidebar-w: 240px;
 .log-user   { font-weight: 600; color: #1a472a; }
 .log-action { font-weight: 500; }
 .log-details { color: #888; font-size: .8rem; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+// ── Barres de recherche light-theme (équipes, licences, buteurs) ────────────
+
+// Search bar équipes — fond clair
+.match-search-bar.light-search {
+  .match-search-input {
+    background: white;
+    border-color: #e2e8f0;
+    color: #1a1a2e;
+    &::placeholder { color: #aaa; }
+    &:focus { border-color: #1a472a; box-shadow: 0 0 0 3px rgba(26,71,42,.08); }
+  }
+  .match-search-count { color: #888; }
+}
+
+// Licences — champ de recherche texte libre
+.licence-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: .4rem .75rem;
+  transition: border-color .15s;
+  &:focus-within { border-color: #1a472a; box-shadow: 0 0 0 3px rgba(26,71,42,.08); }
+}
+
+.licence-search-input {
+  border: none;
+  outline: none;
+  font-size: .88rem;
+  color: #1a1a2e;
+  background: transparent;
+  width: 180px;
+  &::placeholder { color: #aaa; }
+}
+
+// Buteurs — recherche dans la liste des matchs
+.scorer-match-search {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  background: #f8f9fa;
+  border: 1px solid #e8eaed;
+  border-radius: 8px;
+  padding: .4rem .7rem;
+  margin-bottom: .65rem;
+  transition: border-color .15s;
+  &:focus-within { border-color: #1a472a; background: white; }
+}
+
+.scorer-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: .84rem;
+  color: #333;
+  background: transparent;
+  &::placeholder { color: #aaa; }
+}
+
+// ── Bouton scroll-to-top flottant ──────────────────────────────────────────
+.scroll-top-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #1a472a;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  z-index: 500;
+  transition: background .15s, transform .15s, opacity .2s;
+  opacity: .9;
+
+  &:hover {
+    background: #2d6a4f;
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+
+  &:active { transform: scale(.93); }
+
+  @media (max-width: 768px) {
+    bottom: 1.25rem;
+    right: 1.25rem;
+  }
+}

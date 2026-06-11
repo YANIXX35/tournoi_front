@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { TournamentService } from '../../services/tournament.service';
@@ -59,9 +59,21 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   // Recherche matchs
   matchSearchQuery = '';
 
+  // Recherche équipes (section teams)
+  teamSearchQuery = '';
+
+  // Recherche licences (texte libre)
+  licenceSearchQuery = '';
+
+  // Recherche matchs dans la section buteurs
+  scorerMatchSearchQuery = '';
+
+  // Scroll-to-top button
+  showScrollTop = false;
+
   // Pagination équipes
   teamsPage = 1;
-  readonly teamsPageSize = 10;
+  readonly teamsPageSize = 25;
 
   private refreshInterval: ReturnType<typeof setInterval> | null = null;
 
@@ -124,6 +136,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       this.sidebarOpen = false;
       this.scoringMatch = null;
       this.editingMatch = null;
+      this.teamSearchQuery = '';
+      this.licenceSearchQuery = '';
+      this.scorerMatchSearchQuery = '';
+      this.teamsPage = 1;
       this.editingPlayer = null;
       this.addingPlayerTeamId = null;
       this.newPlayerName = '';
@@ -149,14 +165,23 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     );
   }
 
-  // ── Pagination équipes ─────────────────────────────────
+  // ── Recherche + Pagination équipes ─────────────────────
+  get filteredTeams(): Team[] {
+    const q = this.teamSearchQuery.trim().toLowerCase();
+    if (!q) return this.teams;
+    return this.teams.filter(t =>
+      t.name?.toLowerCase().includes(q) ||
+      t.captain_name?.toLowerCase().includes(q)
+    );
+  }
+
   get teamsTotalPages(): number {
-    return Math.max(1, Math.ceil(this.teams.length / this.teamsPageSize));
+    return Math.max(1, Math.ceil(this.filteredTeams.length / this.teamsPageSize));
   }
 
   get pagedTeams(): Team[] {
     const start = (this.teamsPage - 1) * this.teamsPageSize;
-    return this.teams.slice(start, start + this.teamsPageSize);
+    return this.filteredTeams.slice(start, start + this.teamsPageSize);
   }
 
   prevTeamsPage(): void { if (this.teamsPage > 1) this.teamsPage--; }
@@ -181,8 +206,28 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   // ── Licences ───────────────────────────────────────────
   get filteredTeamsForLicences(): Team[] {
     const src = this.teamsForLicences.length ? this.teamsForLicences : this.teams;
-    if (this.licenceTeamFilter === 'all') return src;
-    return src.filter(t => t.id === Number(this.licenceTeamFilter));
+    let result = this.licenceTeamFilter === 'all'
+      ? src
+      : src.filter(t => t.id === Number(this.licenceTeamFilter));
+    const q = this.licenceSearchQuery.trim().toLowerCase();
+    if (q) {
+      result = result.filter(t =>
+        t.name?.toLowerCase().includes(q) ||
+        t.captain_name?.toLowerCase().includes(q) ||
+        t.players?.some(p => p.player_name?.toLowerCase().includes(q))
+      );
+    }
+    return result;
+  }
+
+  // ── Buteurs — filtrage des matchs ──────────────────────
+  get filteredScorerMatches(): Match[] {
+    const q = this.scorerMatchSearchQuery.trim().toLowerCase();
+    if (!q) return this.matches;
+    return this.matches.filter(m =>
+      m.team1_name?.toLowerCase().includes(q) ||
+      m.team2_name?.toLowerCase().includes(q)
+    );
   }
 
   getPhotoUrl(path: string | null | undefined): string | null {
@@ -757,6 +802,17 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  // ── Scroll ─────────────────────────────────────────────
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    this.showScrollTop = window.scrollY > 300;
+    this.cdr.detectChanges();
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   // ── Utilitaires ────────────────────────────────────────
