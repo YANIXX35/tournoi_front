@@ -135,6 +135,24 @@
         color: var(--navy);
       }
     }
+
+    &.nav-cta-closed {
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.45);
+      font-weight: 700;
+      margin-left: 0.5rem;
+      border-radius: var(--r-md);
+      padding: 0.5rem 1.1rem;
+      cursor: default;
+      pointer-events: none;
+      font-size: 0.85rem;
+      letter-spacing: 0;
+      display: inline-flex;
+      align-items: center;
+
+      &::after { display: none; }
+    }
   }
 }
 
@@ -297,6 +315,22 @@ main {
         border-left-color: transparent;
         color: var(--navy);
       }
+    }
+
+    &.mobile-cta-closed {
+      margin: 1rem;
+      border-radius: var(--r-md);
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.45);
+      font-weight: 700;
+      text-align: center;
+      justify-content: center;
+      padding: 1rem;
+      min-height: 52px;
+      cursor: default;
+      pointer-events: none;
+      font-size: 0.9rem;
     }
   }
 }
