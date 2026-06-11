@@ -257,6 +257,20 @@
   }
 }
 
+.btn-closed-hero {
+  cursor: default;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.55);
+  border: 1.5px solid rgba(255,255,255,0.18);
+  box-shadow: none;
+  pointer-events: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+
+  &::before { display: none; }
+}
+
 // ═══════════════════════════════════
 // SCROLL INDICATOR
 // ═══════════════════════════════════

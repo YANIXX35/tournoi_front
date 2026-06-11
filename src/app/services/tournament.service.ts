@@ -59,6 +59,13 @@ export class TournamentService {
     );
   }
 
+  getRegistrationStatus(): Observable<{ open: boolean; deadline: string; message: string }> {
+    return this.cached('reg-status',
+      this.http.get<{ open: boolean; deadline: string; message: string }>(`${API}/registration-status`),
+      60_000
+    );
+  }
+
   /** Vide le cache (appele apres une inscription ou modification) */
   invalidate(key?: string): void {
     if (key) this._cache.delete(key);

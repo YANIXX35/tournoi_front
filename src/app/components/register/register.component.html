@@ -5,6 +5,18 @@
 
 <div class="register-wrap">
 
+  <!-- INSCRIPTIONS FERMÉES -->
+  <div *ngIf="registrationChecked && !registrationOpen" class="closed-card">
+    <div class="closed-icon">🔒</div>
+    <h2 class="closed-title">Inscriptions fermées</h2>
+    <p class="closed-desc">
+      Les inscriptions ont fermé le <strong>12 juin 2026 à 22h00</strong>.<br>
+      Le tournoi commence le <strong>13 juin 2026</strong>.
+    </p>
+    <p class="closed-sub">Rendez-vous sur le terrain !</p>
+    <a routerLink="/" class="btn-home">← Retour à l'accueil</a>
+  </div>
+
   <!-- SUCCESS -->
   <div *ngIf="success" class="success-card">
     <span class="success-icon">🎉</span>
@@ -13,7 +25,7 @@
     <a routerLink="/" class="btn-home">← Retour à l'accueil</a>
   </div>
 
-  <form *ngIf="!success" [formGroup]="teamForm">
+  <form *ngIf="!success && registrationOpen" [formGroup]="teamForm">
 
     <!-- STEP INDICATOR -->
     <div class="steps">

@@ -26,6 +26,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   hasStats = false;
   displayList: TopScorer[] = [];
 
+  registrationOpen = true;
+
   teams: Team[] = [];
   filteredTeams: Team[] = [];
   searchQuery = '';
@@ -51,6 +53,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadTopScorers();
     this.loadAnnouncements();
     this.loadTeams();
+    this.tournamentService.getRegistrationStatus().subscribe({
+      next: status => {
+        this.registrationOpen = status.open;
+        this.cdr.markForCheck();
+      },
+      error: () => {},
+    });
   }
 
   ngOnDestroy(): void {

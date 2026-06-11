@@ -1,6 +1,7 @@
-import { Component, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { TeamService } from '../../services/team.service';
+import { TournamentService } from '../../services/tournament.service';
 import { timeout, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -10,7 +11,9 @@ import { of } from 'rxjs';
   styleUrls: ['./register.component.scss'],
   standalone: false,
 })
-export class RegisterComponent implements OnDestroy {
+export class RegisterComponent implements OnInit, OnDestroy {
+  registrationOpen = true;
+  registrationChecked = false;
   step = 1;
   teamForm: FormGroup;
   loading = false;
@@ -40,6 +43,7 @@ export class RegisterComponent implements OnDestroy {
   constructor(
     private fb: FormBuilder,
     private teamService: TeamService,
+    private tournamentService: TournamentService,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
   ) {
@@ -48,6 +52,22 @@ export class RegisterComponent implements OnDestroy {
       captain_name: ['', Validators.required],
       phone: ['', [Validators.required, this.phoneDigitsValidator.bind(this)]],
       players: this.fb.array([this.createPlayer(), this.createPlayer()]),
+    });
+  }
+
+  ngOnInit(): void {
+    this.tournamentService.getRegistrationStatus().subscribe({
+      next: status => {
+        this.registrationOpen = status.open;
+        this.registrationChecked = true;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        // En cas d'erreur réseau, on laisse le formulaire visible
+        this.registrationOpen = true;
+        this.registrationChecked = true;
+        this.cdr.detectChanges();
+      },
     });
   }
 

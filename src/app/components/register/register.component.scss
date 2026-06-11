@@ -557,6 +557,50 @@
 }
 
 // ═══════════════════════════════════
+// CLOSED STATE
+// ═══════════════════════════════════
+.closed-card {
+  background: var(--card);
+  border-radius: var(--r-xl);
+  border: 2px solid #ef4444;
+  box-shadow: 0 8px 32px rgba(239,68,68,.12);
+  padding: 4rem 2rem;
+  text-align: center;
+  animation: fadeUp 0.5s var(--ease-spring) both;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.closed-icon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1.25rem;
+}
+
+.closed-title {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #ef4444;
+  letter-spacing: -0.03em;
+  margin-bottom: .75rem;
+}
+
+.closed-desc {
+  color: var(--text-muted);
+  font-size: .95rem;
+  line-height: 1.7;
+  margin-bottom: .5rem;
+  strong { color: var(--navy); font-weight: 700; }
+}
+
+.closed-sub {
+  color: var(--emerald);
+  font-weight: 600;
+  font-size: .9rem;
+  margin-bottom: 2rem;
+}
+
+// ═══════════════════════════════════
 // SUCCESS STATE
 // ═══════════════════════════════════
 .success-card {
