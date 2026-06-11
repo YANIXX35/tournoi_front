@@ -13,6 +13,8 @@ import { of } from 'rxjs';
 })
 export class TeamsComponent implements OnInit {
   teams: Team[] = [];
+  filteredTeams: Team[] = [];
+  searchQuery = '';
   loading = true;
   hasError = false;
   expandedTeam: number | null = null;
@@ -36,9 +38,30 @@ export class TeamsComponent implements OnInit {
         this.loading = false;
         if (!data) { this.hasError = true; this.cdr.detectChanges(); return; }
         this.teams = data;
+        this.filteredTeams = data;
         this.cdr.detectChanges();
       });
     });
+  }
+
+  onSearch(query: string): void {
+    this.searchQuery = query;
+    this.expandedTeam = null;
+    if (!query.trim()) { this.filteredTeams = this.teams; this.cdr.markForCheck(); return; }
+    const normalize = (s: string) =>
+      s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const q = normalize(query);
+    this.filteredTeams = this.teams.filter(t =>
+      normalize(t.name).includes(q) || normalize(t.captain_name).includes(q)
+    );
+    this.cdr.markForCheck();
+  }
+
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.filteredTeams = this.teams;
+    this.expandedTeam = null;
+    this.cdr.markForCheck();
   }
 
   toggleTeam(id: number): void {

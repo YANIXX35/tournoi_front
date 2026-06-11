@@ -31,23 +31,48 @@
   </div>
 
   <div *ngIf="!loading && !hasError">
-    <!-- Header -->
+    <!-- Header + Recherche -->
     <div class="teams-header" appReveal>
       <div class="teams-count-badge">
-        <span>{{ teams.length }}</span> équipe(s) inscrite(s)
+        <span>{{ searchQuery ? filteredTeams.length + ' / ' + teams.length : teams.length }}</span> équipe(s) inscrite(s)
       </div>
     </div>
 
-    <!-- Empty -->
+    <!-- Barre de recherche -->
+    <div class="teams-search" appReveal [revealDelay]="60">
+      <div class="search-wrap">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input
+          type="search"
+          class="search-input"
+          placeholder="Rechercher une équipe ou un capitaine…"
+          [value]="searchQuery"
+          (input)="onSearch($any($event.target).value)"
+          autocomplete="off"
+        />
+        <button *ngIf="searchQuery" class="search-clear" (click)="clearSearch()" aria-label="Effacer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty (aucune équipe inscrite) -->
     <div *ngIf="teams.length === 0" class="empty-register">
       <span class="empty-icon">🏟️</span>
       <p>Aucune équipe inscrite pour le moment.<br>Soyez les premiers à vous inscrire !</p>
       <a routerLink="/inscription" class="btn-register">Inscrire mon équipe →</a>
     </div>
 
+    <!-- Empty (recherche sans résultat) -->
+    <div *ngIf="filteredTeams.length === 0 && searchQuery" class="search-empty">
+      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <p>Aucune équipe ne correspond à <strong>"{{ searchQuery }}"</strong></p>
+      <button class="retry-btn" (click)="clearSearch()">Effacer la recherche</button>
+    </div>
+
     <!-- Grid -->
-    <div class="teams-grid">
-      <div *ngFor="let team of teams; let i = index; trackBy: trackByTeamId"
+    <div class="teams-grid" *ngIf="filteredTeams.length > 0">
+      <div *ngFor="let team of filteredTeams; let i = index; trackBy: trackByTeamId"
            class="team-card"
            [class.expanded]="expandedTeam === team.id"
            appReveal [revealDelay]="i * 60">
