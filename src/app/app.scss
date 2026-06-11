@@ -251,22 +251,32 @@ main {
   }
 
   a {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
     padding: 1rem 1.5rem;
-    color: rgba(255,255,255,0.7);
-    font-size: 1rem;
-    font-weight: 500;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.92);
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    border-left: 3px solid transparent;
     transition: var(--ease);
     text-decoration: none;
+    min-height: 52px;
 
-    &:hover, &.active {
-      background: rgba(255,255,255,0.07);
+    &:hover {
+      background: rgba(255,255,255,0.09);
       color: white;
+      border-left-color: rgba(34,197,94,0.5);
       padding-left: 1.75rem;
     }
 
-    &.active { color: var(--emerald); }
+    &.active {
+      background: rgba(34,197,94,0.1);
+      color: #4ade80;
+      border-left-color: var(--emerald);
+      font-weight: 700;
+    }
 
     &.mobile-cta {
       margin: 1rem;
@@ -276,12 +286,16 @@ main {
       color: var(--navy);
       font-weight: 800;
       text-align: center;
-      padding: 0.9rem 1rem;
+      justify-content: center;
+      padding: 1rem;
       box-shadow: 0 4px 16px rgba(255,215,0,0.35);
+      min-height: 52px;
 
       &:hover {
         background: linear-gradient(135deg, #FFE033, var(--gold));
         padding-left: 1rem;
+        border-left-color: transparent;
+        color: var(--navy);
       }
     }
   }

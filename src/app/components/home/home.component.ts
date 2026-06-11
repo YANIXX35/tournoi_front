@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { TournamentService } from '../../services/tournament.service';
+import { TeamService } from '../../services/team.service';
 import { TopScorer, Announcement } from '../../models/match.model';
+import { Team } from '../../models/team.model';
 
 @Component({
   selector: 'app-home',
@@ -24,9 +26,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   hasStats = false;
   displayList: TopScorer[] = [];
 
+  teams: Team[] = [];
+  filteredTeams: Team[] = [];
+  searchQuery = '';
+
   constructor(
     private router: Router,
     private tournamentService: TournamentService,
+    private teamService: TeamService,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
   ) {}
@@ -43,6 +50,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
     this.loadTopScorers();
     this.loadAnnouncements();
+    this.loadTeams();
   }
 
   ngOnDestroy(): void {
@@ -104,9 +112,52 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.visibleAnnouncements = this.announcements.filter(a => !this.dismissedAnnouncements.has(a.id));
   }
 
+  loadTeams(): void {
+    this.teamService.getTeams().subscribe({
+      next: data => {
+        this.teams = data;
+        this.filteredTeams = data;
+        this.cdr.detectChanges();
+      },
+      error: () => {},
+    });
+  }
+
+  onSearch(query: string): void {
+    this.searchQuery = query;
+    if (!query.trim()) {
+      this.filteredTeams = this.teams;
+      this.cdr.markForCheck();
+      return;
+    }
+    const normalize = (s: string) =>
+      s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const q = normalize(query);
+    this.filteredTeams = this.teams.filter(t =>
+      normalize(t.name).includes(q) || normalize(t.captain_name).includes(q)
+    );
+    this.cdr.markForCheck();
+  }
+
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.filteredTeams = this.teams;
+    this.cdr.markForCheck();
+  }
+
+  getLogoUrl(path: string | null): string {
+    return this.teamService.getLogoUrl(path);
+  }
+
+  scrollToContent(): void {
+    const target = document.querySelector<HTMLElement>('.home-announcements, .home-features');
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  }
+
   goRegister(): void {
     this.router.navigate(['/inscription']);
   }
 
   trackByAnnouncementId(_: number, a: Announcement): number { return a.id; }
+  trackByTeamId(_: number, t: Team): number { return t.id; }
 }

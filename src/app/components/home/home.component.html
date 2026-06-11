@@ -52,7 +52,7 @@
     </button>
   </div>
 
-  <div class="scroll-hint">
+  <div class="scroll-hint" (click)="scrollToContent()" role="button" tabindex="0">
     <span>Découvrir</span>
     <div class="scroll-arrow"></div>
   </div>
@@ -130,6 +130,88 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
       </span>
     </div>
+  </div>
+</section>
+
+<!-- ÉQUIPES -->
+<section class="home-teams">
+  <div class="teams-inner">
+
+    <div class="teams-header" appReveal>
+      <div>
+        <p class="teams-label">Participants</p>
+        <h2 class="teams-title">Les Équipes</h2>
+      </div>
+      <a routerLink="/equipes" class="teams-link-all">
+        Voir tout
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </a>
+    </div>
+
+    <!-- Barre de recherche -->
+    <div class="teams-search" appReveal [revealDelay]="60">
+      <div class="search-wrap">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input
+          type="search"
+          class="search-input"
+          placeholder="Rechercher une équipe ou un capitaine…"
+          [value]="searchQuery"
+          (input)="onSearch($any($event.target).value)"
+          autocomplete="off"
+        />
+        <button *ngIf="searchQuery" class="search-clear" (click)="clearSearch()" aria-label="Effacer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <span class="search-count" *ngIf="searchQuery">
+        {{ filteredTeams.length }} équipe{{ filteredTeams.length !== 1 ? 's' : '' }} trouvée{{ filteredTeams.length !== 1 ? 's' : '' }}
+      </span>
+    </div>
+
+    <!-- Aucun résultat -->
+    <div class="teams-empty" *ngIf="filteredTeams.length === 0 && searchQuery">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <p>Aucune équipe ne correspond à <strong>"{{ searchQuery }}"</strong></p>
+    </div>
+
+    <!-- Carousel / Grille -->
+    <div class="teams-scroll" *ngIf="filteredTeams.length > 0">
+      <a class="team-card" *ngFor="let team of filteredTeams; trackBy: trackByTeamId"
+         [routerLink]="['/equipes', team.id]">
+        <div class="team-logo-wrap">
+          <img *ngIf="team.logo_path" [src]="getLogoUrl(team.logo_path)" [alt]="team.name" class="team-logo" loading="lazy" />
+          <div *ngIf="!team.logo_path" class="team-logo-placeholder">{{ team.name.charAt(0) }}</div>
+        </div>
+        <div class="team-info">
+          <h3 class="team-name">{{ team.name }}</h3>
+          <p class="team-captain">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            {{ team.captain_name }}
+          </p>
+          <p class="team-players-count">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            {{ team.players.length }} joueur{{ team.players.length !== 1 ? 's' : '' }}
+          </p>
+        </div>
+        <div class="team-card-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </div>
+      </a>
+    </div>
+
+    <!-- Skeleton loading -->
+    <div class="teams-scroll" *ngIf="teams.length === 0 && !searchQuery">
+      <div class="team-card team-skeleton" *ngFor="let i of [1,2,3,4,5,6]">
+        <div class="skel-logo"></div>
+        <div class="skel-lines">
+          <div class="skel-line skel-title"></div>
+          <div class="skel-line skel-sub"></div>
+          <div class="skel-line skel-sub2"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
