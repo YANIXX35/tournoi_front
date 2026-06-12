@@ -2308,6 +2308,18 @@ $sidebar-w: 240px;
   width: 100%;
 
   &--sm { padding: .28rem .4rem; font-size: .78rem; }
+  &--player { min-width: 180px; font-weight: 500; }
+}
+
+.team-select {
+  width: 100%;
+  padding: .45rem .65rem;
+  border: 1.5px solid #ddd;
+  border-radius: 7px;
+  font-size: .9rem;
+  background: #fff;
+  cursor: pointer;
+  &:focus { border-color: #2d6a4f; outline: none; }
 }
 
 .goal-input {

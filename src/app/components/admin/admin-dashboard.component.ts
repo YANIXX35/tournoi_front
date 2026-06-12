@@ -59,6 +59,32 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   newGoal: Partial<Goal> = { type: 'goal', minute: null };
   editingGoal: Goal | null = null;
   goalsLoading = false;
+  manualPlayerName = '';
+
+  get team1PlayersForGoal(): AdminPlayer[] {
+    if (!this.selectedMatchForGoals) return [];
+    return this.teams.find(t => t.name === this.selectedMatchForGoals!.team1_name)?.players ?? [];
+  }
+  get team2PlayersForGoal(): AdminPlayer[] {
+    if (!this.selectedMatchForGoals) return [];
+    return this.teams.find(t => t.name === this.selectedMatchForGoals!.team2_name)?.players ?? [];
+  }
+
+  onGoalPlayerChange(playerName: string): void {
+    const inTeam1 = this.team1PlayersForGoal.some(p => p.player_name === playerName);
+    this.newGoal.team_name = inTeam1
+      ? this.selectedMatchForGoals!.team1_name
+      : this.selectedMatchForGoals!.team2_name;
+  }
+
+  onMatchTeam1Change(name: string): void {
+    const t = this.teams.find(t => t.name === name);
+    if (t) this.newMatch.team1_id = t.id as any;
+  }
+  onMatchTeam2Change(name: string): void {
+    const t = this.teams.find(t => t.name === name);
+    if (t) this.newMatch.team2_id = t.id as any;
+  }
 
   // Recherche matchs
   matchSearchQuery = '';
@@ -899,12 +925,15 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   addGoal(): void {
     if (!this.selectedMatchForGoals) return;
-    const { player_name, team_name, type, minute } = this.newGoal;
+    const rawName = this.newGoal.player_name === '__manual__' ? this.manualPlayerName : this.newGoal.player_name;
+    const { team_name, type, minute } = this.newGoal;
+    const player_name = rawName;
     if (!player_name?.trim() || !team_name) { this.flash('Joueur et équipe requis'); return; }
     this.adminService.addGoal(this.selectedMatchForGoals.id, { player_name: player_name.trim(), team_name, type, minute: minute || null }).subscribe({
       next: goal => this.ngZone.run(() => {
         this.matchGoals.push(goal);
         this.newGoal = { type: 'goal', minute: null, team_name: this.selectedMatchForGoals!.team1_name };
+        this.manualPlayerName = '';
         this.flash('Ajouté ✓');
         this.cdr.detectChanges();
       }),

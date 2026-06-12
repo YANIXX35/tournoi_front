@@ -281,11 +281,17 @@
           <div class="form-row">
             <div class="form-group">
               <label>Équipe 1 *</label>
-              <input type="text" [(ngModel)]="newMatch.team1_name" placeholder="Nom équipe 1" />
+              <select [(ngModel)]="newMatch.team1_name" (ngModelChange)="onMatchTeam1Change($event)" class="team-select">
+                <option value="" disabled>— Choisir l'équipe 1 —</option>
+                <option *ngFor="let t of teams" [value]="t.name">{{ t.name }}</option>
+              </select>
             </div>
             <div class="form-group">
               <label>Équipe 2 *</label>
-              <input type="text" [(ngModel)]="newMatch.team2_name" placeholder="Nom équipe 2" />
+              <select [(ngModel)]="newMatch.team2_name" (ngModelChange)="onMatchTeam2Change($event)" class="team-select">
+                <option value="" disabled>— Choisir l'équipe 2 —</option>
+                <option *ngFor="let t of teams" [value]="t.name">{{ t.name }}</option>
+              </select>
             </div>
             <div class="form-group">
               <label>Date</label>
@@ -776,12 +782,26 @@
                   <option value="goal">But</option>
                   <option value="assist">Passe décisive</option>
                 </select>
+                <select class="goal-select goal-select--player"
+                  [(ngModel)]="newGoal.player_name"
+                  (ngModelChange)="onGoalPlayerChange($event)">
+                  <option value="" disabled>— Choisir un joueur —</option>
+                  <optgroup [label]="selectedMatchForGoals.team1_name" *ngIf="team1PlayersForGoal.length > 0">
+                    <option *ngFor="let p of team1PlayersForGoal" [value]="p.player_name">{{ p.player_name }}</option>
+                  </optgroup>
+                  <optgroup [label]="selectedMatchForGoals.team2_name" *ngIf="team2PlayersForGoal.length > 0">
+                    <option *ngFor="let p of team2PlayersForGoal" [value]="p.player_name">{{ p.player_name }}</option>
+                  </optgroup>
+                  <optgroup label="— Saisie manuelle —">
+                    <option value="__manual__">Autre (saisir manuellement)</option>
+                  </optgroup>
+                </select>
                 <input
+                  *ngIf="newGoal.player_name === '__manual__'"
                   class="goal-input"
                   type="text"
                   placeholder="Nom du joueur"
-                  [(ngModel)]="newGoal.player_name"
-                  (keyup.enter)="addGoal()"
+                  [(ngModel)]="manualPlayerName"
                 />
                 <select class="goal-select" [(ngModel)]="newGoal.team_name">
                   <option [value]="selectedMatchForGoals.team1_name">{{ selectedMatchForGoals.team1_name }}</option>
