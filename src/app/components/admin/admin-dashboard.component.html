@@ -613,9 +613,9 @@
 
               <!-- ─── Validation statut ─── -->
               <div class="status-toggle">
-                <button class="stg-btn" [class.stg-blue]="m.status === 'upcoming'" (click)="changeMatchStatus(m, 'upcoming')">À venir</button>
-                <button class="stg-btn" [class.stg-orange]="m.status === 'ongoing'" (click)="changeMatchStatus(m, 'ongoing')">En cours</button>
-                <button class="stg-btn" [class.stg-green]="m.status === 'finished'" (click)="changeMatchStatus(m, 'finished')">Terminé ✓</button>
+                <button class="stg-btn" [class.stg-blue]="$any(m).status === 'upcoming'" (click)="changeMatchStatus(m, 'upcoming')">À venir</button>
+                <button class="stg-btn" [class.stg-orange]="$any(m).status === 'ongoing'" (click)="changeMatchStatus(m, 'ongoing')">En cours</button>
+                <button class="stg-btn" [class.stg-green]="$any(m).status === 'finished'" (click)="changeMatchStatus(m, 'finished')">Terminé ✓</button>
               </div>
             </div>
           </ng-container>
@@ -669,9 +669,9 @@
 
               <!-- ─── Validation statut ─── -->
               <div class="status-toggle">
-                <button class="stg-btn" [class.stg-blue]="m.status === 'upcoming'" (click)="changeMatchStatus(m, 'upcoming')">À venir</button>
-                <button class="stg-btn" [class.stg-orange]="m.status === 'ongoing'" (click)="changeMatchStatus(m, 'ongoing')">En cours</button>
-                <button class="stg-btn" [class.stg-green]="m.status === 'finished'" (click)="changeMatchStatus(m, 'finished')">Terminé ✓</button>
+                <button class="stg-btn" [class.stg-blue]="$any(m).status === 'upcoming'" (click)="changeMatchStatus(m, 'upcoming')">À venir</button>
+                <button class="stg-btn" [class.stg-orange]="$any(m).status === 'ongoing'" (click)="changeMatchStatus(m, 'ongoing')">En cours</button>
+                <button class="stg-btn" [class.stg-green]="$any(m).status === 'finished'" (click)="changeMatchStatus(m, 'finished')">Terminé ✓</button>
               </div>
             </div>
           </ng-container>
