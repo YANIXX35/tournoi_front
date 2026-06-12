@@ -301,6 +301,18 @@
                 <option *ngFor="let p of phases" [value]="p">{{ p }}</option>
               </select>
             </div>
+            <div class="form-group">
+              <label>Terrain</label>
+              <input type="text" [(ngModel)]="newMatch.terrain" placeholder="Ex : Terrain A, Stade Arena…" />
+            </div>
+            <div class="form-group">
+              <label>Statut</label>
+              <select [(ngModel)]="newMatch.status">
+                <option value="upcoming">À venir</option>
+                <option value="ongoing">En cours</option>
+                <option value="finished">Terminé</option>
+              </select>
+            </div>
           </div>
           <button class="btn-primary" (click)="createMatch()">Créer le match</button>
         </div>
@@ -328,13 +340,14 @@
         <table class="data-table" *ngIf="filteredMatches.length > 0">
           <thead>
             <tr>
-              <th>#</th>
+              <th>Match</th>
               <th>Équipe 1</th>
               <th>Score</th>
               <th>Équipe 2</th>
               <th>Date</th>
               <th>Heure</th>
               <th>Phase</th>
+              <th>Terrain</th>
               <th>Statut</th>
               <th>Actions</th>
             </tr>
@@ -343,7 +356,7 @@
             <ng-container *ngFor="let match of filteredMatches; let i = index">
               <!-- Ligne affichage normal -->
               <tr *ngIf="editingMatch?.id !== match.id">
-                <td class="td-num">{{ i + 1 }}</td>
+                <td class="td-num">Match {{ match.match_number ?? i + 1 }}</td>
                 <td class="td-name">{{ match.team1_name }}</td>
                 <td class="td-score">
                   <span *ngIf="match.status === 'finished'">{{ match.score1 }} — {{ match.score2 }}</span>
@@ -357,6 +370,7 @@
                     {{ match.phase }}
                   </span>
                 </td>
+                <td class="td-terrain">{{ match.terrain || '—' }}</td>
                 <td>
                   <span class="status-pill" [class.pill-blue]="match.status==='upcoming'" [class.pill-orange]="match.status==='ongoing'" [class.pill-green]="match.status==='finished'">
                     {{ getStatusLabel(match.status) }}
@@ -370,7 +384,7 @@
 
               <!-- Ligne édition inline -->
               <tr *ngIf="editingMatch?.id === match.id" class="editing-row">
-                <td>{{ i + 1 }}</td>
+                <td><input class="inline-input inline-input--num" type="number" [(ngModel)]="editingMatch!.match_number" min="1" placeholder="N°" /></td>
                 <td><input class="inline-input" [(ngModel)]="editingMatch!.team1_name" /></td>
                 <td class="td-score-edit">
                   <input class="score-input" type="number" [(ngModel)]="editingMatch!.score1" min="0" placeholder="0" />
@@ -385,6 +399,7 @@
                     <option *ngFor="let p of phases" [value]="p">{{ p }}</option>
                   </select>
                 </td>
+                <td><input class="inline-input" [(ngModel)]="editingMatch!.terrain" placeholder="Terrain" /></td>
                 <td>
                   <select class="inline-input" [(ngModel)]="editingMatch!.status">
                     <option value="upcoming">À venir</option>

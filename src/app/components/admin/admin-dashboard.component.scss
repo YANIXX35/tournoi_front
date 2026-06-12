@@ -307,12 +307,14 @@ $sidebar-w: 240px;
   tr.editing-row td { background: #f0f7f2; }
 }
 
-.td-num  { color: #bbb; font-size: 0.8rem; width: 36px; }
+.td-num  { color: #1a1a2e; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
 .td-name { font-weight: 600; color: #1a1a2e; }
+.td-terrain { color: #555; font-size: 0.82rem; }
 .td-actions { white-space: nowrap; }
 .td-score { text-align: center; font-weight: 700; font-size: 1rem; color: $green; }
 .td-score-edit { display: flex; align-items: center; gap: 0.25rem; }
 .text-muted { color: #ccc; }
+.inline-input--num { width: 56px; text-align: center; }
 
 // ═══════════════════════════════
 // FORM (nouveau match)

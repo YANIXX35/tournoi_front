@@ -22,7 +22,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   // Matchs — création / édition complète
   editingMatch: Match | null = null;
-  newMatch: Partial<Match> = {};
+  newMatch: Partial<Match> = { status: 'upcoming', phase: 'Poule' };
   showNewMatchForm = false;
 
   // Résultats — saisie rapide du score
@@ -275,7 +275,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.adminService.createMatch(this.newMatch).subscribe({
       next: () => this.ngZone.run(() => {
         this.loadMatches();
-        this.newMatch = {};
+        this.newMatch = { status: 'upcoming', phase: 'Poule' };
         this.showNewMatchForm = false;
         this.flash('Match créé ✓');
         this.cdr.detectChanges();
