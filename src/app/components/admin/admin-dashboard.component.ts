@@ -321,12 +321,29 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   createMatch(): void {
     if (!this.newMatch.team1_name || !this.newMatch.team2_name) return;
     this.adminService.createMatch(this.newMatch).subscribe({
-      next: () => this.ngZone.run(() => {
-        this.loadMatches();
+      next: (res) => this.ngZone.run(() => {
+        // Optimistic update: push immediately so the UI never needs a manual refresh
+        const created: Match = {
+          id: res.id,
+          match_number: this.newMatch.match_number ?? (this.matches.length + 1),
+          team1_name: this.newMatch.team1_name!,
+          team2_name: this.newMatch.team2_name!,
+          team1_id: null,
+          team2_id: null,
+          match_date: this.newMatch.match_date ?? '',
+          match_time: this.newMatch.match_time ?? '',
+          phase: this.newMatch.phase ?? 'Poule',
+          score1: null,
+          score2: null,
+          status: (this.newMatch.status as Match['status']) ?? 'upcoming',
+          terrain: this.newMatch.terrain ?? null,
+        };
+        this.matches = [...this.matches, created];
         this.newMatch = { status: 'upcoming', phase: 'Poule' };
         this.showNewMatchForm = false;
         this.flash('Match créé ✓');
         this.cdr.detectChanges();
+        this.loadMatches(); // sync from server in background
       }),
       error: (err) => this.ngZone.run(() => {
         const msg = err?.error?.error || 'Erreur lors de la création';
@@ -346,12 +363,15 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   saveMatch(): void {
     if (!this.editingMatch) return;
-    this.adminService.updateMatch(this.editingMatch.id, this.editingMatch).subscribe({
+    const saved = { ...this.editingMatch };
+    this.adminService.updateMatch(saved.id, saved).subscribe({
       next: () => this.ngZone.run(() => {
-        this.loadMatches();
+        // Optimistic update: reflect changes immediately
+        this.matches = this.matches.map(m => m.id === saved.id ? saved : m);
         this.editingMatch = null;
         this.flash('Match mis à jour ✓');
         this.cdr.detectChanges();
+        this.loadMatches(); // sync from server in background
       })
     });
   }
