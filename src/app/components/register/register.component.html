@@ -74,8 +74,11 @@
       <div class="form-group">
         <label>Nom du capitaine *</label>
         <input type="text" formControlName="captain_name" placeholder="Prénom et nom" />
-        <span class="field-error" *ngIf="teamForm.get('captain_name')?.touched && teamForm.get('captain_name')?.invalid">
-          ⚠ Champ requis
+        <span class="field-error" *ngIf="teamForm.get('captain_name')?.touched && teamForm.get('captain_name')?.errors?.['required']">
+          ⚠ Le nom du capitaine est requis.
+        </span>
+        <span class="field-error" *ngIf="teamForm.get('captain_name')?.touched && teamForm.get('captain_name')?.errors?.['minlength']">
+          ⚠ Le nom doit contenir au minimum 6 caractères (ex : "Kouassi Jean").
         </span>
       </div>
 
@@ -98,14 +101,17 @@
           />
         </div>
         <span class="field-hint">{{ selectedDial.country }} · max {{ selectedDial.maxDigits }} chiffres</span>
-        <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.errors?.['tooLong']">
-          ⚠ Numéro trop long (max {{ selectedDial.maxDigits }} chiffres)
+        <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.errors?.['required']">
+          ⚠ Le numéro de téléphone est requis.
         </span>
         <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.errors?.['tooShort']">
-          ⚠ Numéro trop court (min 6 chiffres)
+          ⚠ Numéro trop court (min 6 chiffres).
         </span>
-        <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.errors?.['required']">
-          ⚠ Numéro requis
+        <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.errors?.['tooLong']">
+          ⚠ Numéro trop long (max {{ selectedDial.maxDigits }} chiffres).
+        </span>
+        <span class="field-error" *ngIf="teamForm.get('phone')?.touched && teamForm.get('phone')?.errors?.['invalidPrefix']">
+          ⚠ En Côte d'Ivoire, le numéro doit commencer par <strong>05</strong>, <strong>07</strong> ou <strong>01</strong> (ex : 0701234567).
         </span>
       </div>
 
@@ -133,11 +139,22 @@
           </label>
 
           <div class="player-num-badge">{{ i + 1 }}</div>
-          <input
-            type="text"
-            formControlName="name"
-            placeholder="Nom du joueur"
-            class="player-input" />
+          <div class="player-input-wrap">
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Prénom et nom (min. 6 caractères)"
+              class="player-input"
+              [class.input-error]="playerGroup(i).get('name')?.touched && playerGroup(i).get('name')?.invalid" />
+            <span class="field-error player-field-error"
+              *ngIf="playerGroup(i).get('name')?.touched && playerGroup(i).get('name')?.errors?.['required']">
+              ⚠ Le nom du joueur est requis.
+            </span>
+            <span class="field-error player-field-error"
+              *ngIf="playerGroup(i).get('name')?.touched && playerGroup(i).get('name')?.errors?.['minlength']">
+              ⚠ Minimum 6 caractères (ex : "Koné Ali").
+            </span>
+          </div>
           <button type="button" class="btn-remove" (click)="removePlayer(i)" *ngIf="players.length > 1">✕</button>
         </div>
       </div>

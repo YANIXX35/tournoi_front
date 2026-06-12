@@ -49,7 +49,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ) {
     this.teamForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
-      captain_name: ['', Validators.required],
+      captain_name: ['', [Validators.required, Validators.minLength(6)]],
       phone: ['', [Validators.required, this.phoneDigitsValidator.bind(this)]],
       players: this.fb.array([this.createPlayer(), this.createPlayer()]),
     });
@@ -85,7 +85,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   createPlayer(): FormGroup {
     return this.fb.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(6)]],
       photo: [null],
     });
   }
@@ -203,6 +203,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (!digits) return { required: true };
     if (digits.length < 6) return { tooShort: true };
     if (digits.length > this.selectedDial.maxDigits) return { tooLong: true };
+    // Côte d'Ivoire : le numéro doit commencer par 05, 07 ou 01
+    if (this.selectedDial.code === '+225') {
+      const prefix = digits.substring(0, 2);
+      if (!['05', '07', '01'].includes(prefix)) {
+        return { invalidPrefix: true };
+      }
+    }
     return null;
   }
 
@@ -222,6 +229,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
       .filter(p => p.player_name);
 
     if (players.length === 0) { this.errorMsg = 'Ajoutez au moins un joueur.'; return; }
+
+    // Valider les noms de joueurs (6 caractères minimum)
+    this.players.controls.forEach(c => (c as FormGroup).get('name')?.markAsTouched());
+    if (this.players.invalid) {
+      this.errorMsg = 'Chaque nom de joueur doit contenir au minimum 6 caractères.';
+      this.cdr.detectChanges();
+      return;
+    }
 
     this.loading = true;
     this.errorMsg = '';
