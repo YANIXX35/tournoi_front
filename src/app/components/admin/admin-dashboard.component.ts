@@ -77,6 +77,23 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       : this.selectedMatchForGoals!.team2_name;
   }
 
+  get teamsAvailableForMatch(): Team[] {
+    const used = new Set<string>();
+    this.matches.forEach(m => {
+      if (m.team1_name) used.add(m.team1_name);
+      if (m.team2_name) used.add(m.team2_name);
+    });
+    return this.teams.filter(t => !used.has(t.name));
+  }
+
+  get availableTeam1(): Team[] {
+    return this.teamsAvailableForMatch.filter(t => t.name !== this.newMatch.team2_name);
+  }
+
+  get availableTeam2(): Team[] {
+    return this.teamsAvailableForMatch.filter(t => t.name !== this.newMatch.team1_name);
+  }
+
   onMatchTeam1Change(name: string): void {
     const t = this.teams.find(t => t.name === name);
     if (t) this.newMatch.team1_id = t.id as any;

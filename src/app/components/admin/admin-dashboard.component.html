@@ -283,14 +283,14 @@
               <label>Équipe 1 *</label>
               <select [(ngModel)]="newMatch.team1_name" (ngModelChange)="onMatchTeam1Change($event)" class="team-select">
                 <option value="" disabled>— Choisir l'équipe 1 —</option>
-                <option *ngFor="let t of teams" [value]="t.name">{{ t.name }}</option>
+                <option *ngFor="let t of availableTeam1" [value]="t.name">{{ t.name }}</option>
               </select>
             </div>
             <div class="form-group">
               <label>Équipe 2 *</label>
               <select [(ngModel)]="newMatch.team2_name" (ngModelChange)="onMatchTeam2Change($event)" class="team-select">
                 <option value="" disabled>— Choisir l'équipe 2 —</option>
-                <option *ngFor="let t of teams" [value]="t.name">{{ t.name }}</option>
+                <option *ngFor="let t of availableTeam2" [value]="t.name">{{ t.name }}</option>
               </select>
             </div>
             <div class="form-group">

@@ -1,6 +1,6 @@
 .login-page {
   min-height: 100vh;
-  background: var(--navy);
+  background: linear-gradient(145deg, #0B1D35 0%, #0E5C36 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,8 +14,8 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(circle at 20% 80%, rgba(26,71,42,0.5) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(34,197,94,0.12) 0%, transparent 50%);
+      radial-gradient(circle at 20% 80%, rgba(14,92,54,0.55) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(212,150,10,0.10) 0%, transparent 50%);
     pointer-events: none;
   }
 
@@ -35,20 +35,17 @@
 }
 
 .login-card {
-  background: rgba(255,255,255,0.03);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: var(--r-2xl);
   padding: 2.75rem 2.5rem;
   width: 100%;
   max-width: 420px;
   text-align: center;
-  box-shadow:
-    0 32px 80px rgba(0,0,0,0.5),
-    inset 0 1px 0 rgba(255,255,255,0.06);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
   position: relative;
   z-index: 1;
-  animation: fadeUp 0.5s ease both;
 }
 
 .login-logo {
@@ -117,7 +114,7 @@
 .btn-login {
   width: 100%;
   padding: 0.95rem;
-  background: linear-gradient(135deg, var(--emerald), #16A34A);
+  background: var(--gold);
   color: white;
   border: none;
   border-radius: var(--r-md);
@@ -125,13 +122,14 @@
   font-weight: 800;
   cursor: pointer;
   margin-top: 0.5rem;
-  transition: var(--ease-spring);
+  transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
   letter-spacing: -0.01em;
-  box-shadow: 0 6px 20px rgba(34,197,94,0.35);
+  box-shadow: 0 6px 20px rgba(212,150,10,0.4);
 
   &:hover:not(:disabled) {
+    background: var(--gold-dark);
     transform: translateY(-2px);
-    box-shadow: 0 10px 28px rgba(34,197,94,0.45);
+    box-shadow: 0 10px 28px rgba(212,150,10,0.5);
   }
 
   &:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
