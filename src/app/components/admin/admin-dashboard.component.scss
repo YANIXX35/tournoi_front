@@ -2780,3 +2780,167 @@ $sidebar-w:   248px;
     right: 1.25rem;
   }
 }
+
+// ═══════════════════════════════════════════
+// MATCH CARDS MOBILE (≤ 640px)
+// ═══════════════════════════════════════════
+
+.mmc-list {
+  display: none;
+  flex-direction: column;
+  gap: .6rem;
+}
+
+.mmc {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #EEF2F8;
+  padding: .85rem;
+  box-shadow: 0 1px 4px rgba(15, 37, 68, .05);
+}
+
+.mmc-edit {
+  border-color: #bbf7d0;
+  background: #F0FDF4;
+}
+
+.mmc-head {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  flex-wrap: wrap;
+  margin-bottom: .55rem;
+}
+
+.mmc-num {
+  font-size: .7rem;
+  font-weight: 700;
+  color: #94A3B8;
+  white-space: nowrap;
+  margin-right: auto;
+}
+
+.mmc-teams {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  margin-bottom: .5rem;
+}
+
+.mmc-team {
+  flex: 1;
+  font-weight: 700;
+  font-size: .88rem;
+  color: #0F2544;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+
+  &--right { text-align: right; }
+}
+
+.mmc-score {
+  font-weight: 900;
+  font-size: 1.05rem;
+  color: #0E5C36;
+  white-space: nowrap;
+  padding: 0 .35rem;
+  flex-shrink: 0;
+}
+
+.mmc-vs {
+  font-size: .72rem;
+  font-weight: 700;
+  color: #CBD5E1;
+  padding: 0 .35rem;
+  flex-shrink: 0;
+}
+
+.mmc-meta {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+  font-size: .73rem;
+  color: #94A3B8;
+  margin-bottom: .6rem;
+}
+
+.mmc-terrain {
+  background: #F1F5F9;
+  color: #475569;
+  border-radius: 6px;
+  padding: .1rem .45rem;
+  font-size: .7rem;
+}
+
+.mmc-actions {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.mmc-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .3rem;
+  padding: .45rem .75rem;
+  font-size: .82rem;
+}
+
+.mme-title {
+  font-size: .82rem;
+  font-weight: 700;
+  color: #0E5C36;
+  margin-bottom: .7rem;
+}
+
+.mme-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem;
+  margin-bottom: .7rem;
+}
+
+.mme-field {
+  display: flex;
+  flex-direction: column;
+  gap: .18rem;
+
+  label {
+    font-size: .63rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748B;
+    letter-spacing: .04em;
+  }
+
+  .inline-input {
+    font-size: .82rem;
+    padding: .35rem .5rem;
+  }
+
+  &--full { grid-column: 1 / -1; }
+}
+
+.mme-score-row {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+
+  span { color: #CBD5E1; font-weight: 700; }
+  .score-input { max-width: 48px; }
+}
+
+.mme-actions {
+  display: flex;
+  gap: .4rem;
+}
+
+@media (max-width: 640px) {
+  .table-wrap { display: none !important; }
+  .mmc-list   { display: flex; }
+}

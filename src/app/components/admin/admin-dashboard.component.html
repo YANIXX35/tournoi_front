@@ -434,6 +434,107 @@
           </tbody>
         </table>
         </div><!-- /table-wrap -->
+
+        <!-- ─── MATCH CARDS MOBILE (≤ 640px) ─────────────── -->
+        <div class="mmc-list" *ngIf="filteredMatches.length > 0">
+          <ng-container *ngFor="let match of filteredMatches; let i = index">
+
+            <!-- Vue normale -->
+            <div class="mmc" *ngIf="editingMatch?.id !== match.id">
+              <div class="mmc-head">
+                <span class="mmc-num">Match {{ match.match_number ?? i + 1 }}</span>
+                <span class="phase-tag" [style.background]="getPhaseColor(match.phase) + '22'" [style.color]="getPhaseColor(match.phase)">{{ match.phase }}</span>
+                <span class="status-pill" [class.pill-blue]="match.status==='upcoming'" [class.pill-orange]="match.status==='ongoing'" [class.pill-green]="match.status==='finished'">{{ getStatusLabel(match.status) }}</span>
+              </div>
+              <div class="mmc-teams">
+                <span class="mmc-team">{{ match.team1_name }}</span>
+                <span class="mmc-score" *ngIf="match.status === 'finished'">{{ match.score1 }} — {{ match.score2 }}</span>
+                <span class="mmc-vs" *ngIf="match.status !== 'finished'">VS</span>
+                <span class="mmc-team mmc-team--right">{{ match.team2_name }}</span>
+              </div>
+              <div class="mmc-meta">
+                <span>{{ match.match_date | date:'dd/MM/yy' }}&nbsp;·&nbsp;{{ match.match_time }}</span>
+                <span *ngIf="match.terrain" class="mmc-terrain">{{ match.terrain }}</span>
+              </div>
+              <div class="mmc-actions">
+                <button class="btn-sm btn-blue mmc-btn" (click)="startEdit(match)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Modifier
+                </button>
+                <button class="btn-sm btn-red" (click)="deleteMatch(match.id)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Mode édition (formulaire empilé) -->
+            <div class="mmc mmc-edit" *ngIf="editingMatch?.id === match.id">
+              <div class="mme-title">&#9998; Modifier Match {{ match.match_number ?? i + 1 }}</div>
+              <div class="mme-grid">
+                <div class="mme-field">
+                  <label>N° match</label>
+                  <input class="inline-input" type="number" [(ngModel)]="editingMatch!.match_number" min="1" />
+                </div>
+                <div class="mme-field">
+                  <label>Phase</label>
+                  <select class="inline-input" [(ngModel)]="editingMatch!.phase">
+                    <option *ngFor="let p of phases" [value]="p">{{ p }}</option>
+                  </select>
+                </div>
+                <div class="mme-field">
+                  <label>Équipe 1</label>
+                  <input class="inline-input" [(ngModel)]="editingMatch!.team1_name" />
+                </div>
+                <div class="mme-field">
+                  <label>Équipe 2</label>
+                  <input class="inline-input" [(ngModel)]="editingMatch!.team2_name" />
+                </div>
+                <div class="mme-field">
+                  <label>Score</label>
+                  <div class="mme-score-row">
+                    <input class="score-input" type="number" [(ngModel)]="editingMatch!.score1" min="0" placeholder="0" />
+                    <span>—</span>
+                    <input class="score-input" type="number" [(ngModel)]="editingMatch!.score2" min="0" placeholder="0" />
+                  </div>
+                </div>
+                <div class="mme-field">
+                  <label>Statut</label>
+                  <select class="inline-input" [(ngModel)]="editingMatch!.status">
+                    <option value="upcoming">À venir</option>
+                    <option value="ongoing">En cours</option>
+                    <option value="finished">Terminé</option>
+                  </select>
+                </div>
+                <div class="mme-field">
+                  <label>Date</label>
+                  <input class="inline-input" type="date" [(ngModel)]="editingMatch!.match_date" />
+                </div>
+                <div class="mme-field">
+                  <label>Heure</label>
+                  <input class="inline-input" type="time" [(ngModel)]="editingMatch!.match_time" />
+                </div>
+                <div class="mme-field mme-field--full">
+                  <label>Terrain</label>
+                  <select class="inline-input" [(ngModel)]="editingMatch!.terrain">
+                    <option value="">—</option>
+                    <option value="Mamadou Touré">Mamadou Touré</option>
+                    <option value="Saint des Derniers Jours">Saint des Derniers Jours</option>
+                    <option value="Arena Châteaux">Arena Châteaux</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mme-actions">
+                <button class="btn-sm btn-green mmc-btn" (click)="saveMatch()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Sauver
+                </button>
+                <button class="btn-sm btn-gray mmc-btn" (click)="cancelEdit()">Annuler</button>
+              </div>
+            </div>
+
+          </ng-container>
+        </div><!-- /mmc-list -->
+
       </div>
     </div>
 
