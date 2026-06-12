@@ -227,6 +227,13 @@ $sidebar-w:   248px;
   border-top: 4px solid #CBD5E1;
   position: relative;
   overflow: hidden;
+  animation: fadeInUp 0.4s cubic-bezier(0.4,0,0.2,1) both;
+  transition: box-shadow 0.2s, transform 0.2s;
+
+  &:hover {
+    box-shadow: 0 6px 24px rgba(15,37,68,0.12);
+    transform: translateY(-2px);
+  }
 
   &:nth-child(1) { border-top-color: $green; }
   &:nth-child(2) { border-top-color: $gold; }
@@ -1533,6 +1540,11 @@ $sidebar-w:   248px;
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .lp-modal {

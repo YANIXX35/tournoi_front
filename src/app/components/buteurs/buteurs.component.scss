@@ -167,25 +167,45 @@
   flex-direction: column;
   align-items: center;
   background: var(--card);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border-light);
   border-radius: var(--r-xl);
-  padding: 1.25rem 1rem 0;
-  width: 180px;
+  padding: 1.35rem 1rem 0;
+  width: 185px;
   box-shadow: var(--shadow-sm);
   text-align: center;
-  transition: var(--ease-spring);
+  transition: transform 0.25s var(--ease-spring), box-shadow 0.25s;
 
-  &:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  &:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
 
-  .podium-name  { font-weight: 700; font-size: .92rem; color: var(--navy); margin-top: .4rem; }
-  .podium-team  { font-size: .75rem; color: var(--text-muted); margin: .2rem 0 .5rem; }
-  .podium-count { font-size: .8rem; font-weight: 700; color: var(--green); margin-bottom: .85rem; }
+  .podium-name  { font-weight: 800; font-size: .92rem; color: var(--navy); margin-top: .45rem; }
+  .podium-team  {
+    font-size: .73rem; color: var(--text-muted);
+    margin: .2rem 0 .4rem;
+    background: var(--bg);
+    padding: .15rem .6rem;
+    border-radius: var(--r-full);
+    display: inline-block;
+  }
+  .podium-count {
+    font-size: .82rem; font-weight: 800; color: var(--green); margin-bottom: 1rem;
+    background: rgba(14,92,54,0.08);
+    padding: .2rem .7rem;
+    border-radius: var(--r-full);
+    display: inline-block;
+  }
 
   .podium-bar { width: 100%; border-radius: 0 0 var(--r-xl) var(--r-xl); }
 
-  &.podium-1st .podium-bar { height: 48px; background: linear-gradient(180deg, #ffd700, #f59e0b); }
-  &.podium-2nd .podium-bar { height: 32px; background: linear-gradient(180deg, #e5e7eb, #9ca3af); }
-  &.podium-3rd .podium-bar { height: 20px; background: linear-gradient(180deg, #d97706, #b45309); }
+  &.podium-1st {
+    border-color: rgba(245,158,11,0.25);
+    .podium-bar { height: 52px; background: linear-gradient(180deg, #FFE44D, #F59E0B, #D97706); box-shadow: 0 -3px 12px rgba(245,158,11,0.25); }
+  }
+  &.podium-2nd {
+    .podium-bar { height: 36px; background: linear-gradient(180deg, #E8E8F0, #9CA3AF, #6B7280); }
+  }
+  &.podium-3rd {
+    .podium-bar { height: 22px; background: linear-gradient(180deg, #E8A355, #B45309, #92400E); }
+  }
 }
 
 .podium-medal {
