@@ -43,7 +43,7 @@
   <div *ngIf="!loading && !hasError">
 
     <!-- ═══ PODIUM ═══ -->
-    <section class="podium-section" *ngIf="standings.length >= 3" appReveal>
+    <section class="podium-section" *ngIf="standings.length >= 3 && finishedMatches.length > 0" appReveal>
       <span class="section-label">🏆 Classement</span>
       <h2 class="section-title">Podium du tournoi</h2>
 
