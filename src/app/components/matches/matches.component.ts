@@ -78,8 +78,9 @@ export class MatchesComponent implements OnInit {
 
   getTeamLogoUrl(name: string): string | null {
     if (!name || !this.teams.length) return null;
-    const n = name.trim().toLowerCase();
-    const t = this.teams.find(t => t.name?.trim().toLowerCase() === n);
+    const norm = (s: string) => s.trim().toLowerCase().replace(/[‘’‚‛ʼ]/g, "'");
+    const n = norm(name);
+    const t = this.teams.find(t => norm(t.name ?? '') === n);
     if (!t || !t.logo_path) return null;
     return `${environment.apiUrl}/api/teams/${t.id}/logo`;
   }
