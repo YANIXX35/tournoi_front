@@ -35,6 +35,11 @@ export class AdminService {
   }
 
   // --- Matchs ---
+  getMatchesFresh(): Observable<Match[]> {
+    // Timestamp param forces browser to bypass its HTTP cache (max-age=60 set by backend)
+    return this.http.get<Match[]>(`${environment.apiUrl}/api/matches?_t=${Date.now()}`, { headers: this.headers() });
+  }
+
   createMatch(data: Partial<Match>): Observable<any> {
     return this.http.post(`${API}/matches`, data, { headers: this.headers() });
   }
