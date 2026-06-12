@@ -204,6 +204,14 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   // ── Recherche matchs ───────────────────────────────────
+  getTeamLogoUrl(teamName: string): string | null {
+    if (!teamName || !this.teams.length) return null;
+    const n = teamName.trim().toLowerCase();
+    const t = this.teams.find(t => t.name?.trim().toLowerCase() === n);
+    if (!t || !t.logo_path) return null;
+    return `${environment.apiUrl}/api/teams/${t.id}/logo`;
+  }
+
   get filteredMatches(): Match[] {
     const q = this.matchSearchQuery.trim().toLowerCase();
     if (!q) return this.matches;

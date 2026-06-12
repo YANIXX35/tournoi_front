@@ -313,6 +313,7 @@
                 <option value="">-- Choisir un terrain --</option>
                 <option value="Mamadou Touré">Mamadou Touré</option>
                 <option value="Saint des Derniers Jours">Saint des Derniers Jours</option>
+                <option value="Eglise">Eglise</option>
                 <option value="Arena Châteaux">Arena Châteaux</option>
               </select>
             </div>
@@ -368,12 +369,18 @@
               <!-- Ligne affichage normal -->
               <tr *ngIf="editingMatch?.id !== match.id">
                 <td class="td-num">Match {{ match.match_number ?? i + 1 }}</td>
-                <td class="td-name">{{ match.team1_name }}</td>
+                <td class="td-name">
+                  <img *ngIf="getTeamLogoUrl(match.team1_name)" class="team-logo-sm" [src]="getTeamLogoUrl(match.team1_name)!" [alt]="match.team1_name" loading="lazy" />
+                  {{ match.team1_name }}
+                </td>
                 <td class="td-score">
                   <span *ngIf="match.status === 'finished'">{{ match.score1 }} — {{ match.score2 }}</span>
                   <span *ngIf="match.status !== 'finished'" class="text-muted">—</span>
                 </td>
-                <td class="td-name">{{ match.team2_name }}</td>
+                <td class="td-name">
+                  <img *ngIf="getTeamLogoUrl(match.team2_name)" class="team-logo-sm" [src]="getTeamLogoUrl(match.team2_name)!" [alt]="match.team2_name" loading="lazy" />
+                  {{ match.team2_name }}
+                </td>
                 <td>{{ match.match_date | date:'dd/MM/yy' }}</td>
                 <td>{{ match.match_time }}</td>
                 <td>
@@ -415,6 +422,7 @@
                     <option value="">—</option>
                     <option value="Mamadou Touré">Mamadou Touré</option>
                     <option value="Saint des Derniers Jours">Saint des Derniers Jours</option>
+                    <option value="Eglise">Eglise</option>
                     <option value="Arena Châteaux">Arena Châteaux</option>
                   </select>
                 </td>
@@ -447,10 +455,16 @@
                 <span class="status-pill" [class.pill-blue]="match.status==='upcoming'" [class.pill-orange]="match.status==='ongoing'" [class.pill-green]="match.status==='finished'">{{ getStatusLabel(match.status) }}</span>
               </div>
               <div class="mmc-teams">
-                <span class="mmc-team">{{ match.team1_name }}</span>
+                <span class="mmc-team">
+                  <img *ngIf="getTeamLogoUrl(match.team1_name)" class="team-logo-sm" [src]="getTeamLogoUrl(match.team1_name)!" [alt]="match.team1_name" loading="lazy" />
+                  {{ match.team1_name }}
+                </span>
                 <span class="mmc-score" *ngIf="match.status === 'finished'">{{ match.score1 }} — {{ match.score2 }}</span>
                 <span class="mmc-vs" *ngIf="match.status !== 'finished'">VS</span>
-                <span class="mmc-team mmc-team--right">{{ match.team2_name }}</span>
+                <span class="mmc-team mmc-team--right">
+                  {{ match.team2_name }}
+                  <img *ngIf="getTeamLogoUrl(match.team2_name)" class="team-logo-sm" [src]="getTeamLogoUrl(match.team2_name)!" [alt]="match.team2_name" loading="lazy" />
+                </span>
               </div>
               <div class="mmc-meta">
                 <span>{{ match.match_date | date:'dd/MM/yy' }}&nbsp;·&nbsp;{{ match.match_time }}</span>
@@ -519,6 +533,7 @@
                     <option value="">—</option>
                     <option value="Mamadou Touré">Mamadou Touré</option>
                     <option value="Saint des Derniers Jours">Saint des Derniers Jours</option>
+                    <option value="Eglise">Eglise</option>
                     <option value="Arena Châteaux">Arena Châteaux</option>
                   </select>
                 </div>

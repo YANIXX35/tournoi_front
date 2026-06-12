@@ -3,6 +3,7 @@ import { TournamentService } from '../../services/tournament.service';
 import { Match } from '../../models/match.model';
 import { timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-matches',
@@ -20,6 +21,7 @@ export class MatchesComponent implements OnInit {
   hasError = false;
   page = 1;
   readonly pageSize = 10;
+  private teamsLogoMap = new Map<string, string>(); // lowercase name → full logo URL
 
   get paginatedMatches(): Match[] {
     const start = (this.page - 1) * this.pageSize;
@@ -32,7 +34,17 @@ export class MatchesComponent implements OnInit {
     private ngZone: NgZone,
   ) {}
 
-  ngOnInit(): void { this.load(); }
+  ngOnInit(): void {
+    this.load();
+    this.tournamentService.getTeamsPublic().subscribe(teams => {
+      const map = new Map<string, string>();
+      for (const t of teams) {
+        if (t.logo_path) map.set(t.name.trim().toLowerCase(), `${environment.apiUrl}${t.logo_path}`);
+      }
+      this.teamsLogoMap = map;
+      this.cdr.markForCheck();
+    });
+  }
 
   load(): void {
     this.loading = true;
@@ -63,6 +75,11 @@ export class MatchesComponent implements OnInit {
   getStatusLabel(status: string): string {
     const labels: Record<string, string> = { upcoming: 'À venir', ongoing: 'En cours', finished: 'Terminé' };
     return labels[status] || status;
+  }
+
+  getTeamLogoUrl(name: string): string | null {
+    if (!name) return null;
+    return this.teamsLogoMap.get(name.trim().toLowerCase()) ?? null;
   }
 
   trackByMatchId(_: number, m: Match): number { return m.id; }

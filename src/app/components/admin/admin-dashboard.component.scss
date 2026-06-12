@@ -2945,6 +2945,33 @@ $sidebar-w:   248px;
   .mmc-list   { display: flex; }
 }
 
+// ─── Logo équipe (tableau + cards) ────────────────────────────────────────────
+.team-logo-sm {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #E2E8F0;
+  background: #f8fafc;
+  vertical-align: middle;
+  margin-right: 4px;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.td-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.mmc-team {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 // ═══════════════════════════════════════════
 // STATUS TOGGLE (validation statut match)
 // ═══════════════════════════════════════════

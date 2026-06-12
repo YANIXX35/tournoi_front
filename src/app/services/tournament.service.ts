@@ -28,6 +28,10 @@ export class TournamentService {
     return this.cached('matches', this.http.get<Match[]>(`${API}/matches`));
   }
 
+  getTeamsPublic(): Observable<any[]> {
+    return this.cached('teams-public', this.http.get<any[]>(`${API}/teams`), 300_000);
+  }
+
   getResults(): Observable<{ finished_matches: Match[]; standings: Standing[] }> {
     return this.cached('results', this.http.get<{ finished_matches: Match[]; standings: Standing[] }>(`${API}/results`));
   }
