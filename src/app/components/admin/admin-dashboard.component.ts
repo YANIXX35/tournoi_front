@@ -171,6 +171,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   loadMatches(): void {
+    this.tournamentService.invalidate('matches');
     this.tournamentService.getMatches().subscribe({
       next: d => this.ngZone.run(() => { this.matches = d; this.cdr.detectChanges(); }),
       error: () => this.ngZone.run(() => { this.flash('Erreur chargement matchs'); this.cdr.detectChanges(); }),
