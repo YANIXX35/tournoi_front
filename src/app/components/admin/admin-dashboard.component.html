@@ -602,7 +602,7 @@
           <ng-container *ngFor="let player of team.players">
 
             <!-- Carte normale (non en édition) -->
-            <div class="licence-card" *ngIf="editingPlayer?.id !== player.id">
+            <div class="licence-card" *ngIf="editingPlayer?.id !== player.id" [attr.data-licence-id]="'lc-' + team.id + '-' + player.id">
               <div class="licence-card-header">
                 <img [src]="getPhotoUrl(team.logo_path) || 'fju.jpg'" [alt]="team.name" class="licence-card-logo" (error)="$any($event.target).src='fju.jpg'" />
                 <div class="licence-card-title">
@@ -612,7 +612,7 @@
               </div>
               <div class="licence-card-body">
                 <div class="licence-photo-wrap">
-                  <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)!" class="licence-photo" alt="photo" loading="lazy" (error)="onPhotoError(player.photo_path)" />
+                  <img *ngIf="getPhotoUrl(player.photo_path)" [src]="getPhotoUrl(player.photo_path)!" class="licence-photo licence-photo--zoom" alt="photo" loading="lazy" (error)="onPhotoError(player.photo_path)" (click)="zoomedPhoto = getPhotoUrl(player.photo_path)" />
                   <div class="licence-photo-placeholder" *ngIf="!getPhotoUrl(player.photo_path)"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.35"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
                 </div>
                 <div class="licence-info">
@@ -634,6 +634,9 @@
               </div>
               <!-- Boutons CRUD -->
               <div class="lc-actions">
+                <button class="lc-btn lc-btn-dl" (click)="downloadLicenceJpg('lc-' + team.id + '-' + player.id, player.player_name)" [disabled]="downloadingLicence" title="Télécharger la licence en JPG">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> JPG
+                </button>
                 <button class="lc-btn lc-btn-edit" (click)="startEditPlayer(player, team.id)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
                 <button class="lc-btn lc-btn-del" (click)="confirmDeletePlayer(player.id)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Supprimer</button>
               </div>
@@ -1211,5 +1214,13 @@
       </div><!-- /lp-body -->
     </div><!-- /lp-modal -->
   </div><!-- /lp-overlay -->
+
+  <!-- ═══════ LIGHTBOX ZOOM PHOTO ═══════ -->
+  <div class="photo-lightbox" *ngIf="zoomedPhoto" (click)="zoomedPhoto = null">
+    <button class="lightbox-close" (click)="zoomedPhoto = null">✕</button>
+    <div class="lightbox-body" (click)="$event.stopPropagation()">
+      <img [src]="zoomedPhoto" class="lightbox-img" alt="Photo agrandie" />
+    </div>
+  </div>
 
 </div>

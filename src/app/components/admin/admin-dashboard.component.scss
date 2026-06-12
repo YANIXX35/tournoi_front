@@ -1275,6 +1275,66 @@ $sidebar-w: 240px;
 
 .lc-btn-edit { background: #e3f2fd; color: #1565c0; }
 .lc-btn-del  { background: #ffebee; color: #c62828; }
+.lc-btn-dl   { background: #e8f5e9; color: #2e7d32; }
+
+// ═══════════════════════════════
+// ZOOM PHOTO (clic sur photo de licence)
+// ═══════════════════════════════
+.licence-photo--zoom {
+  cursor: zoom-in;
+  transition: opacity 0.15s;
+  &:hover { opacity: 0.82; }
+}
+
+// ═══════════════════════════════
+// LIGHTBOX
+// ═══════════════════════════════
+.photo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.18s ease;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 1.4rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  z-index: 1;
+  &:hover { background: rgba(255,255,255,0.28); }
+}
+
+.lightbox-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 90vw;
+  max-height: 88vh;
+}
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 88vh;
+  border-radius: 10px;
+  object-fit: contain;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+}
 
 // ═══════════════════════════════
 // LICENCE CRUD — FORMULAIRE ÉDITION

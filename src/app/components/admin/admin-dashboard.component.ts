@@ -36,6 +36,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   teamsForLicences: Team[] = [];
   licencesLoading = false;
 
+  // Zoom photo lightbox
+  zoomedPhoto: string | null = null;
+  downloadingLicence = false;
+
   // Photos — suivi des URLs cassées pour afficher le placeholder à la place
   private brokenPhotos = new Set<string>();
 
@@ -802,6 +806,33 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  // ── Lightbox zoom & téléchargement licence ─────────────
+  @HostListener('document:keydown.escape')
+  onEscKey(): void { if (this.zoomedPhoto) this.zoomedPhoto = null; }
+
+  async downloadLicenceJpg(licenceId: string, playerName: string): Promise<void> {
+    if (this.downloadingLicence) return;
+    this.downloadingLicence = true;
+    try {
+      const card = document.querySelector(`[data-licence-id="${licenceId}"]`) as HTMLElement;
+      if (!card) return;
+      const { default: html2canvas } = await import('html2canvas');
+      const canvas = await (html2canvas as any)(card, {
+        scale: 2.5,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        ignoreElements: (el: Element) => el.classList.contains('lc-actions'),
+      });
+      const link = document.createElement('a');
+      link.download = `licence-${playerName.replace(/\s+/g, '-')}.jpg`;
+      link.href = canvas.toDataURL('image/jpeg', 0.92);
+      link.click();
+    } finally {
+      this.downloadingLicence = false;
+    }
   }
 
   // ── Scroll ─────────────────────────────────────────────
