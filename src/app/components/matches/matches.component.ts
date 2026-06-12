@@ -21,7 +21,7 @@ export class MatchesComponent implements OnInit {
   hasError = false;
   page = 1;
   readonly pageSize = 10;
-  private teamsLogoMap = new Map<string, string>(); // lowercase name → full logo URL
+  teams: any[] = [];
 
   get paginatedMatches(): Match[] {
     const start = (this.page - 1) * this.pageSize;
@@ -35,15 +35,14 @@ export class MatchesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.load();
-    this.tournamentService.getTeamsPublic().subscribe(teams => {
-      const map = new Map<string, string>();
-      for (const t of teams) {
-        if (t.logo_path) map.set(t.name.trim().toLowerCase(), `${environment.apiUrl}${t.logo_path}`);
-      }
-      this.teamsLogoMap = map;
-      this.cdr.markForCheck();
+    this.tournamentService.getTeamsPublic().subscribe({
+      next: teams => this.ngZone.run(() => {
+        this.teams = teams;
+        this.cdr.detectChanges();
+      }),
+      error: () => {},
     });
+    this.load();
   }
 
   load(): void {
@@ -78,8 +77,11 @@ export class MatchesComponent implements OnInit {
   }
 
   getTeamLogoUrl(name: string): string | null {
-    if (!name) return null;
-    return this.teamsLogoMap.get(name.trim().toLowerCase()) ?? null;
+    if (!name || !this.teams.length) return null;
+    const n = name.trim().toLowerCase();
+    const t = this.teams.find(t => t.name?.trim().toLowerCase() === n);
+    if (!t || !t.logo_path) return null;
+    return `${environment.apiUrl}/api/teams/${t.id}/logo`;
   }
 
   trackByMatchId(_: number, m: Match): number { return m.id; }
