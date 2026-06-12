@@ -604,7 +604,7 @@
             <!-- Carte normale (non en édition) -->
             <div class="licence-card" *ngIf="editingPlayer?.id !== player.id">
               <div class="licence-card-header">
-                <img src="fju.jpg" alt="Étoile Universelle" class="licence-card-logo" />
+                <img [src]="getPhotoUrl(team.logo_path) || 'fju.jpg'" [alt]="team.name" class="licence-card-logo" (error)="$any($event.target).src='fju.jpg'" />
                 <div class="licence-card-title">
                   <span class="licence-org">Comité d'organisation</span>
                   <span class="licence-year">LICENCE 2026</span>
@@ -642,7 +642,7 @@
             <!-- Carte en mode édition -->
             <div class="licence-card licence-card--editing" *ngIf="editingPlayer?.id === player.id">
               <div class="licence-card-header">
-                <img src="fju.jpg" alt="Étoile Universelle" class="licence-card-logo" />
+                <img [src]="getPhotoUrl(team.logo_path) || 'fju.jpg'" [alt]="team.name" class="licence-card-logo" (error)="$any($event.target).src='fju.jpg'" />
                 <div class="licence-card-title">
                   <span class="licence-org">Modifier</span>
                   <span class="licence-year">JOUEUR</span>
