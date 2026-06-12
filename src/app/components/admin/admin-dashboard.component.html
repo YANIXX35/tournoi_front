@@ -309,7 +309,12 @@
             </div>
             <div class="form-group">
               <label>Terrain</label>
-              <input type="text" [(ngModel)]="newMatch.terrain" placeholder="Ex : Terrain A, Stade Arena…" />
+              <select [(ngModel)]="newMatch.terrain">
+                <option value="">-- Choisir un terrain --</option>
+                <option value="Mamadou Touré">Mamadou Touré</option>
+                <option value="Saint des Derniers Jours">Saint des Derniers Jours</option>
+                <option value="Arena Châteaux">Arena Châteaux</option>
+              </select>
             </div>
             <div class="form-group">
               <label>Statut</label>
@@ -405,7 +410,14 @@
                     <option *ngFor="let p of phases" [value]="p">{{ p }}</option>
                   </select>
                 </td>
-                <td><input class="inline-input" [(ngModel)]="editingMatch!.terrain" placeholder="Terrain" /></td>
+                <td>
+                  <select class="inline-input" [(ngModel)]="editingMatch!.terrain">
+                    <option value="">—</option>
+                    <option value="Mamadou Touré">Mamadou Touré</option>
+                    <option value="Saint des Derniers Jours">Saint des Derniers Jours</option>
+                    <option value="Arena Châteaux">Arena Châteaux</option>
+                  </select>
+                </td>
                 <td>
                   <select class="inline-input" [(ngModel)]="editingMatch!.status">
                     <option value="upcoming">À venir</option>
