@@ -2944,3 +2944,53 @@ $sidebar-w:   248px;
   .table-wrap { display: none !important; }
   .mmc-list   { display: flex; }
 }
+
+// ═══════════════════════════════════════════
+// STATUS TOGGLE (validation statut match)
+// ═══════════════════════════════════════════
+
+.status-toggle {
+  display: flex;
+  gap: .25rem;
+  margin-top: .65rem;
+  padding-top: .6rem;
+  border-top: 1px solid #F0F4FA;
+}
+
+.stg-btn {
+  flex: 1;
+  padding: .3rem .45rem;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 7px;
+  font-size: .7rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: white;
+  color: #94A3B8;
+  transition: background .12s, border-color .12s, color .12s;
+  white-space: nowrap;
+  text-align: center;
+
+  &:hover:not(.stg-blue):not(.stg-orange):not(.stg-green) {
+    border-color: #CBD5E1;
+    color: #64748B;
+  }
+
+  &.stg-blue {
+    background: #EFF6FF;
+    border-color: #3B82F6;
+    color: #1D4ED8;
+  }
+
+  &.stg-orange {
+    background: #FFF7ED;
+    border-color: #F97316;
+    color: #C2410C;
+  }
+
+  &.stg-green {
+    background: #F0FDF4;
+    border-color: #22C55E;
+    color: #15803D;
+  }
+}

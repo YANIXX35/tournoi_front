@@ -398,20 +398,36 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   saveScore(): void {
     if (!this.scoringMatch) return;
+    const base = this.scoringMatch;
     const payload: Partial<Match> = {
-      ...this.scoringMatch,
+      ...base,
       score1: Number(this.scoreInput.score1),
       score2: Number(this.scoreInput.score2),
-      status: 'finished' as const,
+      // Keep current status — admin uses the status buttons to finalize
     };
-    this.adminService.updateMatch(this.scoringMatch.id, payload).subscribe({
+    this.adminService.updateMatch(base.id, payload).subscribe({
       next: () => this.ngZone.run(() => {
+        const saved = { ...base, score1: Number(this.scoreInput.score1), score2: Number(this.scoreInput.score2) };
+        this.matches = this.matches.map(m => m.id === saved.id ? saved : m);
         this.scoringMatch = null;
-        this.loadMatches();
         this.flash('Score enregistré ✓');
         this.cdr.detectChanges();
+        this.loadMatches();
       }),
       error: () => this.ngZone.run(() => { this.flash('Erreur sauvegarde'); this.cdr.detectChanges(); }),
+    });
+  }
+
+  changeMatchStatus(match: Match, newStatus: 'upcoming' | 'ongoing' | 'finished'): void {
+    if (match.status === newStatus) return;
+    this.adminService.updateMatch(match.id, { ...match, status: newStatus }).subscribe({
+      next: () => this.ngZone.run(() => {
+        this.matches = this.matches.map(m => m.id === match.id ? { ...m, status: newStatus } : m);
+        this.flash(`Statut → ${this.getStatusLabel(newStatus)}`);
+        this.cdr.detectChanges();
+        this.loadMatches();
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur mise à jour statut'); this.cdr.detectChanges(); }),
     });
   }
 
