@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, NgZone, ChangeDetectionStrategy }
 import { TournamentService } from '../../services/tournament.service';
 import { Match } from '../../models/match.model';
 import { timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -35,29 +35,25 @@ export class MatchesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.tournamentService.getTeamsPublic().subscribe({
-      next: teams => this.ngZone.run(() => {
-        this.teams = teams;
-        this.cdr.detectChanges();
-      }),
-      error: () => {},
-    });
     this.load();
   }
 
   load(): void {
     this.loading = true;
     this.hasError = false;
-    this.tournamentService.getMatches().pipe(
-      timeout(15000),
-      catchError(() => of(null))
-    ).subscribe(data => {
+    this.cdr.detectChanges();
+
+    forkJoin({
+      teams: this.tournamentService.getTeamsPublic().pipe(timeout(12000), catchError(() => of([]))),
+      matches: this.tournamentService.getMatches().pipe(timeout(15000), catchError(() => of(null))),
+    }).subscribe(({ teams, matches }) => {
       this.ngZone.run(() => {
+        this.teams = teams;
         this.loading = false;
-        if (!data) { this.hasError = true; this.cdr.detectChanges(); return; }
-        this.matches = data;
-        this.phases = ['Tous', ...new Set(data.map((m: Match) => m.phase))];
-        this.filteredMatches = data;
+        if (!matches) { this.hasError = true; this.cdr.detectChanges(); return; }
+        this.matches = matches;
+        this.phases = ['Tous', ...new Set(matches.map((m: Match) => m.phase))];
+        this.filteredMatches = matches;
         this.cdr.detectChanges();
       });
     });
