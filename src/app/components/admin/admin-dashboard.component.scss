@@ -2316,6 +2316,54 @@ $sidebar-w:   248px;
   p { font-size: .88rem; }
 }
 
+// ── Score en temps réel ────────────────────────────────
+.live-score-bar {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  background: linear-gradient(135deg, #0E5C36 0%, #1A7A4A 100%);
+  border-radius: 10px;
+  padding: .65rem 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+
+  .live-score-team {
+    font-size: .82rem;
+    font-weight: 600;
+    color: rgba(255,255,255,.8);
+    flex: 1;
+    &:first-child { text-align: right; }
+    &:last-of-type { text-align: left; }
+  }
+
+  .live-score-num {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    min-width: 1.5rem;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .live-score-sep {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,.5);
+    font-weight: 700;
+  }
+
+  .live-score-saved {
+    width: 100%;
+    text-align: center;
+    font-size: .72rem;
+    color: rgba(255,255,255,.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .3rem;
+    margin-top: .15rem;
+  }
+}
+
 // ── Formulaire d'ajout ─────────────────────────────────
 .goal-form { margin-bottom: 1.1rem; }
 

@@ -774,6 +774,17 @@
             <h3 class="scorers-panel-title">
               {{ selectedMatchForGoals.team1_name }} vs {{ selectedMatchForGoals.team2_name }}
             </h3>
+            <div class="live-score-bar">
+              <span class="live-score-team">{{ selectedMatchForGoals.team1_name }}</span>
+              <span class="live-score-num">{{ getGoalCount(selectedMatchForGoals.team1_name) }}</span>
+              <span class="live-score-sep">—</span>
+              <span class="live-score-num">{{ getGoalCount(selectedMatchForGoals.team2_name) }}</span>
+              <span class="live-score-team">{{ selectedMatchForGoals.team2_name }}</span>
+              <span class="live-score-saved" *ngIf="matchGoals.length > 0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Score mis à jour automatiquement
+              </span>
+            </div>
 
             <!-- Formulaire d'ajout -->
             <div class="goal-form">

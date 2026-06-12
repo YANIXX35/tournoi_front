@@ -940,6 +940,25 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     return names;
   }
 
+  getGoalCount(teamName: string): number {
+    return this.matchGoals.filter(g => g.type === 'goal' && g.team_name === teamName).length;
+  }
+
+  private syncScoreFromGoals(): void {
+    const match = this.selectedMatchForGoals;
+    if (!match) return;
+    const score1 = this.getGoalCount(match.team1_name);
+    const score2 = this.getGoalCount(match.team2_name);
+    const payload: Partial<Match> = { ...match, score1, score2, status: 'finished' as const };
+    this.adminService.updateMatch(match.id, payload).subscribe({
+      next: () => this.ngZone.run(() => {
+        const idx = this.matches.findIndex(m => m.id === match.id);
+        if (idx >= 0) this.matches[idx] = { ...this.matches[idx], score1, score2, status: 'finished' };
+        this.cdr.detectChanges();
+      }),
+    });
+  }
+
   addGoal(): void {
     if (!this.selectedMatchForGoals) return;
     const rawName = this.newGoal.player_name === '__manual__' ? this.manualPlayerName : this.newGoal.player_name;
@@ -952,6 +971,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         this.newGoal = { type: 'goal', minute: null, team_name: this.selectedMatchForGoals!.team1_name };
         this.manualPlayerName = '';
         this.flash('Ajouté ✓');
+        this.syncScoreFromGoals();
         this.cdr.detectChanges();
       }),
       error: (err) => this.ngZone.run(() => {
@@ -978,6 +998,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         if (idx >= 0) this.matchGoals[idx] = { ...this.editingGoal! };
         this.editingGoal = null;
         this.flash('Modifié ✓');
+        this.syncScoreFromGoals();
         this.cdr.detectChanges();
       }),
       error: () => this.ngZone.run(() => { this.flash('Erreur modification'); this.cdr.detectChanges(); }),
@@ -989,6 +1010,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.adminService.deleteGoal(goalId).subscribe({
       next: () => this.ngZone.run(() => {
         this.matchGoals = this.matchGoals.filter(g => g.id !== goalId);
+        this.syncScoreFromGoals();
         this.flash('Supprimé ✓');
         this.cdr.detectChanges();
       }),
