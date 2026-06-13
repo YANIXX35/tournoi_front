@@ -994,13 +994,14 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     if (!match) return;
     const score1 = this.getGoalCount(match.team1_name);
     const score2 = this.getGoalCount(match.team2_name);
-    const payload: Partial<Match> = { ...match, score1, score2, status: 'finished' as const };
+    const payload: Partial<Match> = { ...match, score1, score2 };
     this.adminService.updateMatch(match.id, payload).subscribe({
       next: () => this.ngZone.run(() => {
         const idx = this.matches.findIndex(m => m.id === match.id);
-        if (idx >= 0) this.matches[idx] = { ...this.matches[idx], score1, score2, status: 'finished' };
+        if (idx >= 0) this.matches[idx] = { ...this.matches[idx], score1, score2 };
         this.cdr.detectChanges();
       }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur sync score'); this.cdr.detectChanges(); }),
     });
   }
 
