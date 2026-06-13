@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { TournamentService } from '../../services/tournament.service';
 import { Match, Standing } from '../../models/match.model';
 import { timeout, catchError } from 'rxjs/operators';
@@ -11,13 +11,14 @@ import { of } from 'rxjs';
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ResultsComponent implements OnInit {
+export class ResultsComponent implements OnInit, OnDestroy {
   finishedMatches: Match[] = [];
   standings: Standing[] = [];
   loading = true;
   hasError = false;
   matchPage = 1;
   readonly matchPageSize = 8;
+  private pollInterval: ReturnType<typeof setInterval> | null = null;
 
   get paginatedMatches(): Match[] {
     const start = (this.matchPage - 1) * this.matchPageSize;
@@ -30,7 +31,31 @@ export class ResultsComponent implements OnInit {
     private ngZone: NgZone,
   ) {}
 
-  ngOnInit(): void { this.load(); }
+  ngOnInit(): void {
+    this.load();
+    this.pollInterval = setInterval(() => {
+      this.tournamentService.invalidate('results');
+      this.silentRefresh();
+    }, 30000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.pollInterval) clearInterval(this.pollInterval);
+  }
+
+  private silentRefresh(): void {
+    this.tournamentService.getResults().pipe(
+      timeout(15000),
+      catchError(() => of(null))
+    ).subscribe(data => {
+      this.ngZone.run(() => {
+        if (!data) return;
+        this.finishedMatches = data.finished_matches;
+        this.standings = data.standings;
+        this.cdr.detectChanges();
+      });
+    });
+  }
 
   load(): void {
     this.loading = true;

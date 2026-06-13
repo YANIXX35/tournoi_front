@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { TournamentService } from '../../services/tournament.service';
 import { Match } from '../../models/match.model';
 import { timeout, catchError } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { environment } from '../../../environments/environment';
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MatchesComponent implements OnInit {
+export class MatchesComponent implements OnInit, OnDestroy {
   matches: Match[] = [];
   filteredMatches: Match[] = [];
   phases: string[] = [];
@@ -22,6 +22,7 @@ export class MatchesComponent implements OnInit {
   page = 1;
   readonly pageSize = 10;
   teams: any[] = [];
+  private pollInterval: ReturnType<typeof setInterval> | null = null;
 
   get paginatedMatches(): Match[] {
     const start = (this.page - 1) * this.pageSize;
@@ -37,6 +38,34 @@ export class MatchesComponent implements OnInit {
   ngOnInit(): void {
     this.tournamentService.invalidate('matches');
     this.load();
+    this.pollInterval = setInterval(() => {
+      this.tournamentService.invalidate('matches');
+      this.tournamentService.invalidate('teams');
+      this.silentRefresh();
+    }, 30000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.pollInterval) clearInterval(this.pollInterval);
+  }
+
+  private silentRefresh(): void {
+    forkJoin({
+      teams: this.tournamentService.getTeamsPublic().pipe(timeout(12000), catchError(() => of([]))),
+      matches: this.tournamentService.getMatches().pipe(timeout(15000), catchError(() => of(null))),
+    }).subscribe(({ teams, matches }) => {
+      this.ngZone.run(() => {
+        if (teams.length) this.teams = teams;
+        if (!matches) return;
+        this.matches = matches;
+        const newPhases = ['Tous', ...new Set(matches.map((m: Match) => m.phase))];
+        if (JSON.stringify(newPhases) !== JSON.stringify(this.phases)) this.phases = newPhases;
+        this.filteredMatches = this.selectedPhase === 'Tous'
+          ? matches
+          : matches.filter((m: Match) => m.phase === this.selectedPhase);
+        this.cdr.detectChanges();
+      });
+    });
   }
 
   load(): void {
