@@ -1,4 +1,25 @@
-<div class="yk-wrap">
+<!-- ══ ÉCRAN DE VERROUILLAGE ═══════════════════════════════════════════════════ -->
+<div class="lock-screen" *ngIf="locked">
+  <div class="lock-card" [class.shake]="pinError">
+    <div class="lock-icon">🔒</div>
+    <h2>Zone restreinte</h2>
+    <p>Entrez le code d'accès pour continuer.</p>
+    <div class="lock-input-row">
+      <input
+        class="lock-input"
+        type="password"
+        placeholder="Code d'accès"
+        [(ngModel)]="pinValue"
+        (keydown.enter)="unlock()"
+        autocomplete="off"
+      />
+      <button class="lock-btn" (click)="unlock()">Entrer</button>
+    </div>
+    <p class="lock-error" *ngIf="pinError">Code incorrect. Réessayez.</p>
+  </div>
+</div>
+
+<div class="yk-wrap" *ngIf="!locked">
 
   <!-- ══ BULK STATUS ══════════════════════════════════════════════════════════ -->
   <div class="yk-card">
@@ -127,4 +148,4 @@
     </div>
   </div>
 
-</div>
+</div><!-- /yk-wrap -->

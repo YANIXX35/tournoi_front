@@ -1,3 +1,109 @@
+// ═══════════════════════════════════
+// ÉCRAN DE VERROUILLAGE
+// ═══════════════════════════════════
+.lock-screen {
+  min-height: calc(100vh - 68px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 1.5rem;
+}
+
+.lock-card {
+  background: var(--card);
+  border-radius: var(--r-xl);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-md);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+
+  &.shake {
+    animation: shake 0.4s cubic-bezier(0.36,0.07,0.19,0.97);
+  }
+
+  .lock-icon { font-size: 2.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+}
+
+.lock-input-row {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.lock-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg);
+  font-size: 0.95rem;
+  color: var(--navy);
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus { border-color: var(--green); }
+  &::placeholder { color: var(--text-muted); }
+}
+
+.lock-btn {
+  padding: 0.75rem 1.25rem;
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: var(--r-md);
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--ease);
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(14,92,54,0.2);
+
+  &:hover { background: var(--green-mid); transform: translateY(-1px); }
+}
+
+.lock-error {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--red);
+  margin: 0;
+  animation: fadeInUp 0.2s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-6px); }
+  30%       { transform: translateX(6px); }
+  45%       { transform: translateX(-4px); }
+  60%       { transform: translateX(4px); }
+  75%       { transform: translateX(-2px); }
+  90%       { transform: translateX(2px); }
+}
+
+// ═══════════════════════════════════
+// PAGE PRINCIPALE
+// ═══════════════════════════════════
 .yk-wrap {
   min-height: calc(100vh - 68px);
   background: var(--bg);

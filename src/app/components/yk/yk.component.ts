@@ -17,6 +17,23 @@ type Status = 'upcoming' | 'ongoing' | 'finished';
 })
 export class YkComponent implements OnInit {
 
+  // ── Verrouillage ─────────────────────────────────────────────────────────────
+  locked = !sessionStorage.getItem('yk_unlocked');
+  pinValue = '';
+  pinError = false;
+
+  unlock(): void {
+    if (this.pinValue.trim().toUpperCase() === 'YK2026') {
+      sessionStorage.setItem('yk_unlocked', '1');
+      this.locked = false;
+      this.cdr.detectChanges();
+    } else {
+      this.pinError = true;
+      this.cdr.detectChanges();
+      setTimeout(() => { this.pinError = false; this.cdr.detectChanges(); }, 1200);
+    }
+  }
+
   // ── Bulk ─────────────────────────────────────────────────────────────────────
   bulkSelected: Status | null = null;
   bulkLoading = false;
