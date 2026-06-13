@@ -16,7 +16,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
   finishedMatches: Match[] = [];
   standings: Standing[] = [];
   standingsTour2: Standing[] = [];
-  activeStandingsTab: 'tour1' | 'tour2' = 'tour1';
+  standingsTour3: Standing[] = [];
+  activeStandingsTab: 'tour1' | 'tour2' | 'tour3' = 'tour1';
   teams: any[] = [];
   loading = true;
   hasError = false;
@@ -69,6 +70,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
         this.finishedMatches = results.finished_matches;
         this.standings = results.standings;
         this.standingsTour2 = results.standings_tour2 ?? [];
+        this.standingsTour3 = results.standings_tour3 ?? [];
         this.cdr.detectChanges();
       });
     });
@@ -88,12 +90,13 @@ export class ResultsComponent implements OnInit, OnDestroy {
         this.finishedMatches = results.finished_matches;
         this.standings = results.standings;
         this.standingsTour2 = results.standings_tour2 ?? [];
+        this.standingsTour3 = results.standings_tour3 ?? [];
         this.cdr.detectChanges();
       });
     });
   }
 
-  setStandingsTab(tab: 'tour1' | 'tour2'): void {
+  setStandingsTab(tab: 'tour1' | 'tour2' | 'tour3'): void {
     this.activeStandingsTab = tab;
     this.cdr.markForCheck();
   }

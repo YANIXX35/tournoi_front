@@ -124,7 +124,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   private refreshInterval: ReturnType<typeof setInterval> | null = null;
 
-  phases = ['Tour 1', 'Tour 2', 'Demi-finale', 'Finale'];
+  phases = ['Tour 1', 'Tour 2', 'Tour 3', 'Demi-finale', 'Finale'];
   saveSuccess = '';
   today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -1070,7 +1070,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   getPhaseColor(phase: string): string {
     const map: Record<string, string> = {
-      'Poule': '#2196f3', 'Quarts de finale': '#ff9800',
+      'Tour 3': '#00bcd4', 'Poule': '#2196f3', 'Quarts de finale': '#ff9800',
       'Demi-finale': '#9c27b0', 'Finale': '#f44336',
     };
     return map[phase] || '#888';

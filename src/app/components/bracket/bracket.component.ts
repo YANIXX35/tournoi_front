@@ -23,13 +23,15 @@ export class BracketComponent implements OnInit {
   private readonly phaseOrder: Record<string, number> = {
     'Tour 1':      1,
     'Tour 2':      2,
-    'Demi-finale': 3,
-    'Finale':      4,
+    'Tour 3':      3,
+    'Demi-finale': 4,
+    'Finale':      5,
   };
 
   private readonly phaseLabels: Record<string, string> = {
     'Tour 1':      '1er Tour',
     'Tour 2':      '2e Tour',
+    'Tour 3':      '3e Tour',
     'Demi-finale': 'Demi-finales',
     'Finale':      'Finale 🏆',
   };

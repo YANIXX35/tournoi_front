@@ -93,6 +93,14 @@
           <span class="tab-count" *ngIf="standingsTour2.length > 0">{{ standingsTour2.length }}</span>
           <span class="tab-soon" *ngIf="standingsTour2.length === 0">Bientôt</span>
         </button>
+        <button class="standings-tab" [class.active]="activeStandingsTab === 'tour3'"
+                (click)="setStandingsTab('tour3')"
+                [disabled]="standingsTour3.length === 0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          Tour 3
+          <span class="tab-count" *ngIf="standingsTour3.length > 0">{{ standingsTour3.length }}</span>
+          <span class="tab-soon" *ngIf="standingsTour3.length === 0">Bientôt</span>
+        </button>
       </div>
 
       <!-- Tour 1 standings -->
@@ -167,6 +175,55 @@
             </thead>
             <tbody>
               <tr *ngFor="let s of standingsTour2; let i = index; trackBy: trackByStandingId"
+                  [class.top-3]="i < 3"
+                  [class.top-1]="i === 0">
+                <td class="rank-cell">
+                  <span *ngIf="i === 0">🥇</span>
+                  <span *ngIf="i === 1">🥈</span>
+                  <span *ngIf="i === 2">🥉</span>
+                  <span *ngIf="i >= 3">{{ i + 1 }}</span>
+                </td>
+                <td class="name-cell">{{ s.name }}</td>
+                <td>{{ s.played }}</td>
+                <td>{{ s.won }}</td>
+                <td>{{ s.drawn }}</td>
+                <td>{{ s.lost }}</td>
+                <td>{{ s.goals_for }}</td>
+                <td>{{ s.goals_against }}</td>
+                <td [class.diff-pos]="s.goals_for > s.goals_against"
+                    [class.diff-neg]="s.goals_for < s.goals_against">
+                  {{ getGoalDiff(s) }}
+                </td>
+                <td class="pts-cell">{{ s.points }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+
+      <!-- Tour 3 standings -->
+      <ng-container *ngIf="activeStandingsTab === 'tour3'">
+        <div *ngIf="standingsTour3.length === 0" class="empty-state">
+          Les matchs du Tour 3 ne sont pas encore terminés.
+        </div>
+        <div class="table-card" *ngIf="standingsTour3.length > 0">
+          <table class="standings-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Équipe</th>
+                <th title="Matchs joués">J</th>
+                <th title="Victoires">G</th>
+                <th title="Nuls">N</th>
+                <th title="Défaites">P</th>
+                <th title="Buts pour">BP</th>
+                <th title="Buts contre">BC</th>
+                <th title="Différence de buts">+/-</th>
+                <th title="Points">Pts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of standingsTour3; let i = index; trackBy: trackByStandingId"
                   [class.top-3]="i < 3"
                   [class.top-1]="i === 0">
                 <td class="rank-cell">

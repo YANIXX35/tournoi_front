@@ -32,8 +32,8 @@ export class TournamentService {
     return this.cached('teams-public', this.http.get<any[]>(`${API}/teams`), 300_000);
   }
 
-  getResults(): Observable<{ finished_matches: Match[]; standings: Standing[]; standings_tour2?: Standing[] }> {
-    return this.cached('results', this.http.get<{ finished_matches: Match[]; standings: Standing[]; standings_tour2?: Standing[] }>(`${API}/results`));
+  getResults(): Observable<{ finished_matches: Match[]; standings: Standing[]; standings_tour2?: Standing[]; standings_tour3?: Standing[] }> {
+    return this.cached('results', this.http.get<{ finished_matches: Match[]; standings: Standing[]; standings_tour2?: Standing[]; standings_tour3?: Standing[] }>(`${API}/results`));
   }
 
   getTopScorers(): Observable<{ scorers: TopScorer[]; assisters: TopScorer[]; all_goals: Goal[] }> {
