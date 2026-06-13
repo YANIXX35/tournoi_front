@@ -1,0 +1,42 @@
+<div class="yk-wrap">
+  <div class="yk-card">
+
+    <div class="yk-header">
+      <span class="yk-icon">⚙️</span>
+      <h1>Contrôle des matchs</h1>
+      <p>Choisir le statut à appliquer à <strong>tous les matchs</strong></p>
+    </div>
+
+    <div class="status-grid">
+      <button
+        *ngFor="let s of statuses"
+        class="status-btn"
+        [class.selected]="selected === s.value"
+        [attr.data-status]="s.value"
+        (click)="select(s.value)">
+        <span class="btn-emoji">{{ s.emoji }}</span>
+        <span class="btn-label">{{ s.label }}</span>
+      </button>
+    </div>
+
+    <div class="confirm-zone" *ngIf="selected && !loading">
+      <p class="confirm-text">
+        Appliquer <strong>"{{ getLabel(selected) }}"</strong> à tous les matchs ?
+      </p>
+      <div class="confirm-actions">
+        <button class="btn-ok" (click)="confirm()">OK — Confirmer</button>
+        <button class="btn-cancel" (click)="selected = null">Annuler</button>
+      </div>
+    </div>
+
+    <div class="loading-zone" *ngIf="loading">
+      <div class="spinner"></div>
+      <span>Mise à jour en cours…</span>
+    </div>
+
+    <div class="message-zone" *ngIf="message && !loading" [class.success]="isSuccess" [class.error]="!isSuccess">
+      <span>{{ isSuccess ? '✓' : '✗' }}</span> {{ message }}
+    </div>
+
+  </div>
+</div>

@@ -20,6 +20,7 @@ import { AdminDashboardComponent } from './components/admin/admin-dashboard.comp
 import { ButeursComponent } from './components/buteurs/buteurs.component';
 import { TeamDetailComponent } from './components/team-detail/team-detail.component';
 import { GalleryComponent } from './components/gallery/gallery.component';
+import { YkComponent } from './components/yk/yk.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { GalleryComponent } from './components/gallery/gallery.component';
     ButeursComponent,
     TeamDetailComponent,
     GalleryComponent,
+    YkComponent,
     RevealDirective,
     PaginationComponent,
   ],
