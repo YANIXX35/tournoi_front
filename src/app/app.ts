@@ -1,4 +1,6 @@
 import { Component, signal, HostListener, OnInit } from '@angular/core';
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
+import { filter, interval } from 'rxjs';
 import { PerformanceService } from './services/performance.service';
 import { TournamentService } from './services/tournament.service';
 
@@ -14,7 +16,11 @@ export class App implements OnInit {
   scrolled = false;
   registrationOpen = false;
 
-  constructor(private perf: PerformanceService, private tournament: TournamentService) {
+  constructor(
+    private perf: PerformanceService,
+    private tournament: TournamentService,
+    private swUpdate: SwUpdate,
+  ) {
     this.perf.init();
   }
 
@@ -22,6 +28,21 @@ export class App implements OnInit {
     this.tournament.getRegistrationStatus().subscribe({
       next: status => { this.registrationOpen = status.open; },
       error: () => { this.registrationOpen = false; },
+    });
+    this._handleSwUpdates();
+  }
+
+  private _handleSwUpdates(): void {
+    if (!this.swUpdate.isEnabled) return;
+
+    // Vérification proactive toutes les 60s
+    interval(60_000).subscribe(() => this.swUpdate.checkForUpdate());
+
+    // Activation immédiate + rechargement silencieux dès qu'une nouvelle version est prête
+    this.swUpdate.versionUpdates.pipe(
+      filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY')
+    ).subscribe(() => {
+      this.swUpdate.activateUpdate().then(() => window.location.reload());
     });
   }
 

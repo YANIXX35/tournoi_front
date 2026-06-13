@@ -5,6 +5,7 @@
     {
       "name": "app",
       "installMode": "prefetch",
+      "updateMode": "prefetch",
       "resources": {
         "files": [
           "/favicon.ico",
@@ -30,18 +31,6 @@
           "/**/*.svg",
           "/**/*.woff2"
         ]
-      }
-    }
-  ],
-  "dataGroups": [
-    {
-      "name": "api-public",
-      "urls": ["/api/matches", "/api/results", "/api/teams"],
-      "cacheConfig": {
-        "maxSize": 50,
-        "maxAge": "5m",
-        "timeout": "10s",
-        "strategy": "freshness"
       }
     }
   ]
