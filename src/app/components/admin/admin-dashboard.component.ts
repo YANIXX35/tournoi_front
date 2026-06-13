@@ -124,7 +124,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   private refreshInterval: ReturnType<typeof setInterval> | null = null;
 
-  phases = ['Poule', 'Quarts de finale', 'Demi-finale', 'Finale'];
+  phases = ['Tour 1', 'Tour 2', 'Demi-finale', 'Finale'];
   saveSuccess = '';
   today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 

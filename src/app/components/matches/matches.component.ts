@@ -70,7 +70,10 @@ export class MatchesComponent implements OnInit, OnDestroy {
         if (teams.length) this.teams = teams;
         if (!matches) return;
         this.matches = matches;
-        const newPhases = ['Tous', ...new Set(matches.map((m: Match) => m.phase))];
+        const _fixed = ['Tour 1', 'Tour 2', 'Demi-finale', 'Finale'];
+        const _fromData = [...new Set(matches.map((m: Match) => m.phase))];
+        const _extra = _fromData.filter((p: string) => !_fixed.includes(p));
+        const newPhases = ['Tous', ..._fixed, ..._extra];
         if (JSON.stringify(newPhases) !== JSON.stringify(this.phases)) this.phases = newPhases;
         this.filteredMatches = this.selectedPhase === 'Tous'
           ? matches
@@ -94,7 +97,10 @@ export class MatchesComponent implements OnInit, OnDestroy {
         this.loading = false;
         if (!matches) { this.hasError = true; this.cdr.detectChanges(); return; }
         this.matches = matches;
-        this.phases = ['Tous', ...new Set(matches.map((m: Match) => m.phase))];
+        const fixed = ['Tour 1', 'Tour 2', 'Demi-finale', 'Finale'];
+        const fromData = [...new Set(matches.map((m: Match) => m.phase))];
+        const extra = fromData.filter((p: string) => !fixed.includes(p));
+        this.phases = ['Tous', ...fixed, ...extra];
         this.filteredMatches = matches;
         this.cdr.detectChanges();
       });
