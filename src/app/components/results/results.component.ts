@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone, ChangeDetectio
 import { TournamentService } from '../../services/tournament.service';
 import { Match, Standing } from '../../models/match.model';
 import { timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, forkJoin } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-results',
@@ -14,6 +15,7 @@ import { of } from 'rxjs';
 export class ResultsComponent implements OnInit, OnDestroy {
   finishedMatches: Match[] = [];
   standings: Standing[] = [];
+  teams: any[] = [];
   loading = true;
   hasError = false;
   matchPage = 1;
@@ -55,14 +57,15 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   private silentRefresh(): void {
-    this.tournamentService.getResults().pipe(
-      timeout(15000),
-      catchError(() => of(null))
-    ).subscribe(data => {
+    forkJoin({
+      teams: this.tournamentService.getTeamsPublic().pipe(timeout(12000), catchError(() => of([]))),
+      results: this.tournamentService.getResults().pipe(timeout(15000), catchError(() => of(null))),
+    }).subscribe(({ teams, results }) => {
       this.ngZone.run(() => {
-        if (!data) return;
-        this.finishedMatches = data.finished_matches;
-        this.standings = data.standings;
+        if (teams.length) this.teams = teams;
+        if (!results) return;
+        this.finishedMatches = results.finished_matches;
+        this.standings = results.standings;
         this.cdr.detectChanges();
       });
     });
@@ -71,18 +74,28 @@ export class ResultsComponent implements OnInit, OnDestroy {
   load(): void {
     this.loading = true;
     this.hasError = false;
-    this.tournamentService.getResults().pipe(
-      timeout(15000),
-      catchError(() => of(null))
-    ).subscribe(data => {
+    forkJoin({
+      teams: this.tournamentService.getTeamsPublic().pipe(timeout(12000), catchError(() => of([]))),
+      results: this.tournamentService.getResults().pipe(timeout(15000), catchError(() => of(null))),
+    }).subscribe(({ teams, results }) => {
       this.ngZone.run(() => {
+        this.teams = teams;
         this.loading = false;
-        if (!data) { this.hasError = true; this.cdr.detectChanges(); return; }
-        this.finishedMatches = data.finished_matches;
-        this.standings = data.standings;
+        if (!results) { this.hasError = true; this.cdr.detectChanges(); return; }
+        this.finishedMatches = results.finished_matches;
+        this.standings = results.standings;
         this.cdr.detectChanges();
       });
     });
+  }
+
+  getTeamLogoUrl(name: string): string | null {
+    if (!name || !this.teams.length) return null;
+    const norm = (s: string) => s.trim().toLowerCase().replace(/[''‚‛ʼ]/g, "'");
+    const n = norm(name);
+    const t = this.teams.find(t => norm(t.name ?? '') === n);
+    if (!t || !t.logo_path) return null;
+    return `${environment.apiUrl}/api/teams/${t.id}/logo`;
   }
 
   getGoalDiff(s: Standing): string {

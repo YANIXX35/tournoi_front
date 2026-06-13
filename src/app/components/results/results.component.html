@@ -143,13 +143,17 @@
             <span class="result-date">{{ m.match_date | date:'dd/MM/yyyy' }}</span>
           </div>
           <div class="result-body">
-            <span class="result-team left" [class.winner]="(m.score1 ?? 0) > (m.score2 ?? 0)">
-              {{ m.team1_name }}
-            </span>
+            <div class="result-team left" [class.winner]="(m.score1 ?? 0) > (m.score2 ?? 0)">
+              <img *ngIf="getTeamLogoUrl(m.team1_name)" class="result-logo"
+                   [src]="getTeamLogoUrl(m.team1_name)!" [alt]="m.team1_name" loading="lazy" />
+              <span class="result-team-name">{{ m.team1_name }}</span>
+            </div>
             <span class="result-score">{{ m.score1 }} — {{ m.score2 }}</span>
-            <span class="result-team right" [class.winner]="(m.score2 ?? 0) > (m.score1 ?? 0)">
-              {{ m.team2_name }}
-            </span>
+            <div class="result-team right" [class.winner]="(m.score2 ?? 0) > (m.score1 ?? 0)">
+              <img *ngIf="getTeamLogoUrl(m.team2_name)" class="result-logo"
+                   [src]="getTeamLogoUrl(m.team2_name)!" [alt]="m.team2_name" loading="lazy" />
+              <span class="result-team-name">{{ m.team2_name }}</span>
+            </div>
           </div>
         </div>
       </div>
