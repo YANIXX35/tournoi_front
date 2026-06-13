@@ -29,6 +29,79 @@
 }
 
 // ═══════════════════════════════════
+// SEARCH BAR
+// ═══════════════════════════════════
+.search-wrap {
+  max-width: 900px;
+  margin: 1.25rem auto 0;
+  padding: 0 1.5rem;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.7rem 2.75rem 0.7rem 2.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-full);
+  background: var(--card);
+  color: var(--navy);
+  font-size: 0.92rem;
+  font-weight: 500;
+  font-family: inherit;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  outline: none;
+  -webkit-appearance: none;
+
+  &::placeholder { color: var(--text-muted); font-weight: 400; }
+
+  &:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(22,163,74,0.12);
+  }
+}
+
+.search-clear {
+  position: absolute;
+  right: 0.75rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--border-light);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover { background: var(--navy); color: white; }
+}
+
+.search-hint {
+  margin-top: 0.55rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding-left: 0.5rem;
+
+  strong { color: var(--green); }
+  em { color: var(--navy); font-style: normal; font-weight: 600; }
+}
+
+// ═══════════════════════════════════
 // FILTERS
 // ═══════════════════════════════════
 .filters-wrap {
@@ -646,9 +719,12 @@
 }
 
 // ═══════════════════════════════════
-// MOBILE
+// MOBILE 768px
 // ═══════════════════════════════════
 @media (max-width: 768px) {
+  .search-wrap { padding: 0 1rem; margin-top: 1rem; }
+  .search-input { font-size: 0.88rem; padding: 0.65rem 2.5rem; }
+
   .filters-wrap {
     padding: 1.25rem 1rem 0;
     gap: 0.4rem;
@@ -669,24 +745,49 @@
   }
 
   .team-logo { width: 52px; height: 52px; }
-
   .team-name { font-size: 0.85rem; max-width: 100px; }
-
   .score { font-size: 2rem; }
-
   .vs-badge { width: 44px; height: 44px; font-size: 0.7rem; }
-
   .card-footer { flex-direction: column; gap: 0.35rem; }
+
+  .scorer-pills { gap: 0.28rem; }
+  .scorer-pill { font-size: 0.74rem; padding: 0.18rem 0.55rem; }
+
+  // Modal bottom sheet sur tablette/mobile
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal-card {
+    border-radius: 1.5rem 1.5rem 0 0;
+    max-height: 88vh;
+    max-width: 100%;
+    width: 100%;
+    animation: slideUpSheet 0.28s cubic-bezier(0.34,1.2,0.64,1);
+  }
+
+  @keyframes slideUpSheet {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
 }
 
+// ═══════════════════════════════════
+// MOBILE 480px
+// ═══════════════════════════════════
 @media (max-width: 480px) {
+  .search-wrap { padding: 0 0.75rem; margin-top: 0.75rem; }
+  .search-input { font-size: 0.85rem; padding: 0.6rem 2.4rem; }
+
   .filters-wrap {
-    padding: 1rem 0.75rem 0;
+    padding: 0.85rem 0.75rem 0;
     gap: 0.3rem;
     justify-content: flex-start;
     overflow-x: auto;
     flex-wrap: nowrap;
     padding-bottom: 0.5rem;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
   }
 
   .filter-pill {
@@ -695,17 +796,17 @@
     font-size: 0.75rem;
   }
 
-  .matches-wrap { padding: 1rem 0.75rem 2rem; }
-
-  .card-inner { padding: 0.85rem 0.85rem; }
+  .matches-wrap { padding: 0.85rem 0.75rem 2rem; }
+  .card-inner { padding: 0.85rem; }
 
   .team-logo { width: 40px; height: 40px; border-width: 2px; }
-
   .team-name { font-size: 0.74rem; max-width: 80px; }
-
   .score { font-size: 1.6rem; min-width: 1.4rem; }
-
   .score-sep { font-size: 1.2rem; }
-
   .vs-badge { width: 36px; height: 36px; font-size: 0.62rem; border-width: 2px; }
+
+  .scorers-strip { margin-top: 0.55rem; padding-top: 0.5rem; }
+  .scorer-pill { font-size: 0.7rem; padding: 0.15rem 0.45rem; }
+  .pill-team { display: none; } // masquer le nom d'équipe sur très petit écran
+  .detail-hint { font-size: 0.68rem; }
 }

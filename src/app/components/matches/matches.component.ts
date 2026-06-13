@@ -17,6 +17,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
   filteredMatches: Match[] = [];
   phases: string[] = [];
   selectedPhase = 'Tous';
+  searchQuery = '';
   loading = true;
   hasError = false;
   page = 1;
@@ -88,9 +89,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
         const _extra = _fromData.filter((p: string) => !_fixed.includes(p));
         const newPhases = ['Tous', ..._fixed, ..._extra];
         if (JSON.stringify(newPhases) !== JSON.stringify(this.phases)) this.phases = newPhases;
-        this.filteredMatches = this.selectedPhase === 'Tous'
-          ? matches
-          : matches.filter((m: Match) => m.phase === this.selectedPhase);
+        this.applyFilters();
         this.cdr.detectChanges();
       });
     });
@@ -119,7 +118,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
         const fromData = [...new Set(matches.map((m: Match) => m.phase))];
         const extra = fromData.filter((p: string) => !fixed.includes(p));
         this.phases = ['Tous', ...fixed, ...extra];
-        this.filteredMatches = matches;
+        this.applyFilters();
         this.cdr.detectChanges();
       });
     });
@@ -165,10 +164,39 @@ export class MatchesComponent implements OnInit, OnDestroy {
     return name.replace(/[?]/g, '').trim().split(/\s+/).map(w => w[0] || '').join('').toUpperCase().slice(0, 2) || '?';
   }
 
+  private applyFilters(): void {
+    let result = this.selectedPhase === 'Tous'
+      ? this.matches
+      : this.matches.filter(m => m.phase === this.selectedPhase);
+    const q = this.searchQuery.trim().toLowerCase();
+    if (q) {
+      result = result.filter(m =>
+        (m.team1_name || '').toLowerCase().includes(q) ||
+        (m.team2_name || '').toLowerCase().includes(q)
+      );
+    }
+    this.filteredMatches = result;
+  }
+
   filterByPhase(phase: string): void {
     this.selectedPhase = phase;
     this.page = 1;
-    this.filteredMatches = phase === 'Tous' ? this.matches : this.matches.filter(m => m.phase === phase);
+    this.applyFilters();
+  }
+
+  onSearch(query: string): void {
+    this.searchQuery = query;
+    this.page = 1;
+    this.applyFilters();
+    this.cdr.detectChanges();
+  }
+
+  clearSearch(input: HTMLInputElement): void {
+    this.searchQuery = '';
+    input.value = '';
+    this.page = 1;
+    this.applyFilters();
+    this.cdr.detectChanges();
   }
 
   onPageChange(p: number): void { this.page = p; this.cdr.markForCheck(); }
