@@ -14,6 +14,7 @@ export class App implements OnInit {
   protected readonly title = signal('frontend');
   menuOpen = false;
   scrolled = false;
+  showScrollBtn = false;
   registrationOpen = false;
 
   constructor(
@@ -53,5 +54,13 @@ export class App implements OnInit {
   onEscape(): void { this.menuOpen = false; }
 
   @HostListener('window:scroll')
-  onScroll(): void { this.scrolled = window.scrollY > 48; }
+  onScroll(): void {
+    const y = window.scrollY;
+    this.scrolled     = y > 48;
+    this.showScrollBtn = y > 300;
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }

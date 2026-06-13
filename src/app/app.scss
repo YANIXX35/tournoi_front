@@ -381,3 +381,55 @@ main {
   .brand-text .brand-title { font-size: 0.82rem; }
   .brand-text .brand-sub   { display: none; }
 }
+
+// ═══════════════════════════════════
+// SCROLL TO TOP BUTTON
+// ═══════════════════════════════════
+.scroll-top-btn {
+  position: fixed;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  z-index: 500;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #1a472a 0%, #16a34a 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(26,71,42,0.45), 0 2px 8px rgba(0,0,0,0.2);
+  opacity: 0;
+  transform: translateY(16px) scale(0.85);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s ease;
+
+  svg { flex-shrink: 0; }
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, #145220 0%, #15803d 100%);
+    box-shadow: 0 6px 28px rgba(26,71,42,0.55), 0 2px 10px rgba(0,0,0,0.25);
+    transform: translateY(-3px) scale(1.06);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.96);
+  }
+
+  @media (max-width: 480px) {
+    bottom: 1.1rem;
+    right: 1.1rem;
+    width: 42px;
+    height: 42px;
+
+    svg { width: 17px; height: 17px; }
+  }
+}

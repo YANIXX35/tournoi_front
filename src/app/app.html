@@ -48,6 +48,17 @@
   <router-outlet></router-outlet>
 </main>
 
+<!-- ── Bouton Scroll en haut ── -->
+<button
+  class="scroll-top-btn"
+  [class.visible]="showScrollBtn"
+  (click)="scrollToTop()"
+  aria-label="Retour en haut">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
+
 <footer class="site-footer">
   ⚽ Tournoi de Football — Étoile Universelle de Grand Bassam 2026 · Tous droits réservés
 </footer>
