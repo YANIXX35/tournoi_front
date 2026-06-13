@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { shareReplay, tap } from 'rxjs/operators';
-import { Match, Standing, TopScorer, Announcement, GalleryPhoto, TeamDetail } from '../models/match.model';
+import { Match, Standing, TopScorer, Announcement, GalleryPhoto, TeamDetail, Goal } from '../models/match.model';
 import { environment } from '../../environments/environment';
 import { PerformanceService } from './performance.service';
 
