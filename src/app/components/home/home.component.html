@@ -30,6 +30,30 @@
     </div>
 
 
+<!-- Compte à rebours ou bandeau "En cours" -->
+    <div class="countdown" *ngIf="!tournamentStarted">
+      <div class="countdown-item">
+        <span class="count">{{ countdown.days }}</span>
+        <span class="count-label">Jours</span>
+      </div>
+      <div class="countdown-item">
+        <span class="count">{{ countdown.hours }}</span>
+        <span class="count-label">Heures</span>
+      </div>
+      <div class="countdown-item">
+        <span class="count">{{ countdown.minutes }}</span>
+        <span class="count-label">Minutes</span>
+      </div>
+      <div class="countdown-item">
+        <span class="count">{{ countdown.seconds }}</span>
+        <span class="count-label">Secondes</span>
+      </div>
+    </div>
+    <div class="live-banner" *ngIf="tournamentStarted">
+      <span class="live-dot"></span>
+      Tournoi en cours !
+    </div>
+
 <button *ngIf="registrationOpen" class="btn-hero" (click)="goRegister()">
       Inscrire mon équipe
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>

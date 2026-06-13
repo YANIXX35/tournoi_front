@@ -11,6 +11,7 @@ import { ButeursComponent } from './components/buteurs/buteurs.component';
 import { TeamDetailComponent } from './components/team-detail/team-detail.component';
 import { GalleryComponent } from './components/gallery/gallery.component';
 import { YkComponent } from './components/yk/yk.component';
+import { BracketComponent } from './components/bracket/bracket.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
@@ -24,6 +25,7 @@ const routes: Routes = [
   { path: 'inscription', component: RegisterComponent },
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard] },
+  { path: 'bracket', component: BracketComponent },
   { path: 'yk', component: YkComponent },
   { path: '**', redirectTo: '' },
 ];

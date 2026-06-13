@@ -1,0 +1,118 @@
+<div class="page-hero">
+  <div class="hero-orb"></div>
+  <h1>Tableau du tournoi</h1>
+  <p>Progression des équipes tour par tour</p>
+</div>
+
+<div class="bracket-page">
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="bracket-loading">
+    <div class="spinner"></div>
+    <p>Chargement du tableau…</p>
+  </div>
+
+  <!-- ERREUR -->
+  <div *ngIf="hasError" class="bracket-error">
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+    <p>Impossible de charger le tableau.</p>
+  </div>
+
+  <!-- BRACKET -->
+  <div *ngIf="!loading && !hasError" class="bracket-outer">
+    <div class="bracket-scroll">
+      <div class="bracket-grid">
+
+        <div *ngFor="let round of rounds; trackBy: trackByPhase" class="bracket-round">
+
+          <!-- En-tête de round -->
+          <div class="round-header">
+            <span class="round-label">{{ round.label }}</span>
+            <span class="round-progress">
+              {{ finishedCount(round) }}/{{ round.matches.length }}
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+          </div>
+
+          <!-- Matchs -->
+          <div class="round-matches">
+            <div *ngFor="let match of round.matches; trackBy: trackByMatchId"
+                 class="bracket-match"
+                 [class.s-finished]="match.status === 'finished'"
+                 [class.s-ongoing]="match.status === 'ongoing'">
+
+              <!-- Statut -->
+              <div class="match-status-bar">
+                <span *ngIf="match.status === 'finished'" class="bar-done">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Terminé
+                </span>
+                <span *ngIf="match.status === 'ongoing'" class="bar-live">
+                  <span class="live-dot-sm"></span> En cours
+                </span>
+                <span *ngIf="match.status === 'upcoming'" class="bar-upcoming">
+                  {{ match.match_date | date:'dd/MM' }}
+                  <ng-container *ngIf="match.match_time"> · {{ match.match_time }}</ng-container>
+                </span>
+                <span *ngIf="match.match_number" class="match-num">M{{ match.match_number }}</span>
+              </div>
+
+              <!-- Équipe 1 -->
+              <div class="bracket-team"
+                   [class.winner]="getWinner(match) === 'team1'"
+                   [class.loser]="getWinner(match) === 'team2'">
+                <span class="team-name">{{ match.team1_name || '—' }}</span>
+                <span class="team-score" *ngIf="match.status !== 'upcoming'">
+                  {{ match.score1 ?? '—' }}
+                </span>
+              </div>
+
+              <!-- Séparateur -->
+              <div class="bracket-sep">
+                <div class="sep-line"></div>
+                <span class="sep-vs">vs</span>
+                <div class="sep-line"></div>
+              </div>
+
+              <!-- Équipe 2 -->
+              <div class="bracket-team"
+                   [class.winner]="getWinner(match) === 'team2'"
+                   [class.loser]="getWinner(match) === 'team1'">
+                <span class="team-name">{{ match.team2_name || '—' }}</span>
+                <span class="team-score" *ngIf="match.status !== 'upcoming'">
+                  {{ match.score2 ?? '—' }}
+                </span>
+              </div>
+
+              <!-- Terrain -->
+              <div class="match-terrain" *ngIf="match.terrain">
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                {{ match.terrain }}
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Légende -->
+    <div class="bracket-legend">
+      <span class="legend-item">
+        <span class="legend-dot done"></span> Terminé
+      </span>
+      <span class="legend-item">
+        <span class="legend-dot live"></span> En cours
+      </span>
+      <span class="legend-item">
+        <span class="legend-dot upcoming"></span> À venir
+      </span>
+      <span class="legend-item winner-ex">
+        <span class="legend-winner-box">Équipe</span> = Vainqueur
+      </span>
+    </div>
+  </div>
+
+</div>

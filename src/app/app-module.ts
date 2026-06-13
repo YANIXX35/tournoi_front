@@ -21,6 +21,7 @@ import { ButeursComponent } from './components/buteurs/buteurs.component';
 import { TeamDetailComponent } from './components/team-detail/team-detail.component';
 import { GalleryComponent } from './components/gallery/gallery.component';
 import { YkComponent } from './components/yk/yk.component';
+import { BracketComponent } from './components/bracket/bracket.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { YkComponent } from './components/yk/yk.component';
     TeamDetailComponent,
     GalleryComponent,
     YkComponent,
+    BracketComponent,
     RevealDirective,
     PaginationComponent,
   ],

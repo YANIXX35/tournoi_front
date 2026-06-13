@@ -78,10 +78,14 @@
            appReveal [revealDelay]="i * 60">
 
         <div class="card-header" (click)="toggleTeam(team.id)">
-          <!-- Logo ou initiales -->
+          <!-- Logo ou initiales (initiales toujours présentes en fallback) -->
           <div class="team-logo">
-            <img *ngIf="team.logo_path" [src]="teamService.getLogoUrl(team.logo_path)" [alt]="team.name" loading="lazy" />
-            <span *ngIf="!team.logo_path" class="team-initials">{{ team.name[0] }}</span>
+            <span class="team-initials">{{ team.name[0] }}</span>
+            <img *ngIf="team.logo_path"
+                 [src]="teamService.getLogoUrl(team.logo_path)"
+                 [alt]="team.name"
+                 loading="lazy"
+                 (error)="$any($event.target).style.display='none'" />
           </div>
 
           <div class="team-info">

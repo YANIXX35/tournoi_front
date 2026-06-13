@@ -14,6 +14,7 @@ import { Team } from '../../models/team.model';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  tournamentStarted = false;
   private tournamentDate = new Date('2026-06-13T09:00:00');
   private timer: any;
 
@@ -70,7 +71,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     const now = new Date().getTime();
     const distance = this.tournamentDate.getTime() - now;
     if (distance <= 0) {
-      this.countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      if (!this.tournamentStarted) {
+        this.tournamentStarted = true;
+        clearInterval(this.timer);
+      }
       return;
     }
     this.countdown = {

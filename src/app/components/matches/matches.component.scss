@@ -807,6 +807,6 @@
 
   .scorers-strip { margin-top: 0.55rem; padding-top: 0.5rem; }
   .scorer-pill { font-size: 0.7rem; padding: 0.15rem 0.45rem; }
-  .pill-team { display: none; } // masquer le nom d'équipe sur très petit écran
+  .pill-team { font-size: 0.62rem; opacity: 0.6; }
   .detail-hint { font-size: 0.68rem; }
 }

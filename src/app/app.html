@@ -15,6 +15,7 @@
     <a routerLink="/resultats" routerLinkActive="active">Résultats</a>
     <a routerLink="/equipes" routerLinkActive="active">Équipes</a>
     <a routerLink="/galerie" routerLinkActive="active">Galerie</a>
+    <a routerLink="/bracket" routerLinkActive="active">Bracket</a>
     <a *ngIf="registrationOpen" routerLink="/inscription" routerLinkActive="active" class="nav-cta">✦ S'inscrire</a>
     <span *ngIf="!registrationOpen" class="nav-cta nav-cta-closed">🔒 Inscriptions fermées</span>
   </div>
@@ -40,6 +41,7 @@
   <a routerLink="/resultats" routerLinkActive="active" (click)="closeMenu()">🏆 Résultats</a>
   <a routerLink="/equipes" routerLinkActive="active" (click)="closeMenu()">👥 Équipes</a>
   <a routerLink="/galerie" routerLinkActive="active" (click)="closeMenu()">📷 Galerie</a>
+  <a routerLink="/bracket" routerLinkActive="active" (click)="closeMenu()">🏆 Bracket</a>
   <a *ngIf="registrationOpen" routerLink="/inscription" routerLinkActive="active" (click)="closeMenu()" class="mobile-cta">✦ S'inscrire — Gratuit</a>
   <span *ngIf="!registrationOpen" class="mobile-cta mobile-cta-closed">🔒 Inscriptions fermées</span>
 </div>
