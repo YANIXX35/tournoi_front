@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   hasStats = false;
   displayList: TopScorer[] = [];
 
-  registrationOpen = true;
+  registrationOpen = false;
 
   teams: Team[] = [];
   filteredTeams: Team[] = [];
