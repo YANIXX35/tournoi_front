@@ -23,6 +23,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
   readonly pageSize = 10;
   teams: any[] = [];
   private pollInterval: ReturnType<typeof setInterval> | null = null;
+  private channel: BroadcastChannel | null = null;
 
   get paginatedMatches(): Match[] {
     const start = (this.page - 1) * this.pageSize;
@@ -38,15 +39,26 @@ export class MatchesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.tournamentService.invalidate('matches');
     this.load();
+
+    // Polling toutes les 5 secondes
     this.pollInterval = setInterval(() => {
       this.tournamentService.invalidate('matches');
-      this.tournamentService.invalidate('teams');
       this.silentRefresh();
-    }, 30000);
+    }, 5000);
+
+    // Mise à jour instantanée via BroadcastChannel (même navigateur)
+    if (typeof BroadcastChannel !== 'undefined') {
+      this.channel = new BroadcastChannel('tournament-updates');
+      this.channel.onmessage = () => {
+        this.tournamentService.invalidate('matches');
+        this.silentRefresh();
+      };
+    }
   }
 
   ngOnDestroy(): void {
     if (this.pollInterval) clearInterval(this.pollInterval);
+    if (this.channel) this.channel.close();
   }
 
   private silentRefresh(): void {

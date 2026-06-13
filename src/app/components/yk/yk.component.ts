@@ -33,6 +33,10 @@ export class YkComponent implements OnInit {
   globalSaveMsg = '';
 
   readonly SECRET = 'YK2026';
+  private channel = typeof BroadcastChannel !== 'undefined'
+    ? new BroadcastChannel('tournament-updates') : null;
+
+  private broadcast(): void { this.channel?.postMessage({ type: 'match-updated' }); }
 
   readonly STATUSES = [
     { value: 'upcoming' as Status, label: 'À venir',  emoji: '⏳' },
@@ -118,8 +122,9 @@ export class YkComponent implements OnInit {
         }
         this.saveLoading = false;
         this.expandedId  = null;
-        this.globalSaveMsg = '✓ Match mis à jour — la page /matchs se rafraîchira dans 30s';
+        this.globalSaveMsg = '✓ Match mis à jour';
         this.tournament.invalidate('matches');
+        this.broadcast();
         this.cdr.detectChanges();
         setTimeout(() => { this.globalSaveMsg = ''; this.cdr.detectChanges(); }, 5000);
       },
@@ -154,6 +159,7 @@ export class YkComponent implements OnInit {
         this.bulkSuccess = true;
         this.bulkMessage = `✓ ${res.count} matchs → "${this.getLabel(status)}"`;
         this.bulkSelected = null;
+        this.broadcast();
         this.loadMatches();
         this.cdr.detectChanges();
         setTimeout(() => { this.bulkMessage = ''; this.cdr.detectChanges(); }, 5000);
