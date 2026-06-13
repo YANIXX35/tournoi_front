@@ -35,6 +35,7 @@ export class MatchesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.tournamentService.invalidate('matches');
     this.load();
   }
 
