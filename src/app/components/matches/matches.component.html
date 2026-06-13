@@ -80,12 +80,12 @@
             </div>
 
             <!-- Score / VS -->
-            <div class="score-block" *ngIf="match.status === 'finished'">
+            <div class="score-block" *ngIf="match.status === 'finished' || (match.status === 'ongoing' && match.score1 !== null && match.score1 !== undefined)">
               <span class="score">{{ match.score1 }}</span>
               <span class="score-sep">—</span>
               <span class="score">{{ match.score2 }}</span>
             </div>
-            <div class="vs-badge" *ngIf="match.status !== 'finished'">VS</div>
+            <div class="vs-badge" *ngIf="match.status === 'upcoming' || (match.status === 'ongoing' && (match.score1 === null || match.score1 === undefined))">VS</div>
 
             <!-- Équipe 2 -->
             <div class="team-side right">
