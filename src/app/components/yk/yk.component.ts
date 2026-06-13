@@ -1,6 +1,10 @@
-import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { TournamentService } from '../../services/tournament.service';
+import { Match } from '../../models/match.model';
+import { catchError, timeout } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 type Status = 'upcoming' | 'ongoing' | 'finished';
 
@@ -11,33 +15,134 @@ type Status = 'upcoming' | 'ongoing' | 'finished';
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class YkComponent {
-  selected: Status | null = null;
-  loading = false;
-  message = '';
-  isSuccess = false;
+export class YkComponent implements OnInit {
+
+  // ── Bulk ─────────────────────────────────────────────────────────────────────
+  bulkSelected: Status | null = null;
+  bulkLoading = false;
+  bulkMessage = '';
+  bulkSuccess = false;
+
+  // ── Matchs ───────────────────────────────────────────────────────────────────
+  matches: Match[] = [];
+  matchesLoading = true;
+  expandedId: number | null = null;
+  editScore = { score1: 0, score2: 0 };
+  editStatus: Status = 'upcoming';
+  saveLoading = false;
+  globalSaveMsg = '';
 
   readonly SECRET = 'YK2026';
 
-  readonly statuses = [
+  readonly STATUSES = [
     { value: 'upcoming' as Status, label: 'À venir',  emoji: '⏳' },
     { value: 'ongoing'  as Status, label: 'En cours', emoji: '⚽' },
     { value: 'finished' as Status, label: 'Terminé',  emoji: '✅' },
   ];
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private http: HttpClient,
+    private tournament: TournamentService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
-  select(s: Status): void {
-    this.selected = s;
-    this.message = '';
+  ngOnInit(): void { this.loadMatches(); }
+
+  // ── Chargement ───────────────────────────────────────────────────────────────
+
+  loadMatches(): void {
+    this.matchesLoading = true;
+    this.tournament.invalidate('matches');
+    this.tournament.getMatches().pipe(
+      timeout(15000),
+      catchError(() => of([] as Match[]))
+    ).subscribe(matches => {
+      this.matches = matches;
+      this.matchesLoading = false;
+      this.cdr.detectChanges();
+    });
+  }
+
+  // ── Liste affichée : en cours → à venir → terminé aujourd'hui ───────────────
+
+  get today(): string {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  get displayMatches(): Match[] {
+    const ongoing  = this.matches.filter(m => m.status === 'ongoing');
+    const upcoming = this.matches.filter(m => m.status === 'upcoming');
+    const doneToday = this.matches.filter(m => m.status === 'finished' && m.match_date?.slice(0,10) === this.today);
+    return [...ongoing, ...upcoming, ...doneToday];
+  }
+
+  // ── Édition individuelle ──────────────────────────────────────────────────────
+
+  toggle(match: Match): void {
+    if (this.expandedId === match.id) {
+      this.expandedId = null;
+    } else {
+      this.expandedId = match.id;
+      this.editScore  = { score1: match.score1 ?? 0, score2: match.score2 ?? 0 };
+      this.editStatus = match.status;
+      this.globalSaveMsg = '';
+    }
     this.cdr.detectChanges();
   }
 
-  confirm(): void {
-    if (!this.selected || this.loading) return;
-    const status = this.selected;
-    this.loading = true;
-    this.message = '';
+  saveMatch(match: Match): void {
+    if (this.saveLoading) return;
+    this.saveLoading = true;
+    this.cdr.detectChanges();
+
+    this.http.post<{ message: string }>(
+      `${environment.apiUrl}/api/match-quick-update`,
+      {
+        key: this.SECRET,
+        match_id: match.id,
+        score1: Number(this.editScore.score1),
+        score2: Number(this.editScore.score2),
+        status: this.editStatus,
+      }
+    ).subscribe({
+      next: () => {
+        const idx = this.matches.findIndex(m => m.id === match.id);
+        if (idx >= 0) {
+          this.matches[idx] = {
+            ...this.matches[idx],
+            score1: Number(this.editScore.score1),
+            score2: Number(this.editScore.score2),
+            status: this.editStatus,
+          };
+          this.matches = [...this.matches];
+        }
+        this.saveLoading = false;
+        this.expandedId  = null;
+        this.globalSaveMsg = '✓ Match mis à jour — la page /matchs se rafraîchira dans 30s';
+        this.tournament.invalidate('matches');
+        this.cdr.detectChanges();
+        setTimeout(() => { this.globalSaveMsg = ''; this.cdr.detectChanges(); }, 5000);
+      },
+      error: () => {
+        this.saveLoading = false;
+        this.globalSaveMsg = '✗ Erreur lors de la sauvegarde';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  // ── Bulk ─────────────────────────────────────────────────────────────────────
+
+  selectBulk(s: Status): void {
+    this.bulkSelected = s;
+    this.bulkMessage = '';
+    this.cdr.detectChanges();
+  }
+
+  confirmBulk(): void {
+    if (!this.bulkSelected || this.bulkLoading) return;
+    const status = this.bulkSelected;
+    this.bulkLoading = true;
     this.cdr.detectChanges();
 
     this.http.post<{ message: string; count: number }>(
@@ -45,23 +150,28 @@ export class YkComponent {
       { key: this.SECRET, status }
     ).subscribe({
       next: res => {
-        this.loading = false;
-        this.isSuccess = true;
-        this.message = `${res.count} matchs passés en "${this.getLabel(status)}"`;
-        this.selected = null;
+        this.bulkLoading = false;
+        this.bulkSuccess = true;
+        this.bulkMessage = `✓ ${res.count} matchs → "${this.getLabel(status)}"`;
+        this.bulkSelected = null;
+        this.loadMatches();
         this.cdr.detectChanges();
-        setTimeout(() => { this.message = ''; this.cdr.detectChanges(); }, 6000);
+        setTimeout(() => { this.bulkMessage = ''; this.cdr.detectChanges(); }, 5000);
       },
       error: () => {
-        this.loading = false;
-        this.isSuccess = false;
-        this.message = 'Erreur lors de la mise à jour';
+        this.bulkLoading = false;
+        this.bulkSuccess = false;
+        this.bulkMessage = '✗ Erreur';
         this.cdr.detectChanges();
       },
     });
   }
 
-  getLabel(s: Status): string {
-    return this.statuses.find(x => x.value === s)?.label ?? s;
+  // ── Helpers ──────────────────────────────────────────────────────────────────
+
+  getLabel(s: Status | string): string {
+    return this.STATUSES.find(x => x.value === s)?.label ?? s;
   }
+
+  trackById(_: number, m: Match): number { return m.id; }
 }

@@ -1,42 +1,130 @@
 <div class="yk-wrap">
-  <div class="yk-card">
 
+  <!-- ══ BULK STATUS ══════════════════════════════════════════════════════════ -->
+  <div class="yk-card">
     <div class="yk-header">
       <span class="yk-icon">⚙️</span>
-      <h1>Contrôle des matchs</h1>
-      <p>Choisir le statut à appliquer à <strong>tous les matchs</strong></p>
+      <h1>Contrôle global</h1>
+      <p>Appliquer un statut à <strong>tous les matchs</strong> en même temps</p>
     </div>
 
     <div class="status-grid">
       <button
-        *ngFor="let s of statuses"
+        *ngFor="let s of STATUSES"
         class="status-btn"
-        [class.selected]="selected === s.value"
+        [class.selected]="bulkSelected === s.value"
         [attr.data-status]="s.value"
-        (click)="select(s.value)">
+        (click)="selectBulk(s.value)">
         <span class="btn-emoji">{{ s.emoji }}</span>
         <span class="btn-label">{{ s.label }}</span>
       </button>
     </div>
 
-    <div class="confirm-zone" *ngIf="selected && !loading">
+    <div class="confirm-zone" *ngIf="bulkSelected && !bulkLoading">
       <p class="confirm-text">
-        Appliquer <strong>"{{ getLabel(selected) }}"</strong> à tous les matchs ?
+        Passer <strong>tous les matchs</strong> en <strong>"{{ getLabel(bulkSelected) }}"</strong> ?
       </p>
       <div class="confirm-actions">
-        <button class="btn-ok" (click)="confirm()">OK — Confirmer</button>
-        <button class="btn-cancel" (click)="selected = null">Annuler</button>
+        <button class="btn-ok" (click)="confirmBulk()">OK — Confirmer</button>
+        <button class="btn-cancel" (click)="bulkSelected = null">Annuler</button>
       </div>
     </div>
 
-    <div class="loading-zone" *ngIf="loading">
+    <div class="loading-zone" *ngIf="bulkLoading">
       <div class="spinner"></div>
-      <span>Mise à jour en cours…</span>
+      <span>Mise à jour…</span>
     </div>
 
-    <div class="message-zone" *ngIf="message && !loading" [class.success]="isSuccess" [class.error]="!isSuccess">
-      <span>{{ isSuccess ? '✓' : '✗' }}</span> {{ message }}
+    <div class="msg-zone" *ngIf="bulkMessage && !bulkLoading"
+         [class.success]="bulkSuccess" [class.error]="!bulkSuccess">
+      {{ bulkMessage }}
     </div>
-
   </div>
+
+  <!-- ══ MATCHS INDIVIDUELS ══════════════════════════════════════════════════ -->
+  <div class="yk-card matches-card">
+    <div class="matches-header">
+      <span>⚽</span>
+      <h2>Matchs du jour &amp; à venir</h2>
+      <button class="refresh-btn" (click)="loadMatches()" title="Rafraîchir">↺</button>
+    </div>
+
+    <div class="msg-zone success" *ngIf="globalSaveMsg">{{ globalSaveMsg }}</div>
+
+    <div class="loading-zone" *ngIf="matchesLoading">
+      <div class="spinner"></div><span>Chargement…</span>
+    </div>
+
+    <div class="empty-matches" *ngIf="!matchesLoading && displayMatches.length === 0">
+      Aucun match à venir aujourd'hui.
+    </div>
+
+    <div class="match-list" *ngIf="!matchesLoading">
+      <div
+        *ngFor="let match of displayMatches; trackBy: trackById"
+        class="match-item"
+        [class.expanded]="expandedId === match.id"
+        [attr.data-status]="match.status">
+
+        <!-- ── Ligne résumé (cliquable) ─────────────────────────────────── -->
+        <div class="match-row" (click)="toggle(match)">
+          <span class="match-status-dot" [attr.data-status]="match.status"></span>
+
+          <span class="match-teams">
+            <span class="t1">{{ match.team1_name }}</span>
+            <span class="match-score-badge" *ngIf="match.score1 !== null && match.score1 !== undefined">
+              {{ match.score1 }} — {{ match.score2 }}
+            </span>
+            <span class="match-vs" *ngIf="match.score1 === null || match.score1 === undefined">vs</span>
+            <span class="t2">{{ match.team2_name }}</span>
+          </span>
+
+          <span class="match-chip" [attr.data-status]="match.status">
+            {{ getLabel(match.status) }}
+          </span>
+
+          <span class="match-toggle">{{ expandedId === match.id ? '▲' : '▼' }}</span>
+        </div>
+
+        <!-- ── Panneau d'édition ─────────────────────────────────────────── -->
+        <div class="match-edit" *ngIf="expandedId === match.id">
+          <!-- Score -->
+          <div class="edit-score-row">
+            <div class="score-side">
+              <span class="score-team-name">{{ match.team1_name }}</span>
+              <input class="score-input" type="number" min="0" [(ngModel)]="editScore.score1" />
+            </div>
+            <span class="score-dash">—</span>
+            <div class="score-side">
+              <input class="score-input" type="number" min="0" [(ngModel)]="editScore.score2" />
+              <span class="score-team-name">{{ match.team2_name }}</span>
+            </div>
+          </div>
+
+          <!-- Statut -->
+          <div class="edit-status-row">
+            <button
+              *ngFor="let s of STATUSES"
+              class="status-mini-btn"
+              [class.active]="editStatus === s.value"
+              [attr.data-status]="s.value"
+              (click)="editStatus = s.value">
+              {{ s.emoji }} {{ s.label }}
+            </button>
+          </div>
+
+          <!-- Actions -->
+          <div class="edit-actions">
+            <button class="btn-ok" (click)="saveMatch(match)" [disabled]="saveLoading">
+              <span *ngIf="!saveLoading">✓ Valider</span>
+              <span *ngIf="saveLoading">…</span>
+            </button>
+            <button class="btn-cancel" (click)="expandedId = null">Annuler</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
