@@ -58,6 +58,8 @@
         *ngFor="let match of paginatedMatches; let i = index; trackBy: trackByMatchId"
         class="match-card"
         [class]="'status-' + match.status"
+        [class.clickable]="match.status === 'finished'"
+        (click)="openMatch(match)"
         appReveal [revealDelay]="i * 50">
 
         <div class="status-bar"></div>
@@ -108,6 +110,35 @@
               {{ match.terrain }}
             </span>
           </div>
+
+          <!-- ── BUTEURS (matchs terminés) ── -->
+          <div class="scorers-strip"
+               *ngIf="match.status === 'finished' && getMatchGoals(match.id).length > 0">
+            <span class="scorers-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a10 10 0 0 1 6.32 2.26L12 9.5 5.68 4.26A10 10 0 0 1 12 2z" fill="currentColor" opacity=".35"/>
+                <path d="M2.2 14h4.3l3-4.5-3-4.24A10 10 0 0 0 2.2 14z" fill="currentColor" opacity=".35"/>
+                <path d="M21.8 14a10 10 0 0 0-4.5-8.74L14 9.5l3 4.5h4.8z" fill="currentColor" opacity=".35"/>
+              </svg>
+              Buteurs
+            </span>
+            <div class="scorer-pills">
+              <span
+                *ngFor="let g of getMatchGoals(match.id); trackBy: trackByGoalId"
+                class="scorer-pill"
+                [class.unverified]="g.player_name.includes('?')">
+                {{ g.player_name }}<span class="pill-sep"> · </span><span class="pill-team">{{ g.team_name }}</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Hint cliquable si terminé -->
+          <div class="detail-hint" *ngIf="match.status === 'finished'">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+            Voir les photos des buteurs
+          </div>
+
         </div>
       </div>
     </div>
@@ -118,5 +149,98 @@
       [page]="page"
       (pageChange)="onPageChange($event)">
     </app-pagination>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL DÉTAIL MATCH
+════════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" *ngIf="selectedMatch" (click)="closeModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+
+    <!-- Fermer -->
+    <button class="modal-close" (click)="closeModal()" aria-label="Fermer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <!-- Badge phase -->
+    <div class="modal-phase-badge">{{ selectedMatch!.phase }}</div>
+
+    <!-- Équipes + Score -->
+    <div class="modal-matchup">
+      <div class="modal-team-block">
+        <img *ngIf="getTeamLogoUrl(selectedMatch!.team1_name)"
+             [src]="getTeamLogoUrl(selectedMatch!.team1_name)!"
+             class="modal-team-logo" [alt]="selectedMatch!.team1_name" />
+        <span class="modal-team-name">{{ selectedMatch!.team1_name }}</span>
+      </div>
+
+      <div class="modal-score-block">
+        <span class="modal-score">{{ selectedMatch!.score1 }}</span>
+        <span class="modal-score-sep">—</span>
+        <span class="modal-score">{{ selectedMatch!.score2 }}</span>
+      </div>
+
+      <div class="modal-team-block">
+        <img *ngIf="getTeamLogoUrl(selectedMatch!.team2_name)"
+             [src]="getTeamLogoUrl(selectedMatch!.team2_name)!"
+             class="modal-team-logo" [alt]="selectedMatch!.team2_name" />
+        <span class="modal-team-name">{{ selectedMatch!.team2_name }}</span>
+      </div>
+    </div>
+
+    <!-- Infos terrain / date -->
+    <div class="modal-meta" *ngIf="selectedMatch!.terrain || selectedMatch!.match_date">
+      <span *ngIf="selectedMatch!.terrain">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        {{ selectedMatch!.terrain }}
+      </span>
+      <span *ngIf="selectedMatch!.match_date">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        {{ selectedMatch!.match_date | date:'d MMMM yyyy':'':'fr' }}
+      </span>
+    </div>
+
+    <div class="modal-divider"></div>
+
+    <!-- Section buteurs -->
+    <ng-container *ngIf="selectedMatchGoals.length > 0; else noScorers">
+      <h3 class="modal-section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2a10 10 0 0 1 6.32 2.26L12 9.5 5.68 4.26A10 10 0 0 1 12 2z" fill="currentColor" opacity=".3"/>
+        </svg>
+        Buteurs
+      </h3>
+
+      <div class="scorer-grid">
+        <div *ngFor="let g of selectedMatchGoals; trackBy: trackByGoalId" class="scorer-card">
+
+          <!-- Avatar : photo de licence ou initiales -->
+          <div class="scorer-avatar">
+            <span class="avatar-initials">{{ getInitials(g.player_name) }}</span>
+            <img *ngIf="getPlayerPhotoUrl(g.photo_url)"
+                 [src]="getPlayerPhotoUrl(g.photo_url)!"
+                 [alt]="g.player_name"
+                 class="avatar-img"
+                 (error)="onPhotoError($event)" />
+          </div>
+
+          <div class="scorer-info">
+            <span class="scorer-name" [class.unverified]="g.player_name.includes('?')">
+              {{ g.player_name }}
+            </span>
+            <span class="scorer-team-label">{{ g.team_name }}</span>
+            <span class="scorer-minute" *ngIf="g.minute">{{ g.minute }}'</span>
+          </div>
+
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #noScorers>
+      <p class="modal-empty">Aucun buteur enregistré pour ce match.</p>
+    </ng-template>
+
   </div>
 </div>

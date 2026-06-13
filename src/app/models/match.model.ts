@@ -21,6 +21,12 @@ export interface Goal {
   team_name: string;
   type: 'goal' | 'assist';
   minute: number | null;
+  photo_url: string | null;
+  team1_name?: string;
+  team2_name?: string;
+  match_date?: string;
+  score1?: number | null;
+  score2?: number | null;
 }
 
 export interface TopScorer {

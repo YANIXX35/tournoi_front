@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone, ChangeDetectionStrategy, HostListener } from '@angular/core';
 import { TournamentService } from '../../services/tournament.service';
-import { Match } from '../../models/match.model';
+import { Match, Goal } from '../../models/match.model';
 import { timeout, catchError } from 'rxjs/operators';
 import { of, forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -22,6 +22,10 @@ export class MatchesComponent implements OnInit, OnDestroy {
   page = 1;
   readonly pageSize = 10;
   teams: any[] = [];
+  goals: Goal[] = [];
+  goalsByMatchId: Map<number, Goal[]> = new Map();
+  selectedMatch: Match | null = null;
+  selectedMatchGoals: Goal[] = [];
   private pollInterval: ReturnType<typeof setInterval> | null = null;
   private channel: BroadcastChannel | null = null;
 
@@ -36,21 +40,25 @@ export class MatchesComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
   ) {}
 
+  @HostListener('document:keydown.escape')
+  onEsc(): void { this.closeModal(); }
+
   ngOnInit(): void {
     this.tournamentService.invalidate('matches');
+    this.tournamentService.invalidate('scorers');
     this.load();
 
-    // Polling toutes les 5 secondes
     this.pollInterval = setInterval(() => {
       this.tournamentService.invalidate('matches');
+      this.tournamentService.invalidate('scorers');
       this.silentRefresh();
     }, 5000);
 
-    // Mise à jour instantanée via BroadcastChannel (même navigateur)
     if (typeof BroadcastChannel !== 'undefined') {
       this.channel = new BroadcastChannel('tournament-updates');
       this.channel.onmessage = () => {
         this.tournamentService.invalidate('matches');
+        this.tournamentService.invalidate('scorers');
         this.silentRefresh();
       };
     }
@@ -65,11 +73,16 @@ export class MatchesComponent implements OnInit, OnDestroy {
     forkJoin({
       teams: this.tournamentService.getTeamsPublic().pipe(timeout(12000), catchError(() => of([]))),
       matches: this.tournamentService.getMatches().pipe(timeout(15000), catchError(() => of(null))),
-    }).subscribe(({ teams, matches }) => {
+      scorers: this.tournamentService.getTopScorers().pipe(timeout(15000), catchError(() => of(null))),
+    }).subscribe(({ teams, matches, scorers }) => {
       this.ngZone.run(() => {
         if (teams.length) this.teams = teams;
         if (!matches) return;
         this.matches = matches;
+        if (scorers?.all_goals) {
+          this.goals = scorers.all_goals;
+          this.buildGoalsMap();
+        }
         const _fixed = ['Tour 1', 'Tour 2', 'Demi-finale', 'Finale'];
         const _fromData = [...new Set(matches.map((m: Match) => m.phase))];
         const _extra = _fromData.filter((p: string) => !_fixed.includes(p));
@@ -91,12 +104,17 @@ export class MatchesComponent implements OnInit, OnDestroy {
     forkJoin({
       teams: this.tournamentService.getTeamsPublic().pipe(timeout(12000), catchError(() => of([]))),
       matches: this.tournamentService.getMatches().pipe(timeout(15000), catchError(() => of(null))),
-    }).subscribe(({ teams, matches }) => {
+      scorers: this.tournamentService.getTopScorers().pipe(timeout(15000), catchError(() => of(null))),
+    }).subscribe(({ teams, matches, scorers }) => {
       this.ngZone.run(() => {
         this.teams = teams;
         this.loading = false;
         if (!matches) { this.hasError = true; this.cdr.detectChanges(); return; }
         this.matches = matches;
+        if (scorers?.all_goals) {
+          this.goals = scorers.all_goals;
+          this.buildGoalsMap();
+        }
         const fixed = ['Tour 1', 'Tour 2', 'Demi-finale', 'Finale'];
         const fromData = [...new Set(matches.map((m: Match) => m.phase))];
         const extra = fromData.filter((p: string) => !fixed.includes(p));
@@ -105,6 +123,46 @@ export class MatchesComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       });
     });
+  }
+
+  private buildGoalsMap(): void {
+    const map = new Map<number, Goal[]>();
+    for (const g of this.goals) {
+      const arr = map.get(g.match_id) ?? [];
+      arr.push(g);
+      map.set(g.match_id, arr);
+    }
+    this.goalsByMatchId = map;
+  }
+
+  getMatchGoals(matchId: number): Goal[] {
+    return this.goalsByMatchId.get(matchId) ?? [];
+  }
+
+  openMatch(match: Match): void {
+    if (match.status !== 'finished') return;
+    this.selectedMatch = match;
+    this.selectedMatchGoals = this.getMatchGoals(match.id);
+    this.cdr.detectChanges();
+  }
+
+  closeModal(): void {
+    this.selectedMatch = null;
+    this.selectedMatchGoals = [];
+    this.cdr.detectChanges();
+  }
+
+  getPlayerPhotoUrl(photoUrl: string | null): string | null {
+    if (!photoUrl) return null;
+    return `${environment.apiUrl}${photoUrl}`;
+  }
+
+  onPhotoError(event: Event): void {
+    (event.target as HTMLImageElement).style.display = 'none';
+  }
+
+  getInitials(name: string): string {
+    return name.replace(/[?]/g, '').trim().split(/\s+/).map(w => w[0] || '').join('').toUpperCase().slice(0, 2) || '?';
   }
 
   filterByPhase(phase: string): void {
@@ -122,7 +180,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
 
   getTeamLogoUrl(name: string): string | null {
     if (!name || !this.teams.length) return null;
-    const norm = (s: string) => s.trim().toLowerCase().replace(/[‘’‚‛ʼ]/g, "'");
+    const norm = (s: string) => s.trim().toLowerCase().replace(/[''‚‛ʼ]/g, "'");
     const n = norm(name);
     const t = this.teams.find(t => norm(t.name ?? '') === n);
     if (!t || !t.logo_path) return null;
@@ -131,6 +189,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
 
   trackByMatchId(_: number, m: Match): number { return m.id; }
   trackByPhase(_: number, phase: string): string { return phase; }
+  trackByGoalId(_: number, g: Goal): number { return g.id; }
 
   exportPdf(): void {
     import('jspdf').then(({ jsPDF }) => {
