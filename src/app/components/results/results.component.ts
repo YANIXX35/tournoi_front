@@ -43,7 +43,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     this.pollInterval = setInterval(() => {
       this.tournamentService.invalidate('results');
       this.silentRefresh();
-    }, 5000);
+    }, 30000);
 
     if (typeof BroadcastChannel !== 'undefined') {
       this.channel = new BroadcastChannel('tournament-updates');

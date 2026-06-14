@@ -58,7 +58,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
       this.tournamentService.invalidate('matches');
       this.tournamentService.invalidate('scorers');
       this.silentRefresh();
-    }, 5000);
+    }, 30000);
 
     if (typeof BroadcastChannel !== 'undefined') {
       this.channel = new BroadcastChannel('tournament-updates');

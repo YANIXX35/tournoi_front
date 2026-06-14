@@ -262,8 +262,7 @@
 
       <div class="results-list">
         <div *ngFor="let m of paginatedMatches; let i = index; trackBy: trackByMatchId"
-             class="result-card"
-             appReveal [revealDelay]="i * 50">
+             class="result-card">
           <div class="result-header">
             <span class="result-phase">{{ m.phase }}</span>
             <span class="result-date">{{ m.match_date | date:'dd/MM/yyyy' }}</span>

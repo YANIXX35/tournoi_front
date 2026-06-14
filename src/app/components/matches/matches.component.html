@@ -81,8 +81,7 @@
         class="match-card"
         [class]="'status-' + match.status"
         [class.clickable]="match.status === 'finished'"
-        (click)="openMatch(match)"
-        appReveal [revealDelay]="i * 50">
+        (click)="openMatch(match)">
 
         <div class="status-bar"></div>
 

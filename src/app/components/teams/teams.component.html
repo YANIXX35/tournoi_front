@@ -74,8 +74,7 @@
     <div class="teams-grid" *ngIf="filteredTeams.length > 0">
       <div *ngFor="let team of paginatedTeams; let i = index; trackBy: trackByTeamId"
            class="team-card"
-           [class.expanded]="expandedTeam === team.id"
-           appReveal [revealDelay]="i * 60">
+           [class.expanded]="expandedTeam === team.id">
 
         <div class="card-header" (click)="toggleTeam(team.id)">
           <!-- Logo ou initiales (initiales toujours présentes en fallback) -->
