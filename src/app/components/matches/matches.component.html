@@ -171,6 +171,42 @@
       [page]="page"
       (pageChange)="onPageChange($event)">
     </app-pagination>
+
+    <!-- ════════════════════════════════════════════════════════
+         VENUE CARD — DEMI-FINALE
+    ════════════════════════════════════════════════════════ -->
+    <div class="venue-card" *ngIf="showVenueCard" appReveal>
+      <div class="venue-inner">
+        <span class="venue-badge">Demi-finale · 20 Juin 2026</span>
+        <div class="venue-main">
+          <div class="venue-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M3 5v6c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+              <path d="M3 11v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6"/>
+            </svg>
+          </div>
+          <div class="venue-details">
+            <h3 class="venue-name">Terrain Arena</h3>
+            <p class="venue-date">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Vendredi 20 Juin 2026
+            </p>
+          </div>
+        </div>
+        <a class="venue-map-btn"
+           href="https://maps.app.goo.gl/ZkU5tXpuMrL5P2p36"
+           target="_blank"
+           rel="noopener noreferrer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          Ouvrir dans Google Maps
+        </a>
+      </div>
+    </div>
+
   </div>
 </div>
 

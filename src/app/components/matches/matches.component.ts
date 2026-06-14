@@ -35,6 +35,11 @@ export class MatchesComponent implements OnInit, OnDestroy {
     return this.filteredMatches.slice(start, start + this.pageSize);
   }
 
+  get showVenueCard(): boolean {
+    const hasDemi = this.matches.some(m => m.phase === 'Demi-finale');
+    return hasDemi && (this.selectedPhase === 'Demi-finale' || this.selectedPhase === 'Tous');
+  }
+
   constructor(
     private tournamentService: TournamentService,
     private cdr: ChangeDetectorRef,
