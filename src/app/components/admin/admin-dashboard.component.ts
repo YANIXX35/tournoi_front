@@ -1168,10 +1168,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     const formData = new FormData();
     formData.append('file', this.localVideoFile!);
     formData.append('upload_preset', pr);
-    formData.append('resource_type', 'video');
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `https://api.cloudinary.com/v1_1/${cn}/video/upload`);
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${cn}/auto/upload`);
 
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable) {
