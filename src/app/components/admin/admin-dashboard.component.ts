@@ -1146,6 +1146,17 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  getCloudinaryThumbnail(url: string): string {
+    return url
+      .replace('/video/upload/', '/video/upload/so_0,w_400,h_300,c_fill/')
+      .replace(/\.(mp4|mov|avi|webm|mkv)$/i, '.jpg');
+  }
+
+  getYoutubeThumbnail(url: string): string {
+    const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+    return m ? `https://img.youtube.com/vi/${m[1]}/mqdefault.jpg` : '';
+  }
+
   onLocalVideoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -1186,8 +1197,11 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.cloudinaryStatus = 'Upload CDN…';
     this.cdr.detectChanges();
 
+    const uploadFilename = fileToUpload instanceof File
+      ? (fileToUpload as File).name
+      : 'video.webm';
     const formData = new FormData();
-    formData.append('file', fileToUpload, 'video.webm');
+    formData.append('file', fileToUpload, uploadFilename);
     formData.append('upload_preset', pr);
 
     const xhr = new XMLHttpRequest();
@@ -1256,12 +1270,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
     return new Promise<Blob>((resolve) => {
       const video = document.createElement('video');
-      video.muted = true;
+      // Do NOT mute — muted=true zeroes out the Web Audio API source node
       video.playsInline = true;
       const objectUrl = URL.createObjectURL(file);
       video.src = objectUrl;
 
-      video.onloadedmetadata = () => {
+      video.onloadedmetadata = async () => {
         const MAX_W = 1280, MAX_H = 720;
         const ratio = Math.min(MAX_W / (video.videoWidth || 1280), MAX_H / (video.videoHeight || 720), 1);
         const w = Math.round((video.videoWidth || 1280) * ratio);
@@ -1272,18 +1286,31 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         const ctx = canvas.getContext('2d')!;
         const videoStream = canvas.captureStream(24);
 
-        // Capture audio track if possible
         let finalStream: MediaStream = videoStream;
         try {
           const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
           if (AudioCtx) {
             const audioCtx: AudioContext = new AudioCtx();
+            if (audioCtx.state === 'suspended') await audioCtx.resume();
+
             const src = audioCtx.createMediaElementSource(video);
+
+            // Route to recorder (full audio)
             const dst = audioCtx.createMediaStreamDestination();
             src.connect(dst);
-            finalStream = new MediaStream([...videoStream.getVideoTracks(), ...dst.stream.getAudioTracks()]);
+
+            // Route to speakers at volume 0 — required so Chrome flushes audio through the pipeline
+            const silencer = audioCtx.createGain();
+            silencer.gain.value = 0;
+            src.connect(silencer);
+            silencer.connect(audioCtx.destination);
+
+            const audioTracks = dst.stream.getAudioTracks();
+            if (audioTracks.length > 0) {
+              finalStream = new MediaStream([...videoStream.getVideoTracks(), ...audioTracks]);
+            }
           }
-        } catch { /* audio not available, video-only */ }
+        } catch { /* audio not available, continue video-only */ }
 
         const mimeTypes = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm;codecs=vp8', 'video/webm'];
         const mimeType = mimeTypes.find(m => MediaRecorder.isTypeSupported(m)) ?? 'video/webm';

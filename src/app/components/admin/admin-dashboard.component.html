@@ -1121,7 +1121,20 @@
       <div class="admin-gallery-grid" *ngIf="galleryPhotos.length > 0">
         <div class="agp-item" *ngFor="let p of galleryPhotos" [class.agp-editing]="editingGalleryPhoto?.id === p.id">
           <div class="agp-thumb">
-            <img [src]="p.photo_path" [alt]="p.title || 'photo'" />
+            <ng-container [ngSwitch]="p.media_type">
+              <img *ngSwitchCase="'cloudinary_video'"
+                   [src]="getCloudinaryThumbnail(p.photo_path)"
+                   [alt]="p.title || 'vidéo'"
+                   style="object-fit:cover;width:100%;height:100%" />
+              <img *ngSwitchCase="'video'"
+                   [src]="getYoutubeThumbnail(p.photo_path)"
+                   [alt]="p.title || 'youtube'"
+                   style="object-fit:cover;width:100%;height:100%" />
+              <img *ngSwitchDefault
+                   [src]="p.photo_path"
+                   [alt]="p.title || 'photo'"
+                   style="object-fit:cover;width:100%;height:100%" />
+            </ng-container>
           </div>
           <!-- Barre titre + actions (mode normal) -->
           <div class="agp-bar" *ngIf="editingGalleryPhoto?.id !== p.id">
