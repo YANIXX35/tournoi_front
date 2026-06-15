@@ -36,14 +36,32 @@
     <span><img src="fju.jpg" alt="Étoile Universelle" style="width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px;" />Menu</span>
     <button class="close-menu" (click)="closeMenu()">✕</button>
   </div>
-  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="closeMenu()">🏠 Accueil</a>
-  <a routerLink="/matchs" routerLinkActive="active" (click)="closeMenu()">📅 Matchs</a>
-  <a routerLink="/buteurs" routerLinkActive="active" (click)="closeMenu()">⚽ Buteurs</a>
-  <a routerLink="/resultats" routerLinkActive="active" (click)="closeMenu()">🏆 Résultats</a>
-  <a routerLink="/equipes" routerLinkActive="active" (click)="closeMenu()">👥 Équipes</a>
-  <a routerLink="/galerie" routerLinkActive="active" (click)="closeMenu()">📷 Galerie</a>
-  <a routerLink="/bracket" routerLinkActive="active" (click)="closeMenu()">🏆 Bracket</a>
-  <a routerLink="/mvp" routerLinkActive="active" (click)="closeMenu()">⭐ Vote MVP</a>
+  <div class="mobile-nav-grid">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="closeMenu()">
+      <span class="mnav-icon">🏠</span><span>Accueil</span>
+    </a>
+    <a routerLink="/matchs" routerLinkActive="active" (click)="closeMenu()">
+      <span class="mnav-icon">📅</span><span>Matchs</span>
+    </a>
+    <a routerLink="/buteurs" routerLinkActive="active" (click)="closeMenu()">
+      <span class="mnav-icon">⚽</span><span>Buteurs</span>
+    </a>
+    <a routerLink="/resultats" routerLinkActive="active" (click)="closeMenu()">
+      <span class="mnav-icon">🏆</span><span>Résultats</span>
+    </a>
+    <a routerLink="/equipes" routerLinkActive="active" (click)="closeMenu()">
+      <span class="mnav-icon">👥</span><span>Équipes</span>
+    </a>
+    <a routerLink="/galerie" routerLinkActive="active" (click)="closeMenu()">
+      <span class="mnav-icon">📷</span><span>Galerie</span>
+    </a>
+    <a routerLink="/bracket" routerLinkActive="active" (click)="closeMenu()">
+      <span class="mnav-icon">🏆</span><span>Bracket</span>
+    </a>
+    <a routerLink="/mvp" routerLinkActive="active" (click)="closeMenu()">
+      <span class="mnav-icon">⭐</span><span>Vote MVP</span>
+    </a>
+  </div>
   <a *ngIf="registrationOpen" routerLink="/inscription" routerLinkActive="active" (click)="closeMenu()" class="mobile-cta">✦ S'inscrire — Gratuit</a>
   <span *ngIf="!registrationOpen" class="mobile-cta mobile-cta-closed">🔒 Inscriptions fermées</span>
 </div>
