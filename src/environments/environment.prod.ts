@@ -2,5 +2,5 @@ export const environment = {
   production: true,
   apiUrl: 'https://touroi-backend.onrender.com',
   cloudinaryCloudName: 'drxkegfjv',
-  cloudinaryUploadPreset: 'tournoi_videos',
+  cloudinaryUploadPreset: 'stockage_non_signé',
 };
