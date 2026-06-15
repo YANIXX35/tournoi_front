@@ -84,21 +84,21 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: url('/hero-bg.jpg') center 30% / cover no-repeat;
+    background: url('/hero-bg.jpg') center center / cover no-repeat;
     z-index: 0;
   }
 
-  // Dark overlay gradient
+  // Dark overlay gradient — léger pour laisser la photo visible
   &::after {
     content: '';
     position: absolute;
     inset: 0;
     background:
       linear-gradient(to bottom,
-        rgba(15,37,68,0.72) 0%,
-        rgba(15,37,68,0.38) 35%,
-        rgba(14,92,54,0.50) 70%,
-        rgba(15,37,68,0.88) 100%);
+        rgba(15,37,68,0.45) 0%,
+        rgba(15,37,68,0.20) 30%,
+        rgba(14,92,54,0.30) 65%,
+        rgba(15,37,68,0.75) 100%);
     z-index: 1;
   }
 }
