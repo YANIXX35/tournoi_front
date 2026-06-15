@@ -1146,8 +1146,13 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   onLocalVideoSelected(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
     if (file) { this.localVideoFile = file; this.cdr.detectChanges(); }
+  }
+
+  clearVideoInput(event: Event): void {
+    (event.target as HTMLInputElement).value = '';
   }
 
   uploadToCloudinary(): void {

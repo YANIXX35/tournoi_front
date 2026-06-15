@@ -1102,7 +1102,7 @@
               </span>
               <small>{{ localVideoUploading ? 'Envoi…' : (localVideoFile ? localVideoFile.name : 'Fichier .mp4') }}</small>
             </div>
-            <input type="file" accept="video/*" hidden (change)="onLocalVideoSelected($event)" [disabled]="localVideoUploading" />
+            <input type="file" accept="video/*" hidden (click)="clearVideoInput($event)" (change)="onLocalVideoSelected($event)" [disabled]="localVideoUploading" />
           </label>
           <div class="guc-fields" style="flex:1">
             <input class="guc-input" type="text" placeholder="Titre (optionnel)" [(ngModel)]="localVideoTitle" />
