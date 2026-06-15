@@ -17,7 +17,7 @@ import * as XLSX from 'xlsx';
 export class AdminDashboardComponent implements OnInit, OnDestroy {
   teams: Team[] = [];
   matches: Match[] = [];
-  activeSection: 'overview' | 'teams' | 'matches' | 'results' | 'licences' | 'scorers' | 'gallery' | 'announcements' | 'logs' = 'overview';
+  activeSection: 'overview' | 'teams' | 'matches' | 'results' | 'licences' | 'scorers' | 'gallery' | 'announcements' | 'logs' | 'mvp' = 'overview';
   sidebarOpen = false;
 
   // Matchs — création / édition complète
@@ -199,6 +199,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       if (section === 'announcements') this.loadAnnouncements();
       if (section === 'logs') this.loadLogs();
       if (section === 'licences') this.loadTeamsWithPhotosForLicences();
+      if (section === 'mvp') this.loadMvp();
       this.cdr.detectChanges();
     });
   }
@@ -1218,6 +1219,38 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  // ── MVP Votes ──────────────────────────────────────────
+  mvpData: any = null;
+  mvpLoading = false;
+
+  loadMvp(): void {
+    this.mvpLoading = true;
+    this.cdr.detectChanges();
+    this.adminService.getMvpVotes().subscribe({
+      next: data => this.ngZone.run(() => {
+        this.mvpData = data;
+        this.mvpLoading = false;
+        this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => {
+        this.mvpLoading = false;
+        this.flash('Erreur chargement votes MVP');
+        this.cdr.detectChanges();
+      }),
+    });
+  }
+
+  confirmResetMvp(): void {
+    if (!confirm('Réinitialiser TOUS les votes MVP à 0 ?')) return;
+    this.adminService.resetMvpVotes().subscribe({
+      next: (res: any) => this.ngZone.run(() => {
+        this.flash(`Votes réinitialisés ✓ (${res.deleted} supprimé(s))`);
+        this.loadMvp();
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur reset votes'); }),
+    });
+  }
+
   // ── Historique admin ───────────────────────────────────
   adminLogs: AdminLog[] = [];
   logsLoading = false;
@@ -1251,6 +1284,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       gallery: 'Galerie photos',
       announcements: 'Annonces & Actualités',
       logs: 'Historique admin',
+      mvp: 'Votes MVP',
     };
     return map[this.activeSection] || '';
   }

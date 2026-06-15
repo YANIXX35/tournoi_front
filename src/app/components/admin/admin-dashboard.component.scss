@@ -1060,6 +1060,24 @@ $sidebar-w:   248px;
 }
 
 // ═══════════════════════════════
+// NAV BADGE OR (MVP)
+// ═══════════════════════════════
+.nav-badge-gold {
+  margin-left: auto;
+  background: #92400e;
+  color: #fde68a;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+// ═══════════════════════════════
 // SECTION LICENCES
 // ═══════════════════════════════
 .licence-header-actions {

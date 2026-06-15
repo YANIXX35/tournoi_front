@@ -108,6 +108,15 @@ export class AdminService {
     return this.http.get<AdminLog[]>(`${API}/logs`, { headers: this.headers() });
   }
 
+  // --- MVP Votes ---
+  getMvpVotes(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/mvp`);
+  }
+
+  resetMvpVotes(): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/api/mvp/reset`, { headers: this.headers() });
+  }
+
   // --- Buteurs & Passeurs ---
   getMatchGoals(matchId: number): Observable<Goal[]> {
     return this.http.get<Goal[]>(`${API}/matches/${matchId}/goals`, { headers: this.headers() });
