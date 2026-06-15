@@ -88,7 +88,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
           this.goals = scorers.all_goals;
           this.buildGoalsMap();
         }
-        const _fixed = ['Tour 1', 'Tour 2', 'Demi-finale', 'Finale'];
+        const _fixed = ['Tour 1', 'Tour 2', 'Tour 3', 'Demi-finale', 'Finale'];
         const _fromData = [...new Set(matches.map((m: Match) => m.phase))];
         const _extra = _fromData.filter((p: string) => !_fixed.includes(p));
         const newPhases = ['Tous', ..._fixed, ..._extra];
@@ -119,7 +119,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
           this.goals = scorers.all_goals;
           this.buildGoalsMap();
         }
-        const fixed = ['Tour 1', 'Tour 2', 'Demi-finale', 'Finale'];
+        const fixed = ['Tour 1', 'Tour 2', 'Tour 3', 'Demi-finale', 'Finale'];
         const fromData = [...new Set(matches.map((m: Match) => m.phase))];
         const extra = fromData.filter((p: string) => !fixed.includes(p));
         this.phases = ['Tous', ...fixed, ...extra];
