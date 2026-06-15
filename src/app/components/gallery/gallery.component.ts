@@ -40,7 +40,15 @@ export class GalleryComponent implements OnInit {
 
   isVideo(p: GalleryPhoto): boolean { return p.media_type === 'video'; }
   isLocalVideo(p: GalleryPhoto): boolean { return p.media_type === 'local_video'; }
+  isCloudinaryVideo(p: GalleryPhoto): boolean { return p.media_type === 'cloudinary_video'; }
+  isAnyVideo(p: GalleryPhoto): boolean { return this.isVideo(p) || this.isLocalVideo(p) || this.isCloudinaryVideo(p); }
   getVideoUrl(p: GalleryPhoto): string { return `${environment.apiUrl}${p.photo_path}`; }
+
+  getCloudinaryThumbnail(url: string): string {
+    return url
+      .replace('/video/upload/', '/video/upload/so_0,w_640,h_480,c_fill/')
+      .replace(/\.(mp4|mov|avi|webm|mkv)$/i, '.jpg');
+  }
 
   getYoutubeId(url: string): string | null {
     const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);

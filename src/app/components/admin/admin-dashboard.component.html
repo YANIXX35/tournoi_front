@@ -1106,8 +1106,12 @@
           </label>
           <div class="guc-fields" style="flex:1">
             <input class="guc-input" type="text" placeholder="Titre (optionnel)" [(ngModel)]="localVideoTitle" />
-            <button class="btn-primary" (click)="uploadLocalVideo()" [disabled]="!localVideoFile || localVideoUploading">
-              {{ localVideoUploading ? 'Envoi en cours…' : '+ Publier le fichier' }}
+            <div class="guc-progress-wrap" *ngIf="localVideoUploading">
+              <div class="guc-progress-bar" [style.width.%]="cloudinaryProgress"></div>
+              <span class="guc-progress-label">{{ cloudinaryProgress }}%</span>
+            </div>
+            <button class="btn-primary" (click)="uploadToCloudinary()" [disabled]="!localVideoFile || localVideoUploading">
+              {{ localVideoUploading ? cloudinaryProgress + '% — upload Cloudinary…' : '+ Publier via CDN Cloudinary' }}
             </button>
           </div>
         </div>

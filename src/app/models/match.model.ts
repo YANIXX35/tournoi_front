@@ -49,7 +49,7 @@ export interface GalleryPhoto {
   id: number;
   title: string | null;
   photo_path: string;
-  media_type: 'photo' | 'video' | 'local_video';
+  media_type: 'photo' | 'video' | 'local_video' | 'cloudinary_video';
   created_at: string;
 }
 

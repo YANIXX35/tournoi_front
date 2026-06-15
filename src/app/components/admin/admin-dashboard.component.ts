@@ -1091,6 +1091,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   localVideoFile: File | null = null;
   localVideoTitle = '';
   localVideoUploading = false;
+  cloudinaryProgress = 0;
 
   loadGallery(): void {
     this.adminService.getGallery().subscribe({
@@ -1149,21 +1150,78 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     if (file) { this.localVideoFile = file; this.cdr.detectChanges(); }
   }
 
-  uploadLocalVideo(): void {
+  uploadToCloudinary(): void {
     if (!this.localVideoFile) { this.flash('Sélectionnez un fichier vidéo'); return; }
     this.localVideoUploading = true;
+    this.cloudinaryProgress = 0;
     this.cdr.detectChanges();
-    this.adminService.uploadVideo(this.localVideoFile, this.localVideoTitle.trim() || undefined).subscribe({
-      next: photo => this.ngZone.run(() => {
-        this.galleryPhotos.unshift(photo);
-        this.localVideoFile = null; this.localVideoTitle = ''; this.localVideoUploading = false;
-        this.flash('Vidéo publiée ✓'); this.cdr.detectChanges();
-      }),
-      error: () => this.ngZone.run(() => {
-        this.localVideoUploading = false;
-        this.flash('Erreur upload vidéo'); this.cdr.detectChanges();
-      }),
+
+    const cn = (environment as any).cloudinaryCloudName as string;
+    const pr = (environment as any).cloudinaryUploadPreset as string;
+
+    if (!cn || cn === 'VOTRE_CLOUD_NAME') {
+      this.localVideoUploading = false;
+      this.flash('Configurez cloudinaryCloudName dans environment.prod.ts');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', this.localVideoFile!);
+    formData.append('upload_preset', pr);
+    formData.append('resource_type', 'video');
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${cn}/video/upload`);
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) {
+        this.ngZone.run(() => {
+          this.cloudinaryProgress = Math.round((e.loaded / e.total) * 100);
+          this.cdr.detectChanges();
+        });
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText);
+        const videoUrl: string = data.secure_url;
+        this.adminService.addPhoto({
+          title: this.localVideoTitle.trim() || undefined,
+          photo_path: videoUrl,
+          media_type: 'cloudinary_video'
+        }).subscribe({
+          next: photo => this.ngZone.run(() => {
+            this.galleryPhotos.unshift(photo);
+            this.localVideoFile = null;
+            this.localVideoTitle = '';
+            this.localVideoUploading = false;
+            this.cloudinaryProgress = 0;
+            this.flash('Vidéo publiée sur CDN ✓');
+            this.cdr.detectChanges();
+          }),
+          error: () => this.ngZone.run(() => {
+            this.localVideoUploading = false;
+            this.flash('Erreur: URL non sauvegardée');
+            this.cdr.detectChanges();
+          })
+        });
+      } else {
+        this.ngZone.run(() => {
+          this.localVideoUploading = false;
+          this.flash(`Erreur Cloudinary: ${xhr.status}`);
+          this.cdr.detectChanges();
+        });
+      }
+    };
+
+    xhr.onerror = () => this.ngZone.run(() => {
+      this.localVideoUploading = false;
+      this.flash('Erreur réseau Cloudinary');
+      this.cdr.detectChanges();
     });
+
+    xhr.send(formData);
   }
 
   addGalleryVideo(): void {
