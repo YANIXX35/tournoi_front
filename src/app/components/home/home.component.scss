@@ -107,6 +107,15 @@
   max-width: 740px;
   position: relative;
   z-index: 2;
+  // Cycle : visible 8s → disparaît 1s → caché 3s → réapparaît 1s → repeat
+  animation: heroTextCycle 13s 1.5s ease-in-out infinite both;
+}
+
+@keyframes heroTextCycle {
+  0%, 61.5%  { opacity: 1; }      // visible 8s
+  69.2%      { opacity: 0; }      // fondu sortie 1s
+  84.6%      { opacity: 0; }      // caché 2s (on voit la photo)
+  100%       { opacity: 1; }      // fondu retour 2s
 }
 
 .hero-badge {
