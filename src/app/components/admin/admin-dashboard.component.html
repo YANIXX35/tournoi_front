@@ -1048,8 +1048,20 @@
 
       <!-- Upload -->
       <div class="gallery-upload-card">
-        <h3 class="guc-title">Ajouter une photo</h3>
-        <div class="guc-form">
+        <!-- Onglets Photo / Vidéo -->
+        <div class="guc-tabs">
+          <button class="guc-tab" [class.active]="galleryAddMode === 'photo'" (click)="galleryAddMode = 'photo'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Photo
+          </button>
+          <button class="guc-tab" [class.active]="galleryAddMode === 'video'" (click)="galleryAddMode = 'video'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            Vidéo YouTube
+          </button>
+        </div>
+
+        <!-- Mode Photo -->
+        <div class="guc-form" *ngIf="galleryAddMode === 'photo'">
           <label class="guc-photo-label" [class.uploading]="galleryUploading">
             <div class="guc-preview" *ngIf="newPhotoPreview">
               <img [src]="newPhotoPreview" alt="preview" />
@@ -1063,6 +1075,20 @@
             <input class="guc-input" type="text" placeholder="Titre / légende (optionnel)" [(ngModel)]="newPhotoTitle" />
             <button class="btn-primary" (click)="addGalleryPhoto()" [disabled]="!newPhotoPath || galleryUploading">
               + Publier la photo
+            </button>
+          </div>
+        </div>
+
+        <!-- Mode Vidéo YouTube -->
+        <div class="guc-form guc-video-form" *ngIf="galleryAddMode === 'video'">
+          <div class="guc-video-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white" stroke="none"/></svg>
+          </div>
+          <div class="guc-fields" style="flex:1">
+            <input class="guc-input" type="url" placeholder="Lien YouTube (ex: https://youtu.be/xxxxx)" [(ngModel)]="newVideoUrl" />
+            <input class="guc-input" type="text" placeholder="Titre de la vidéo (optionnel)" [(ngModel)]="newVideoTitle" />
+            <button class="btn-primary" (click)="addGalleryVideo()" [disabled]="!newVideoUrl.trim()">
+              + Publier la vidéo
             </button>
           </div>
         </div>

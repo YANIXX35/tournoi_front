@@ -1079,12 +1079,15 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   // ── Galerie ────────────────────────────────────────────
   galleryPhotos: GalleryPhoto[] = [];
+  galleryAddMode: 'photo' | 'video' = 'photo';
   newPhotoTitle = '';
   newPhotoPath: string | null = null;
   newPhotoPreview: string | null = null;
   galleryUploading = false;
   editingGalleryPhoto: GalleryPhoto | null = null;
   editingGalleryTitle = '';
+  newVideoUrl = '';
+  newVideoTitle = '';
 
   loadGallery(): void {
     this.adminService.getGallery().subscribe({
@@ -1135,6 +1138,19 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         this.flash('Photo ajoutée ✓'); this.cdr.detectChanges();
       }),
       error: () => this.ngZone.run(() => { this.flash('Erreur ajout photo'); }),
+    });
+  }
+
+  addGalleryVideo(): void {
+    const url = this.newVideoUrl.trim();
+    if (!url) { this.flash('Entrez un lien YouTube'); return; }
+    this.adminService.addPhoto({ title: this.newVideoTitle.trim() || undefined, photo_path: url, media_type: 'video' }).subscribe({
+      next: photo => this.ngZone.run(() => {
+        this.galleryPhotos.unshift(photo);
+        this.newVideoUrl = ''; this.newVideoTitle = '';
+        this.flash('Vidéo ajoutée ✓'); this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => { this.flash('Erreur ajout vidéo'); }),
     });
   }
 

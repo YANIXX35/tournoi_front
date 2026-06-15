@@ -49,6 +49,7 @@ export interface GalleryPhoto {
   id: number;
   title: string | null;
   photo_path: string;
+  media_type: 'photo' | 'video';
   created_at: string;
 }
 

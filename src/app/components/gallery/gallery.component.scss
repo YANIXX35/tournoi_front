@@ -259,6 +259,50 @@
   max-width: 500px;
 }
 
+.lb-video-wrap {
+  width: min(860px, 90vw);
+  aspect-ratio: 16/9;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.6);
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+}
+
+// Vignette vidéo dans la grille
+.gallery-item-video {
+  position: relative;
+
+  .video-play-btn {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+
+    svg {
+      width: 52px;
+      height: 52px;
+      background: rgba(0,0,0,.55);
+      border-radius: 50%;
+      padding: 12px 10px 12px 14px;
+      backdrop-filter: blur(4px);
+      transition: transform .2s, background .2s;
+    }
+  }
+
+  &:hover .video-play-btn svg {
+    background: rgba(220,38,38,.75);
+    transform: scale(1.1);
+  }
+}
+
 // ═══════════════════════════════════════════
 // RESPONSIVE
 // ═══════════════════════════════════════════

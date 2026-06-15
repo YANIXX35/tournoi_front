@@ -24,14 +24,23 @@
       <small>Revenez pendant le tournoi !</small>
     </div>
 
-    <!-- Grille photos -->
+    <!-- Grille photos & vidéos -->
     <div class="gallery-grid" *ngIf="!loading && photos.length > 0">
-      <div class="gallery-item" *ngFor="let p of paginatedPhotos; trackBy: trackByPhotoId" (click)="open(p)" role="button" [attr.aria-label]="'Voir ' + (p.title || 'la photo')" tabindex="0" (keydown.enter)="open(p)">
-        <img [src]="p.photo_path" [alt]="p.title || 'Photo du tournoi'" loading="lazy" />
+      <div class="gallery-item" *ngFor="let p of paginatedPhotos; trackBy: trackByPhotoId" (click)="open(p)" role="button" [attr.aria-label]="'Voir ' + (p.title || 'le média')" tabindex="0" (keydown.enter)="open(p)" [class.gallery-item-video]="isVideo(p)">
+        <!-- Vignette vidéo -->
+        <ng-container *ngIf="isVideo(p)">
+          <img [src]="getYoutubeThumbnail(p.photo_path)" [alt]="p.title || 'Vidéo du tournoi'" loading="lazy" />
+          <div class="video-play-btn">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </ng-container>
+        <!-- Photo normale -->
+        <img *ngIf="!isVideo(p)" [src]="p.photo_path" [alt]="p.title || 'Photo du tournoi'" loading="lazy" />
         <div class="gallery-overlay">
           <span class="gallery-caption" *ngIf="p.title">{{ p.title }}</span>
           <div class="gallery-zoom">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+            <svg *ngIf="!isVideo(p)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+            <svg *ngIf="isVideo(p)" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
         </div>
       </div>
@@ -48,12 +57,22 @@
   </div>
 
   <!-- Lightbox -->
-  <div class="lightbox" *ngIf="selectedPhoto" (click)="close()" role="dialog" aria-modal="true" aria-label="Photo agrandie">
+  <div class="lightbox" *ngIf="selectedPhoto" (click)="close()" role="dialog" aria-modal="true">
     <button class="lb-close" (click)="close()" aria-label="Fermer">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </button>
     <div class="lb-content" (click)="stopPropagation($event)">
-      <img [src]="selectedPhoto.photo_path" [alt]="selectedPhoto.title || 'Photo du tournoi'" />
+      <!-- Lecteur YouTube -->
+      <div *ngIf="isVideo(selectedPhoto)" class="lb-video-wrap">
+        <iframe
+          [src]="getSafeEmbedUrl(selectedPhoto.photo_path)"
+          frameborder="0"
+          allow="autoplay; encrypted-media; fullscreen"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <!-- Photo normale -->
+      <img *ngIf="!isVideo(selectedPhoto)" [src]="selectedPhoto.photo_path" [alt]="selectedPhoto.title || 'Photo du tournoi'" />
       <p class="lb-caption" *ngIf="selectedPhoto.title">{{ selectedPhoto.title }}</p>
     </div>
   </div>
