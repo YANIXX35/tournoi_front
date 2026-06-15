@@ -125,8 +125,17 @@
 // ── Grille candidats ──────────────────────────────────────────────────────────
 .candidates-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.1rem;
+
+  @media (max-width: 860px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 420px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: .65rem;
+  }
 }
 
 // ── Carte candidat ────────────────────────────────────────────────────────────
@@ -186,23 +195,61 @@
   &.bronze { background: #c47a3a; color: #fff; border-color: #a0612e; }
 }
 
-// ── Avatar ────────────────────────────────────────────────────────────────────
-.player-avatar {
-  width: 56px;
-  height: 56px;
+// ── Photo capitaine ───────────────────────────────────────────────────────────
+.player-photo-wrap {
+  position: relative;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
+  margin-bottom: .4rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 3px solid var(--border-light, #e2e8f0);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
+
+  .candidate-card.is-leader & {
+    border-color: #fbbf24;
+    box-shadow: 0 4px 20px rgba(251, 191, 36, .4);
+  }
+
+  .candidate-card.is-user-vote & {
+    border-color: var(--green, #16a34a);
+    box-shadow: 0 4px 20px rgba(22, 163, 74, .3);
+  }
+}
+
+.player-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.photo-fallback {
+  width: 100%;
+  height: 100%;
   background: linear-gradient(135deg, var(--navy, #0f172a), var(--green, #16a34a));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 2rem;
   font-weight: 800;
   color: #fff;
-  margin-bottom: .3rem;
-  flex-shrink: 0;
 }
 
 // ── Textes ────────────────────────────────────────────────────────────────────
+.player-role {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--text-muted, #64748b);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
 .player-name {
   font-size: .93rem;
   font-weight: 700;

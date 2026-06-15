@@ -3,9 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
 export interface MvpCandidate {
+  player_id: number;
   player_name: string;
   team_name: string;
-  goals: number;
+  role: string;
+  photo_url: string | null;
   votes: number;
   percentage: number;
 }
@@ -87,6 +89,11 @@ export class MvpComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       },
     });
+  }
+
+  onPhotoError(event: Event, c: MvpCandidate): void {
+    (event.target as HTMLImageElement).style.display = 'none';
+    c.photo_url = null;
   }
 
   isUserVote(c: MvpCandidate): boolean {
