@@ -196,7 +196,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
     this.selectedPhase = phase;
     this.page = 1;
     this.applyFilters();
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   onSearch(query: string): void {
@@ -214,7 +214,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  onPageChange(p: number): void { this.page = p; this.cdr.markForCheck(); }
+  onPageChange(p: number): void { this.page = p; this.cdr.detectChanges(); }
 
   getStatusLabel(status: string): string {
     const labels: Record<string, string> = { upcoming: 'À venir', ongoing: 'En cours', finished: 'Terminé' };
