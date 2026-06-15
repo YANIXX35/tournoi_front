@@ -85,13 +85,17 @@
 .chat-avatar {
   width: 38px;
   height: 38px;
-  background: rgba(255, 255, 255, 0.12);
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.15rem;
+  overflow: hidden;
   flex-shrink: 0;
+  background: #fff;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 }
 
 .chat-title {
