@@ -1092,6 +1092,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   localVideoTitle = '';
   localVideoUploading = false;
   cloudinaryProgress = 0;
+  cloudinaryStatus = '';
 
   loadGallery(): void {
     this.adminService.getGallery().subscribe({
@@ -1155,23 +1156,38 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     (event.target as HTMLInputElement).value = '';
   }
 
-  uploadToCloudinary(): void {
+  async uploadToCloudinary(): Promise<void> {
     if (!this.localVideoFile) { this.flash('Sélectionnez un fichier vidéo'); return; }
-    this.localVideoUploading = true;
-    this.cloudinaryProgress = 0;
-    this.cdr.detectChanges();
 
     const cn = (environment as any).cloudinaryCloudName as string;
     const pr = (environment as any).cloudinaryUploadPreset as string;
 
     if (!cn || cn === 'VOTRE_CLOUD_NAME') {
-      this.localVideoUploading = false;
       this.flash('Configurez cloudinaryCloudName dans environment.prod.ts');
       return;
     }
 
+    this.localVideoUploading = true;
+    this.cloudinaryProgress = 0;
+
+    // Compress videos > 10 MB before uploading
+    let fileToUpload: File | Blob = this.localVideoFile;
+    if (this.localVideoFile.size > 10 * 1024 * 1024) {
+      this.cloudinaryStatus = 'Compression…';
+      this.cdr.detectChanges();
+      try {
+        fileToUpload = await this.compressVideo(this.localVideoFile);
+      } catch {
+        fileToUpload = this.localVideoFile;
+      }
+      this.cloudinaryProgress = 0;
+    }
+
+    this.cloudinaryStatus = 'Upload CDN…';
+    this.cdr.detectChanges();
+
     const formData = new FormData();
-    formData.append('file', this.localVideoFile!);
+    formData.append('file', fileToUpload, 'video.webm');
     formData.append('upload_preset', pr);
 
     const xhr = new XMLHttpRequest();
@@ -1201,11 +1217,13 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
             this.localVideoTitle = '';
             this.localVideoUploading = false;
             this.cloudinaryProgress = 0;
+            this.cloudinaryStatus = '';
             this.flash('Vidéo publiée sur CDN ✓');
             this.cdr.detectChanges();
           }),
           error: () => this.ngZone.run(() => {
             this.localVideoUploading = false;
+            this.cloudinaryStatus = '';
             this.flash('Erreur: URL non sauvegardée');
             this.cdr.detectChanges();
           })
@@ -1213,6 +1231,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       } else {
         this.ngZone.run(() => {
           this.localVideoUploading = false;
+          this.cloudinaryStatus = '';
           this.flash(`Erreur Cloudinary: ${xhr.status}`);
           this.cdr.detectChanges();
         });
@@ -1221,11 +1240,100 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
     xhr.onerror = () => this.ngZone.run(() => {
       this.localVideoUploading = false;
+      this.cloudinaryStatus = '';
       this.flash('Erreur réseau Cloudinary');
       this.cdr.detectChanges();
     });
 
     xhr.send(formData);
+  }
+
+  private compressVideo(file: File): Promise<Blob> {
+    const supported = typeof MediaRecorder !== 'undefined'
+      && typeof HTMLCanvasElement !== 'undefined'
+      && 'captureStream' in HTMLCanvasElement.prototype;
+    if (!supported) return Promise.resolve(file);
+
+    return new Promise<Blob>((resolve) => {
+      const video = document.createElement('video');
+      video.muted = true;
+      video.playsInline = true;
+      const objectUrl = URL.createObjectURL(file);
+      video.src = objectUrl;
+
+      video.onloadedmetadata = () => {
+        const MAX_W = 1280, MAX_H = 720;
+        const ratio = Math.min(MAX_W / (video.videoWidth || 1280), MAX_H / (video.videoHeight || 720), 1);
+        const w = Math.round((video.videoWidth || 1280) * ratio);
+        const h = Math.round((video.videoHeight || 720) * ratio);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d')!;
+        const videoStream = canvas.captureStream(24);
+
+        // Capture audio track if possible
+        let finalStream: MediaStream = videoStream;
+        try {
+          const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
+          if (AudioCtx) {
+            const audioCtx: AudioContext = new AudioCtx();
+            const src = audioCtx.createMediaElementSource(video);
+            const dst = audioCtx.createMediaStreamDestination();
+            src.connect(dst);
+            finalStream = new MediaStream([...videoStream.getVideoTracks(), ...dst.stream.getAudioTracks()]);
+          }
+        } catch { /* audio not available, video-only */ }
+
+        const mimeTypes = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm;codecs=vp8', 'video/webm'];
+        const mimeType = mimeTypes.find(m => MediaRecorder.isTypeSupported(m)) ?? 'video/webm';
+
+        let recorder: MediaRecorder;
+        try {
+          recorder = new MediaRecorder(finalStream, { mimeType, videoBitsPerSecond: 1_400_000 });
+        } catch {
+          URL.revokeObjectURL(objectUrl);
+          return resolve(file);
+        }
+
+        const chunks: Blob[] = [];
+        recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+        recorder.onstop = () => {
+          URL.revokeObjectURL(objectUrl);
+          const blob = new Blob(chunks, { type: mimeType });
+          resolve(blob.size > 1000 ? blob : file);
+        };
+
+        video.ontimeupdate = () => {
+          if (video.duration > 0) {
+            this.ngZone.run(() => {
+              this.cloudinaryProgress = Math.round((video.currentTime / video.duration) * 100);
+              this.cdr.detectChanges();
+            });
+          }
+        };
+
+        video.onended = () => {
+          if (recorder.state === 'recording') recorder.stop();
+        };
+
+        recorder.start(500);
+
+        const drawFrame = () => {
+          if (video.paused || video.ended) return;
+          ctx.drawImage(video, 0, 0, w, h);
+          requestAnimationFrame(drawFrame);
+        };
+
+        video.play().then(drawFrame).catch(() => {
+          URL.revokeObjectURL(objectUrl);
+          resolve(file);
+        });
+      };
+
+      video.onerror = () => { URL.revokeObjectURL(objectUrl); resolve(file); };
+      video.load();
+    });
   }
 
   addGalleryVideo(): void {

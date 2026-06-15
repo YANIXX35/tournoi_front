@@ -1100,7 +1100,7 @@
               <span class="guc-cam-ico">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
               </span>
-              <small>{{ localVideoUploading ? 'Envoi…' : (localVideoFile ? localVideoFile.name : 'Fichier .mp4') }}</small>
+              <small>{{ localVideoUploading ? (cloudinaryStatus || 'Traitement…') : (localVideoFile ? localVideoFile.name : 'Fichier .mp4') }}</small>
             </div>
             <input type="file" accept="video/*" hidden (click)="clearVideoInput($event)" (change)="onLocalVideoSelected($event)" [disabled]="localVideoUploading" />
           </label>
@@ -1108,10 +1108,10 @@
             <input class="guc-input" type="text" placeholder="Titre (optionnel)" [(ngModel)]="localVideoTitle" />
             <div class="guc-progress-wrap" [class.guc-progress-active]="localVideoUploading">
               <div class="guc-progress-bar" [style.width.%]="cloudinaryProgress"></div>
-              <span class="guc-progress-label" *ngIf="localVideoUploading">{{ cloudinaryProgress }}%</span>
+              <span class="guc-progress-label" *ngIf="localVideoUploading">{{ cloudinaryStatus }} {{ cloudinaryProgress }}%</span>
             </div>
             <button class="btn-primary" (click)="uploadToCloudinary()" [disabled]="!localVideoFile || localVideoUploading">
-              {{ localVideoUploading ? cloudinaryProgress + '% — upload Cloudinary…' : '+ Publier via CDN Cloudinary' }}
+              {{ localVideoUploading ? (cloudinaryStatus + ' ' + cloudinaryProgress + '%') : '+ Publier via CDN Cloudinary' }}
             </button>
           </div>
         </div>
