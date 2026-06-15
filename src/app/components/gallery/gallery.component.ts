@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { TournamentService } from '../../services/tournament.service';
 import { GalleryPhoto } from '../../models/match.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-gallery',
@@ -38,6 +39,8 @@ export class GalleryComponent implements OnInit {
   trackByPhotoId(_: number, p: GalleryPhoto): number { return p.id; }
 
   isVideo(p: GalleryPhoto): boolean { return p.media_type === 'video'; }
+  isLocalVideo(p: GalleryPhoto): boolean { return p.media_type === 'local_video'; }
+  getVideoUrl(p: GalleryPhoto): string { return `${environment.apiUrl}${p.photo_path}`; }
 
   getYoutubeId(url: string): string | null {
     const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);

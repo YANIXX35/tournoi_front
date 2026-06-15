@@ -82,6 +82,12 @@ export class AdminService {
   addPhoto(data: { title?: string; photo_path: string; media_type?: 'photo' | 'video' }): Observable<GalleryPhoto> {
     return this.http.post<GalleryPhoto>(`${API}/gallery`, data, { headers: this.headers() });
   }
+  uploadVideo(file: File, title?: string): Observable<GalleryPhoto> {
+    const form = new FormData();
+    form.append('video', file, file.name);
+    if (title) form.append('title', title);
+    return this.http.post<GalleryPhoto>(`${API}/gallery/upload-video`, form, { headers: this.headers() });
+  }
   updatePhoto(id: number, data: { title?: string }): Observable<any> {
     return this.http.patch(`${API}/gallery/${id}`, data, { headers: this.headers() });
   }

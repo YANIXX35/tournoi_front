@@ -26,16 +26,23 @@
 
     <!-- Grille photos & vidéos -->
     <div class="gallery-grid" *ngIf="!loading && photos.length > 0">
-      <div class="gallery-item" *ngFor="let p of paginatedPhotos; trackBy: trackByPhotoId" (click)="open(p)" role="button" [attr.aria-label]="'Voir ' + (p.title || 'le média')" tabindex="0" (keydown.enter)="open(p)" [class.gallery-item-video]="isVideo(p)">
-        <!-- Vignette vidéo -->
+      <div class="gallery-item" *ngFor="let p of paginatedPhotos; trackBy: trackByPhotoId" (click)="open(p)" role="button" [attr.aria-label]="'Voir ' + (p.title || 'le média')" tabindex="0" (keydown.enter)="open(p)" [class.gallery-item-video]="isVideo(p) || isLocalVideo(p)">
+        <!-- Vignette YouTube -->
         <ng-container *ngIf="isVideo(p)">
           <img [src]="getYoutubeThumbnail(p.photo_path)" [alt]="p.title || 'Vidéo du tournoi'" loading="lazy" />
           <div class="video-play-btn">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
         </ng-container>
+        <!-- Vignette vidéo locale -->
+        <ng-container *ngIf="isLocalVideo(p)">
+          <video [src]="getVideoUrl(p)" preload="metadata" class="local-video-thumb"></video>
+          <div class="video-play-btn">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </ng-container>
         <!-- Photo normale -->
-        <img *ngIf="!isVideo(p)" [src]="p.photo_path" [alt]="p.title || 'Photo du tournoi'" loading="lazy" />
+        <img *ngIf="!isVideo(p) && !isLocalVideo(p)" [src]="p.photo_path" [alt]="p.title || 'Photo du tournoi'" loading="lazy" />
         <div class="gallery-overlay">
           <span class="gallery-caption" *ngIf="p.title">{{ p.title }}</span>
           <div class="gallery-zoom">
@@ -71,8 +78,12 @@
           allowfullscreen>
         </iframe>
       </div>
+      <!-- Lecteur vidéo locale -->
+      <div *ngIf="isLocalVideo(selectedPhoto)" class="lb-video-wrap">
+        <video [src]="getVideoUrl(selectedPhoto)" controls autoplay playsinline style="width:100%;height:100%;border-radius:10px;background:#000;"></video>
+      </div>
       <!-- Photo normale -->
-      <img *ngIf="!isVideo(selectedPhoto)" [src]="selectedPhoto.photo_path" [alt]="selectedPhoto.title || 'Photo du tournoi'" />
+      <img *ngIf="!isVideo(selectedPhoto) && !isLocalVideo(selectedPhoto)" [src]="selectedPhoto.photo_path" [alt]="selectedPhoto.title || 'Photo du tournoi'" />
       <p class="lb-caption" *ngIf="selectedPhoto.title">{{ selectedPhoto.title }}</p>
     </div>
   </div>

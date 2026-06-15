@@ -1088,6 +1088,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   editingGalleryTitle = '';
   newVideoUrl = '';
   newVideoTitle = '';
+  localVideoFile: File | null = null;
+  localVideoTitle = '';
+  localVideoUploading = false;
 
   loadGallery(): void {
     this.adminService.getGallery().subscribe({
@@ -1138,6 +1141,28 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         this.flash('Photo ajoutée ✓'); this.cdr.detectChanges();
       }),
       error: () => this.ngZone.run(() => { this.flash('Erreur ajout photo'); }),
+    });
+  }
+
+  onLocalVideoSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) { this.localVideoFile = file; this.cdr.detectChanges(); }
+  }
+
+  uploadLocalVideo(): void {
+    if (!this.localVideoFile) { this.flash('Sélectionnez un fichier vidéo'); return; }
+    this.localVideoUploading = true;
+    this.cdr.detectChanges();
+    this.adminService.uploadVideo(this.localVideoFile, this.localVideoTitle.trim() || undefined).subscribe({
+      next: photo => this.ngZone.run(() => {
+        this.galleryPhotos.unshift(photo);
+        this.localVideoFile = null; this.localVideoTitle = ''; this.localVideoUploading = false;
+        this.flash('Vidéo publiée ✓'); this.cdr.detectChanges();
+      }),
+      error: () => this.ngZone.run(() => {
+        this.localVideoUploading = false;
+        this.flash('Erreur upload vidéo'); this.cdr.detectChanges();
+      }),
     });
   }
 

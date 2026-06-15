@@ -273,6 +273,13 @@
   }
 }
 
+.local-video-thumb {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
 // Vignette vidéo dans la grille
 .gallery-item-video {
   position: relative;
