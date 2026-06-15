@@ -178,7 +178,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  setSection(section: 'overview' | 'teams' | 'matches' | 'results' | 'licences' | 'scorers' | 'gallery' | 'announcements' | 'logs'): void {
+  setSection(section: 'overview' | 'teams' | 'matches' | 'results' | 'licences' | 'scorers' | 'gallery' | 'announcements' | 'logs' | 'mvp'): void {
     this.ngZone.run(() => {
       this.activeSection = section;
       this.sidebarOpen = false;
