@@ -302,7 +302,6 @@
   box-shadow: var(--shadow-xs);
   overflow: hidden;
   transition: box-shadow 0.22s, transform 0.22s, border-color 0.22s;
-  animation: fadeInUp 0.4s cubic-bezier(0.4,0,0.2,1) both;
 
   &:hover {
     box-shadow: var(--shadow-md);
