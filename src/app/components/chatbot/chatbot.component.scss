@@ -246,7 +246,7 @@
 // ─── Responsive mobile ────────────────────────────────────────────────────────
 @media (max-width: 768px) {
   .chat-widget {
-    bottom: calc(60px + env(safe-area-inset-bottom, 0px) + 3.5rem);
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px) + 7rem);
     right: 1rem;
     left: 1rem;
     align-items: flex-end;
