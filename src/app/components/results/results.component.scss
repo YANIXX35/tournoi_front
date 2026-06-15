@@ -303,6 +303,8 @@
   overflow: hidden;
   transition: box-shadow 0.22s, transform 0.22s, border-color 0.22s;
 
+  &:active { background: rgba(14,92,54,0.04); transform: scale(0.99); }
+
   &:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);

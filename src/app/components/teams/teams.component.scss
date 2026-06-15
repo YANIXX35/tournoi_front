@@ -146,6 +146,8 @@
   transition: transform 0.25s var(--ease-spring), box-shadow 0.25s, border-color 0.2s;
   overflow: hidden;
 
+  &:active { background: rgba(14,92,54,0.04); transform: scale(0.98); }
+
   &:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-5px);

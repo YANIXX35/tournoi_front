@@ -174,7 +174,6 @@
   overflow: hidden;
   box-shadow: var(--shadow-xs);
   transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
-  animation: fadeInUp 0.35s cubic-bezier(0.4,0,0.2,1) both;
 
   &:hover {
     box-shadow: var(--shadow-md);
@@ -376,9 +375,29 @@
 // MOBILE
 // ═══════════════════════════════════
 @media (max-width: 768px) {
+  .page-hero {
+    padding: 2rem 1rem 1.5rem;
+    h1 { font-size: clamp(1.4rem, 5vw, 1.9rem); }
+  }
+
   .bracket-page { padding: 1.25rem 0.85rem 3rem; }
 
+  .bracket-scroll {
+    // Indicateur de scroll horizontal
+    &::after {
+      content: '← Glissez pour voir tout le bracket →';
+      display: block;
+      text-align: center;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      padding: 0.5rem 0 0;
+      opacity: 0.7;
+    }
+  }
+
   .bracket-round { min-width: 200px; max-width: 220px; padding: 0 0.5rem; }
+
+  .bracket-team:active { background: rgba(14,92,54,0.08); }
 
   .round-label { font-size: 0.72rem; }
   .team-name { font-size: 0.76rem; max-width: 120px; }

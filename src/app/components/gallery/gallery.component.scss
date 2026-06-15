@@ -127,7 +127,6 @@
   aspect-ratio: 4/3;
   background: rgba(255,255,255,.04);
   outline: none;
-  animation: fadeInUp 0.4s cubic-bezier(0.4,0,0.2,1) both;
   border: 1px solid rgba(255,255,255,0.06);
 
   &:focus-visible {
@@ -264,8 +263,12 @@
 // RESPONSIVE
 // ═══════════════════════════════════════════
 @media (max-width: 768px) {
-  .gallery-hero { padding: 3rem 1rem 2rem; }
-  .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .65rem; }
+  .gallery-hero { padding: 2rem 1rem 1.5rem; }
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+
+  // Sur mobile (touch), toujours afficher l'overlay
+  .gallery-overlay { opacity: 1; }
+  .gallery-item:active img { transform: scale(1.04); }
 }
 
 @media (max-width: 480px) {
