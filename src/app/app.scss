@@ -111,6 +111,28 @@
       &::after { width: calc(100% - 1.8rem); }
     }
 
+    &.nav-mvp {
+      background: rgba(251, 191, 36, .12);
+      color: #d97706;
+      font-weight: 700;
+      border-radius: var(--r-md);
+      padding: 0.4rem 0.85rem;
+      border: 1.5px solid rgba(251, 191, 36, .35);
+
+      &::after { display: none; }
+
+      &:hover {
+        background: rgba(251, 191, 36, .22);
+        color: #b45309;
+      }
+
+      &.active {
+        background: #fbbf24;
+        color: #fff;
+        border-color: #f59e0b;
+      }
+    }
+
     &.nav-cta {
       background: var(--gold);
       color: #fff;

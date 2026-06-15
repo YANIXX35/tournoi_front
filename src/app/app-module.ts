@@ -22,6 +22,7 @@ import { TeamDetailComponent } from './components/team-detail/team-detail.compon
 import { GalleryComponent } from './components/gallery/gallery.component';
 import { YkComponent } from './components/yk/yk.component';
 import { BracketComponent } from './components/bracket/bracket.component';
+import { MvpComponent } from './components/mvp/mvp.component';
 import { ChatbotComponent } from './components/chatbot/chatbot.component';
 
 @NgModule({
@@ -39,6 +40,7 @@ import { ChatbotComponent } from './components/chatbot/chatbot.component';
     GalleryComponent,
     YkComponent,
     BracketComponent,
+    MvpComponent,
     ChatbotComponent,
     RevealDirective,
     PaginationComponent,
