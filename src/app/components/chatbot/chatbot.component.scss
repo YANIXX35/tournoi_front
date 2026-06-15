@@ -249,7 +249,7 @@
     bottom: calc(60px + env(safe-area-inset-bottom, 0px) + 0.75rem);
     right: 1rem;
     left: 1rem;
-    align-items: flex-end;
+    align-items: flex-start; // FAB à gauche → loin du tab "Buteurs"
   }
 
   .chat-panel {
