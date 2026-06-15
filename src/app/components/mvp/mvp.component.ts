@@ -19,7 +19,7 @@ export interface MvpData {
   user_vote: { player_name: string; team_name: string } | null;
 }
 
-const MVP_VOTE_KEY = 'mvp_vote_2026';
+const MVP_VOTE_KEY = 'mvp_vote_2026_r2';
 
 @Component({
   selector: 'app-mvp',
