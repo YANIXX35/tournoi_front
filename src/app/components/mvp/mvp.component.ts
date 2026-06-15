@@ -19,6 +19,8 @@ export interface MvpData {
   user_vote: { player_name: string; team_name: string } | null;
 }
 
+const MVP_VOTE_KEY = 'mvp_vote_2026';
+
 @Component({
   selector: 'app-mvp',
   templateUrl: './mvp.component.html',
@@ -47,6 +49,29 @@ export class MvpComponent implements OnInit, OnDestroy {
     if (this.pollInterval) clearInterval(this.pollInterval);
   }
 
+  // ── LocalStorage : 1 vote par navigateur ──────────────────────────────────
+  private getLocalVote(): { player_name: string; team_name: string } | null {
+    try {
+      const raw = localStorage.getItem(MVP_VOTE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  }
+
+  private saveLocalVote(player_name: string, team_name: string): void {
+    try {
+      localStorage.setItem(MVP_VOTE_KEY, JSON.stringify({ player_name, team_name }));
+    } catch {}
+  }
+
+  get alreadyVoted(): boolean {
+    return !!(this.data?.user_voted || this.getLocalVote());
+  }
+
+  get myVote(): { player_name: string; team_name: string } | null {
+    return this.data?.user_vote ?? this.getLocalVote();
+  }
+
+  // ── Chargement ────────────────────────────────────────────────────────────
   load(): void {
     this.http.get<MvpData>(`${this.API}/mvp`).subscribe({
       next: data => {
@@ -68,8 +93,9 @@ export class MvpComponent implements OnInit, OnDestroy {
     });
   }
 
+  // ── Vote ──────────────────────────────────────────────────────────────────
   vote(candidate: MvpCandidate): void {
-    if (this.voting || this.data?.user_voted) return;
+    if (this.voting || this.alreadyVoted) return;
     this.voting = true;
     this.cdr.markForCheck();
 
@@ -78,13 +104,18 @@ export class MvpComponent implements OnInit, OnDestroy {
       team_name:   candidate.team_name,
     }).subscribe({
       next: () => {
+        this.saveLocalVote(candidate.player_name, candidate.team_name);
         this.voting = false;
         this.voteSuccess = true;
         this.silentRefresh();
         this.cdr.markForCheck();
       },
-      error: () => {
+      error: (err) => {
         this.voting = false;
+        if (err.status === 409) {
+          // Déjà voté côté serveur — on sauvegarde quand même en local
+          this.saveLocalVote(candidate.player_name, candidate.team_name);
+        }
         this.silentRefresh();
         this.cdr.markForCheck();
       },
@@ -97,7 +128,7 @@ export class MvpComponent implements OnInit, OnDestroy {
   }
 
   isUserVote(c: MvpCandidate): boolean {
-    const uv = this.data?.user_vote;
+    const uv = this.myVote;
     if (!uv) return false;
     return uv.player_name.toLowerCase() === c.player_name.toLowerCase()
         && uv.team_name.toLowerCase()   === c.team_name.toLowerCase();
