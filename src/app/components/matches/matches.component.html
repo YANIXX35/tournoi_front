@@ -98,7 +98,9 @@
           <div class="card-main">
             <!-- Équipe 1 -->
             <div class="team-side left">
-              <img *ngIf="getTeamLogoUrl(match.team1_name)" class="team-logo" [src]="getTeamLogoUrl(match.team1_name)!" [alt]="match.team1_name" loading="lazy" />
+              <ng-container *ngIf="getTeamLogoUrl(match.team1_name) as logo1">
+                <img class="team-logo" [src]="logo1" [alt]="match.team1_name" loading="lazy" />
+              </ng-container>
               <span class="team-name">{{ match.team1_name || 'À définir' }}</span>
             </div>
 
@@ -112,7 +114,9 @@
 
             <!-- Équipe 2 -->
             <div class="team-side right">
-              <img *ngIf="getTeamLogoUrl(match.team2_name)" class="team-logo" [src]="getTeamLogoUrl(match.team2_name)!" [alt]="match.team2_name" loading="lazy" />
+              <ng-container *ngIf="getTeamLogoUrl(match.team2_name) as logo2">
+                <img class="team-logo" [src]="logo2" [alt]="match.team2_name" loading="lazy" />
+              </ng-container>
               <span class="team-name">{{ match.team2_name || 'À définir' }}</span>
             </div>
           </div>

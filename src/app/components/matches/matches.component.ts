@@ -25,6 +25,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
   teams: any[] = [];
   goals: Goal[] = [];
   goalsByMatchId: Map<number, Goal[]> = new Map();
+  logoMap: Map<string, string> = new Map();
   selectedMatch: Match | null = null;
   selectedMatchGoals: Goal[] = [];
   private pollInterval: ReturnType<typeof setInterval> | null = null;
@@ -50,8 +51,6 @@ export class MatchesComponent implements OnInit, OnDestroy {
   onEsc(): void { this.closeModal(); }
 
   ngOnInit(): void {
-    this.tournamentService.invalidate('matches');
-    this.tournamentService.invalidate('scorers');
     this.load();
 
     this.pollInterval = setInterval(() => {
@@ -82,7 +81,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
       scorers: this.tournamentService.getTopScorers().pipe(timeout(15000), catchError(() => of(null))),
     }).subscribe(({ teams, matches, scorers }) => {
       this.ngZone.run(() => {
-        if (teams.length) this.teams = teams;
+        if (teams.length) { this.teams = teams; this.buildLogoMap(); }
         if (!matches) return;
         this.matches = matches;
         if (scorers?.all_goals) {
@@ -112,6 +111,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
     }).subscribe(({ teams, matches, scorers }) => {
       this.ngZone.run(() => {
         this.teams = teams;
+        this.buildLogoMap();
         this.loading = false;
         if (!matches) { this.hasError = true; this.cdr.detectChanges(); return; }
         this.matches = matches;
@@ -137,6 +137,15 @@ export class MatchesComponent implements OnInit, OnDestroy {
       map.set(g.match_id, arr);
     }
     this.goalsByMatchId = map;
+  }
+
+  private buildLogoMap(): void {
+    const norm = (s: string) => s.trim().toLowerCase().replace(/[''‚‛ʼ]/g, "'");
+    const map = new Map<string, string>();
+    for (const t of this.teams) {
+      if (t.logo_path) map.set(norm(t.name ?? ''), `${environment.apiUrl}/api/teams/${t.id}/logo`);
+    }
+    this.logoMap = map;
   }
 
   getMatchGoals(matchId: number): Goal[] {
@@ -187,6 +196,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
     this.selectedPhase = phase;
     this.page = 1;
     this.applyFilters();
+    this.cdr.markForCheck();
   }
 
   onSearch(query: string): void {
@@ -212,12 +222,9 @@ export class MatchesComponent implements OnInit, OnDestroy {
   }
 
   getTeamLogoUrl(name: string): string | null {
-    if (!name || !this.teams.length) return null;
+    if (!name) return null;
     const norm = (s: string) => s.trim().toLowerCase().replace(/[''‚‛ʼ]/g, "'");
-    const n = norm(name);
-    const t = this.teams.find(t => norm(t.name ?? '') === n);
-    if (!t || !t.logo_path) return null;
-    return `${environment.apiUrl}/api/teams/${t.id}/logo`;
+    return this.logoMap.get(norm(name)) ?? null;
   }
 
   trackByMatchId(_: number, m: Match): number { return m.id; }
