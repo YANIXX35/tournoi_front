@@ -246,10 +246,10 @@
 // ─── Responsive mobile ────────────────────────────────────────────────────────
 @media (max-width: 768px) {
   .chat-widget {
-    bottom: calc(60px + env(safe-area-inset-bottom, 0px) + 0.75rem);
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px) + 3.5rem);
     right: 1rem;
     left: 1rem;
-    align-items: flex-start; // FAB à gauche → loin du tab "Buteurs"
+    align-items: flex-end;
   }
 
   .chat-panel {
