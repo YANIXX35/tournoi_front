@@ -16,6 +16,7 @@ export class App implements OnInit {
   scrolled = false;
   showScrollBtn = false;
   registrationOpen = false;
+  splashDone = false;
 
   constructor(
     private perf: PerformanceService,
@@ -26,6 +27,7 @@ export class App implements OnInit {
   }
 
   ngOnInit(): void {
+    setTimeout(() => { this.splashDone = true; }, 5000);
     this.tournament.getRegistrationStatus().subscribe({
       next: status => { this.registrationOpen = status.open; },
       error: () => { this.registrationOpen = false; },

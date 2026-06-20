@@ -1,3 +1,20 @@
+<!-- ── Splash Screen ── -->
+<div class="splash-screen" [class.splash-out]="splashDone">
+  <div class="splash-orb splash-orb-left"></div>
+  <div class="splash-orb splash-orb-right"></div>
+  <div class="splash-content">
+    <img src="fju.jpg" alt="Logo Étoile Universelle" class="splash-logo" />
+    <div class="splash-trophy">🏆</div>
+    <p class="splash-champion-label">Champions du Tournoi · Édition 2026</p>
+    <h1 class="splash-team-name">Les Enfants<br>s'Amusent</h1>
+    <p class="splash-edition">Tournoi de Football — Étoile Universelle de Grand Bassam</p>
+    <div class="splash-score">Finale : Les Enfants 8 – 3 FC Universel</div>
+    <div class="splash-bar-wrap">
+      <div class="splash-bar"></div>
+    </div>
+  </div>
+</div>
+
 <nav class="navbar" [class.scrolled]="scrolled">
   <a class="navbar-brand" routerLink="/" (click)="closeMenu()">
     <img src="fju.jpg" alt="Logo Étoile Universelle" class="brand-logo" />
