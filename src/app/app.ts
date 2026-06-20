@@ -27,7 +27,7 @@ export class App implements OnInit {
   }
 
   ngOnInit(): void {
-    setTimeout(() => { this.splashDone = true; }, 5000);
+    setTimeout(() => { this.splashDone = true; }, 3000);
     this.tournament.getRegistrationStatus().subscribe({
       next: status => { this.registrationOpen = status.open; },
       error: () => { this.registrationOpen = false; },

@@ -8,39 +8,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(140deg, #071a2e 0%, #0d2818 45%, #071a2e 100%);
+  background: linear-gradient(140deg, #071a2e 0%, #0d2818 50%, #071a2e 100%);
   opacity: 1;
   visibility: visible;
-  transition: opacity 0.9s ease, visibility 0.9s ease;
-  overflow: hidden;
+  transition: opacity 0.7s ease, visibility 0.7s ease;
+  will-change: opacity;
 
   &.splash-out {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-  }
-}
-
-.splash-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-
-  &.splash-orb-left {
-    width: 500px;
-    height: 500px;
-    background: rgba(22,163,74,.18);
-    top: -120px;
-    left: -150px;
-  }
-
-  &.splash-orb-right {
-    width: 400px;
-    height: 400px;
-    background: rgba(212,150,10,.12);
-    bottom: -100px;
-    right: -100px;
   }
 }
 
@@ -51,8 +28,6 @@
   text-align: center;
   gap: .85rem;
   padding: 2rem 1.5rem;
-  position: relative;
-  z-index: 1;
 }
 
 .splash-logo {
@@ -61,16 +36,16 @@
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid rgba(255,255,255,.18);
-  box-shadow: 0 8px 32px rgba(0,0,0,.5);
-  animation: splashFadeUp 0.7s 0.1s cubic-bezier(0.4,0,0.2,1) both;
+  box-shadow: 0 6px 24px rgba(0,0,0,.5);
+  animation: splashFadeUp 0.6s 0.05s cubic-bezier(0.4,0,0.2,1) both;
 }
 
 .splash-trophy {
-  font-size: 5.5rem;
+  font-size: 5rem;
   line-height: 1;
-  filter: drop-shadow(0 8px 20px rgba(212,150,10,.55));
-  animation: splashFadeUp 0.7s 0.2s cubic-bezier(0.4,0,0.2,1) both,
-             splashBounce 1.8s 1s ease-in-out infinite alternate;
+  will-change: transform;
+  animation: splashFadeUp 0.6s 0.15s cubic-bezier(0.4,0,0.2,1) both,
+             splashBounce 2s 0.8s ease-in-out infinite alternate;
 }
 
 .splash-champion-label {
@@ -80,7 +55,7 @@
   letter-spacing: .16em;
   color: #fbbf24;
   margin: 0;
-  animation: splashFadeUp 0.7s 0.35s cubic-bezier(0.4,0,0.2,1) both;
+  animation: splashFadeUp 0.6s 0.25s cubic-bezier(0.4,0,0.2,1) both;
 }
 
 .splash-team-name {
@@ -90,26 +65,14 @@
   line-height: 1.05;
   letter-spacing: -.03em;
   margin: 0;
-  text-shadow: 0 4px 24px rgba(0,0,0,.4);
-  animation: splashFadeUp 0.7s 0.45s cubic-bezier(0.4,0,0.2,1) both;
+  animation: splashFadeUp 0.6s 0.35s cubic-bezier(0.4,0,0.2,1) both;
 }
 
 .splash-edition {
   font-size: .82rem;
   color: rgba(255,255,255,.48);
   margin: 0;
-  animation: splashFadeUp 0.7s 0.55s cubic-bezier(0.4,0,0.2,1) both;
-}
-
-.splash-score {
-  background: rgba(212,150,10,.14);
-  border: 1px solid rgba(212,150,10,.4);
-  color: #fbbf24;
-  font-size: .82rem;
-  font-weight: 700;
-  padding: .45rem 1.25rem;
-  border-radius: 999px;
-  animation: splashFadeUp 0.7s 0.65s cubic-bezier(0.4,0,0.2,1) both;
+  animation: splashFadeUp 0.6s 0.45s cubic-bezier(0.4,0,0.2,1) both;
 }
 
 .splash-bar-wrap {
@@ -118,8 +81,8 @@
   background: rgba(255,255,255,.1);
   border-radius: 999px;
   overflow: hidden;
-  margin-top: .25rem;
-  animation: splashFadeUp 0.7s 0.75s cubic-bezier(0.4,0,0.2,1) both;
+  margin-top: .2rem;
+  animation: splashFadeUp 0.6s 0.55s cubic-bezier(0.4,0,0.2,1) both;
 }
 
 .splash-bar {
@@ -127,17 +90,18 @@
   width: 0;
   background: linear-gradient(90deg, #fbbf24, #4ade80);
   border-radius: 999px;
-  animation: splashProgress 5s linear forwards;
+  will-change: width;
+  animation: splashProgress 3s linear forwards;
 }
 
 @keyframes splashFadeUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: none; }
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes splashBounce {
-  from { transform: translateY(0) scale(1); }
-  to   { transform: translateY(-10px) scale(1.06); }
+  from { transform: translateY(0); }
+  to   { transform: translateY(-10px); }
 }
 
 @keyframes splashProgress {
