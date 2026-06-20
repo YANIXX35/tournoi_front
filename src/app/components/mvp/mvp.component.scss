@@ -337,6 +337,46 @@
   }
 }
 
+// ── MVP Officiel ──────────────────────────────────────────────────────────────
+.official-winner {
+  background: rgba(212,150,10,.1);
+  border: 1px solid rgba(212,150,10,.4);
+  color: #92400e;
+  border-radius: .75rem;
+  font-size: .9rem;
+  font-weight: 700;
+  margin-bottom: 1.8rem;
+  padding: .85rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.mvp-official-badge {
+  background: rgba(212,150,10,.15);
+  border: 1px solid rgba(212,150,10,.5);
+  color: #b45309;
+  font-size: .63rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: .2rem .65rem;
+  margin-bottom: .2rem;
+  white-space: nowrap;
+  align-self: center;
+}
+
+.candidate-card.is-mvp-winner {
+  border-color: rgba(212,150,10,.5);
+  box-shadow: 0 0 0 3px rgba(212,150,10,.15), 0 4px 20px rgba(0,0,0,.08);
+
+  .player-photo-wrap {
+    border-color: #fbbf24;
+    box-shadow: 0 4px 20px rgba(251,191,36,.4);
+  }
+}
+
 // ── Note de bas de page ───────────────────────────────────────────────────────
 .vote-note {
   text-align: center;

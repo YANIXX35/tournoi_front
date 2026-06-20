@@ -10,6 +10,7 @@ export interface MvpCandidate {
   photo_url: string | null;
   votes: number;
   percentage: number;
+  is_mvp_winner?: boolean;
 }
 
 export interface MvpData {

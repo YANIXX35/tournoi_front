@@ -2,9 +2,9 @@
 
   <!-- ── Hero ── -->
   <div class="mvp-hero">
-    <p class="hero-label">Vote Communautaire · Demi-Finales 2026</p>
-    <h1 class="hero-title">Vote MVP</h1>
-    <p class="hero-sub">Élisez le meilleur capitaine des demi-finales</p>
+    <p class="hero-label">Résultats Officiels · Tournoi 2026</p>
+    <h1 class="hero-title">MVP du Tournoi</h1>
+    <p class="hero-sub">Le meilleur joueur de l'édition 2026</p>
     <div class="total-votes-badge" *ngIf="data && data.total_votes > 0">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       {{ data.total_votes }} vote{{ data.total_votes > 1 ? 's' : '' }} enregistré{{ data.total_votes > 1 ? 's' : '' }}
@@ -24,6 +24,15 @@
       <p>Impossible de charger les candidats.</p>
     </div>
 
+    <!-- Bannière MVP Officiel -->
+    <ng-container *ngIf="!loading && !error && data">
+      <ng-container *ngFor="let c of data!.candidates">
+        <div class="vote-banner official-winner" *ngIf="c.is_mvp_winner">
+          🏆 {{ c.player_name }} ({{ c.team_name }}) — MVP Officiel du Tournoi 2026
+        </div>
+      </ng-container>
+    </ng-container>
+
     <!-- Bannière résultat -->
     <div class="vote-banner success" *ngIf="voteSuccess">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -40,7 +49,11 @@
         class="candidate-card"
         [class.is-leader]="i === 0"
         [class.is-user-vote]="isUserVote(c)"
+        [class.is-mvp-winner]="c.is_mvp_winner"
         *ngFor="let c of data!.candidates; let i = index; trackBy: trackByCandidate">
+
+        <!-- Badge MVP Officiel -->
+        <div class="mvp-official-badge" *ngIf="c.is_mvp_winner">🏆 MVP Officiel</div>
 
         <!-- Badge rang -->
         <div class="rank-badge" [class.gold]="i===0" [class.silver]="i===1" [class.bronze]="i===2">
