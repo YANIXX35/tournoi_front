@@ -1,5 +1,5 @@
 <!-- ── Splash Screen ── -->
-<div class="splash-screen" [class.splash-out]="splashDone">
+<div class="splash-screen" *ngIf="splashVisible" [class.splash-out]="splashFading">
   <div class="splash-content">
     <img src="fju.jpg" alt="Logo Étoile Universelle" class="splash-logo" />
     <div class="splash-trophy">🏆</div>
